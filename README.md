@@ -124,7 +124,7 @@ See [Sticker-Knight-Platformer](https://github.com/ldurniat/Sticker-Knight-Platf
 
 If you think that any information you obtained here is worth of some money and are willing to pay for it, feel free to send any amount through paypal. Thanks :) 
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](www.paypal.me/ldurniat)
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.me/ldurniat)
 
 ### Contributing
 
@@ -132,7 +132,7 @@ If you have any idea, feel free to fork it and submit your changes back to me.
 
 ### License
 
-This project is licensed under the MIT License - see the LICENSE.md file for details.
+This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/ldurniat/Berry/blob/master/LICENSE.txt) file for details.
 
 ### Acknowledgements 
 

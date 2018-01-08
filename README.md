@@ -47,43 +47,25 @@ The map object exposes methods to manipulate adn find layers, objects and tiles.
 Method name                              | Description 
 -----------------------------------------|-------------------------------------------------------------------------------
 *map:hide()*                             | Hides the Map.
------------------------------------------|-------------------------------------------------------------------------------
 *map:show()*                             | Shows the Map.
------------------------------------------|-------------------------------------------------------------------------------
 *map:move( x, y )*                       | Moves the Map.
------------------------------------------|-------------------------------------------------------------------------------
 *map:setRotation( angle )*               | Sets the rotation of the Map.
------------------------------------------|-------------------------------------------------------------------------------
 *map:rotate( angle )*                    | Rotates the Map.
------------------------------------------|-------------------------------------------------------------------------------
 *map:setScale( xScale, yScale )*         | Sets the scale of the Map.
------------------------------------------|-------------------------------------------------------------------------------
 *map:scale( xScale, yScale )*            | Scales the Map.
------------------------------------------|-------------------------------------------------------------------------------
 *map:getScale()*                         | Gets the scale of the Map.
------------------------------------------|-------------------------------------------------------------------------------
 *map:setPosition( x, y )*                | Sets the position of the Map.
------------------------------------------|-------------------------------------------------------------------------------
 *map:getPosition()*                      | Gets the position of the Map.
------------------------------------------|-------------------------------------------------------------------------------
 *map:getTilesWithProperty( name )*       | Gets a list of Tiles across all TileLayers that have a specified property.
------------------------------------------|-------------------------------------------------------------------------------
 *map:getObjectsWithProperty( name )*     | Gets a list of Objects across all ObjectLayers that have a specified property.
------------------------------------------|-------------------------------------------------------------------------------
 *map:getObjectsWithName( name )*         | Gets a list of Objects across all ObjectLayers that have a specified name.
------------------------------------------|-------------------------------------------------------------------------------
 *map:getObjectWithName( name )*          | Gets a first Object across all ObjectLayers that have a specified name.
------------------------------------------|-------------------------------------------------------------------------------
 *map:getObjectsWithType( objectType )*   | Gets a list of Objects across all ObjectLayers that have a specified type.
------------------------------------------|-------------------------------------------------------------------------------
 *map:getTileLayer( indexOrName )*        | Gets a TileLayer.
------------------------------------------|-------------------------------------------------------------------------------
 *map:getObjectLayer( indexOrName )*      | Gets an ObjectLayer.
------------------------------------------|-------------------------------------------------------------------------------
 *map:getTileLayersWithProperty( name )*  | Gets a list of TileLayers across the map that have a specified property.
------------------------------------------|-------------------------------------------------------------------------------
 *map:getObjectLayersWithProperty( name )*| Gets a list of ObjectLayers across the map that have a specified property.
------------------------------------------|-------------------------------------------------------------------------------
+
 
 *map.designedWidth* and *map.designedHeight* are the width and height of your map as specified in tiled's new map options. The map will be centered on the screen by default.
 
@@ -125,7 +107,7 @@ To gain some useful information about what is going on use `berry:enableDebugMod
 
 ### Example
 
-See [Sticker-Knight-Platformer](url). 
+See [Sticker-Knight-Platformer](https://github.com/ldurniat/Sticker-Knight-Platformer-and-Berry). 
 
 ### What's next
 
@@ -142,7 +124,7 @@ See [Sticker-Knight-Platformer](url).
 
 If you think that any information you obtained here is worth of some money and are willing to pay for it, feel free to send any amount through paypal. Thanks :) 
 
-[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](paypal.me/ldurniat)
+[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](www.paypal.me/ldurniat)
 
 ### Contributing
 

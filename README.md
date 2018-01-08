@@ -107,7 +107,7 @@ To gain some useful information about what is going on use `berry:enableDebugMod
 
 ### Example
 
-See [Sticker-Knight-Platformer](https://github.com/ldurniat/Sticker-Knight-Platformer-and-Berry). 
+See [Sticker-Knight-Platformer](https://github.com/ldurniat/Sticker-Knight-Platformer-and-Berry) and wiki. 
 
 ### What's next
 

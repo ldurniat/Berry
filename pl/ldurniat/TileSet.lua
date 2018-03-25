@@ -1,45 +1,48 @@
-----------------------------------------------------------------------------------------------------
----- Lime - 2D Tile Engine for Corona SDK. (Original author: Graham Ranson)
----- http://OutlawGameTools.com
----- Copyright 2013 Three Ring Ranch
----- The MIT License (MIT) (see LICENSE.txt for details)
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+-- The TileSet class representing Tiled tileset or collection of images.
 --
-----------------------------------------------------------------------------------------------------
----- Berry - 2D Tile Engine for Corona SDK. 
----- Author: Łukasz Durniat
-----------------------------------------------------------------------------------------------------
---
--- Date: Jan-2018
---
--- Version: 3.5
--- File name: TileSet.lua
---
-----------------------------------------------------------------------------------------------------
-----									REQUIRED MODULES										----
-----------------------------------------------------------------------------------------------------
+-- @classmod TileSet
+-- @author Łukasz Durniat
+-- @license MIT
+-- @copyright Łukasz Durniat, Jan-2018
+------------------------------------------------------------------------------------------------
+
+-- ------------------------------------------------------------------------------------------ --
+--                                 REQUIRED MODULES                                           --                        
+-- ------------------------------------------------------------------------------------------ --
+
 local class      = require 'pl.ldurniat.lib.30log-clean'
 local Property   = require 'pl.ldurniat.Property'
 local Properties = require 'pl.ldurniat.Properties'
 local utils      = require 'pl.ldurniat.utils'
 
-----------------------------------------------------------------------------------------------------
-----									CLASS 													----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  CLASS                                                     --                                                
+-- ------------------------------------------------------------------------------------------ --
 
 local TileSet = Properties:extend( 'TileSet' )
 
-----------------------------------------------------------------------------------------------------
-----									LOCALISED VARIABLES										----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  LOCALISED VARIABLES                                       --    
+-- ------------------------------------------------------------------------------------------ --
 
-----------------------------------------------------------------------------------------------------
-----									PRIVATE METHODS											----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  PRIVATE METHODS                                           --
+-- ------------------------------------------------------------------------------------------ --
 
--- Code borrowed from Ponytiled
--- https://github.com/ponywolf/ponytiled    
+-- ------------------------------------------------------------------------------------------ --
+--                                  PUBLIC METHODS                                            --    
+-- ------------------------------------------------------------------------------------------ --
+
+------------------------------------------------------------------------------------------------
+-- Load tileset.
+--
+-- @param directory The directory to tileset.
+-- @param tileset The object which contains infromation about tileset.
+-- @return The newly created image sheet.
+-----------------------------------------------------------------------------------------------   
 local function loadTileset( directory, tileset )
+    -- Code borrowed from https://github.com/ponywolf/ponytiled 
 
 	local tsiw, tsih = tileset.imagewidth, tileset.imageheight
 	local margin, spacing = tileset.margin, tileset.spacing
@@ -77,9 +80,14 @@ local function loadTileset( directory, tileset )
 
 end
 
--- Code borrowed from Ponytiled
--- https://github.com/ponywolf/ponytiled    
+------------------------------------------------------------------------------------------------
+-- Find GID for last element in tileset.
+--
+-- @param tileset The object which contains infromation about tileset.
+-- @return The number.
+-----------------------------------------------------------------------------------------------    
 local function findLastGID( tileset )
+    -- Code borrowed from https://github.com/ponywolf/ponytiled 
 
 	local last = tileset.firstgid
 
@@ -105,14 +113,13 @@ local function findLastGID( tileset )
 
 end
 
-----------------------------------------------------------------------------------------------------
-----									PUBLIC METHODS											----
-----------------------------------------------------------------------------------------------------
-
---- Create a new instance of a TileSet object.
+------------------------------------------------------------------------------------------------
+-- Create a new instance of a TileSet object.
+--
 -- @param data The JSON data.
 -- @param directory The root dir of the tileset image. Optional.
 -- @return The newly created TileSet instance.
+------------------------------------------------------------------------------------------------
 function TileSet:init( data, directory )
 
     -- Make sure we have a properties table
@@ -186,33 +193,44 @@ function TileSet:init( data, directory )
 
 end
 
---- Gets a list of Properties on a Tile.
+------------------------------------------------------------------------------------------------
+-- Gets a list of Properties on a Tile.
+--
 -- @param id The id of the Tile.
 -- @return A table with a list of properties for the tile or an empty table.
+------------------------------------------------------------------------------------------------
 function TileSet:getPropertiesForTile( id )
 	
 	return self.tileProperties[id] or {}
 
 end
 
---- Gets a list of Collision Shape on a Tile.
+------------------------------------------------------------------------------------------------
+-- Gets a list of Collision Shape on a Tile.
+--
 -- @param id The id of the Tile.
 -- @return A table with a list of collsion shape for the tile or nil.
+------------------------------------------------------------------------------------------------
 function TileSet:getCollisionShapeForTile( id )
 	
 	return self.tileCollisionShapes[id]
 
 end
 
---- Gets a list of all sequences from whole tileset.
+------------------------------------------------------------------------------------------------
+-- Gets a list of all sequences from whole tileset.
+--
 -- @return A table with a list sequences.
+------------------------------------------------------------------------------------------------
 function TileSet:getSequencesData()
 	
 	return self.tileSequencesData 
 
 end
 
---- Completely removes the TileSet.
+------------------------------------------------------------------------------------------------
+-- Completely removes the TileSet.
+------------------------------------------------------------------------------------------------
 function TileSet:destroy()
 
     -- I don't sure I have to do this

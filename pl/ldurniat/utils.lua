@@ -1,61 +1,56 @@
-----------------------------------------------------------------------------------------------------
----- Lime - 2D Tile Engine for Corona SDK. (Original author: Graham Ranson)
----- http://OutlawGameTools.com
----- Copyright 2013 Three Ring Ranch
----- The MIT License (MIT) (see LICENSE.txt for details)
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+-- The helper module.
 --
-----------------------------------------------------------------------------------------------------
----- Berry - 2D Tile Engine for Corona SDK. 
----- Author: Łukasz Durniat
-----------------------------------------------------------------------------------------------------
---
--- Date: Jan-2018
---
--- Version: 3.5
---
--- File name: utils.lua
---
---- A list of utility functions provided as part of Berry.
-----------------------------------------------------------------------------------------------------
+-- @module utils
+-- @author Łukasz Durniat
+-- @license MIT
+-- @copyright Łukasz Durniat, Jan-2018
+------------------------------------------------------------------------------------------------
 
-----------------------------------------------------------------------------------------------------
-----									REQUIRED MODULES										----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                 REQUIRED MODULES	                                          --						
+-- ------------------------------------------------------------------------------------------ --
 
-----------------------------------------------------------------------------------------------------
-----									DECLARATION OF MODULE										----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--									DECLARATION OF MODULE									  --
+-- ------------------------------------------------------------------------------------------ --
 
 local M = {}
 
-----------------------------------------------------------------------------------------------------
-----									MODULE VARIABLES										----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--						        	MODULE VARIABLES										  --
+-- ------------------------------------------------------------------------------------------ --
 
-----------------------------------------------------------------------------------------------------
-----									LOCALISED VARIABLES										----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  LOCALISED VARIABLES                                       --	
+-- ------------------------------------------------------------------------------------------ --
 
 local floor = math.floor
-local abs = math.abs
-local ceil = math.ceil
-local atan = math.atan
-local rad = math.rad
-local deg = math.deg
-local sqrt = math.sqrt
-local pi = math.pi
+local abs   = math.abs
+local ceil  = math.ceil
+local atan  = math.atan
+local rad   = math.rad
+local deg   = math.deg
+local sqrt  = math.sqrt
+local pi    = math.pi
 local twoPi = pi * 2
 
-----------------------------------------------------------------------------------------------------
-----									PUBLIC METHODS											----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--									PRIVATE METHODS		   									  --
+-- ------------------------------------------------------------------------------------------ --
 
---- Moves an object a set distance.
+-- ------------------------------------------------------------------------------------------ --
+--                                  PUBLIC METHODS                                            --	
+-- ------------------------------------------------------------------------------------------ --
+
+------------------------------------------------------------------------------------------------
+-- Moves an object a set distance.
+--
 -- (something that has an X and Y property)
 -- @param object The object to move.
 -- @param x The amount to move the object along the X axis.
 -- @param y The amount to move the object along the Y axis.
+------------------------------------------------------------------------------------------------
 function M:moveObject( object, x, y )
 	
 	local _object = object
@@ -75,10 +70,13 @@ function M:moveObject( object, x, y )
 	
 end
 
---- Rounds a number.
+------------------------------------------------------------------------------------------------
+-- Rounds a number.
+--
 -- @param number The number to utils:round.
 -- @param fudge A value to add to the number before rounding. Optional.
 -- @return The rounded number.
+------------------------------------------------------------------------------------------------
 function M:round( number, fudge )
 	
 	local _number = number
@@ -88,11 +86,14 @@ function M:round( number, fudge )
 	return ( floor( _number + fudgeValue ) )
 end
 
---- Copies the Properties of one object to another. 
+------------------------------------------------------------------------------------------------
+-- Copies the Properties of one object to another. 
+--
 -- For adding to an object that doesn't have 'addProperty' such as a Sprite.
 -- @param objectA The object that has the Properties.
 -- @param objectB The object that will have the Properties coped to it.
 -- @param propertiesToIgnore A list of properties to not add if they exist. Optional.
+------------------------------------------------------------------------------------------------
 function M:copyPropertiesToObject( objectA, objectB, propertiesToIgnore )
 
 	local _objectA = objectA
@@ -126,10 +127,13 @@ function M:copyPropertiesToObject( objectA, objectB, propertiesToIgnore )
 	
 end
 
---- Decoding color in hex format to ARGB.
+------------------------------------------------------------------------------------------------
+-- Decoding color in hex format to ARGB.
+--
 -- @param hex The color to decode.
 -- @return The color in ARGB format.
 -- https://github.com/ponywolf/ponytiled
+------------------------------------------------------------------------------------------------
 function M:decodeTiledColor( hex )
 
 	hex = hex or '#FF888888'
@@ -148,46 +152,59 @@ function M:decodeTiledColor( hex )
 
 end
 
---- Sets the fill colour ( tint ) of a sprite.
+------------------------------------------------------------------------------------------------
+-- Sets the fill colour ( tint ) of a sprite.
+--
 -- @param sprite The sprite to tint. Or a display object.
 -- @param colour The colour to use. Table containing up to 4 values.
+------------------------------------------------------------------------------------------------
 function M:setSpriteFillColor( sprite, colour )
 
 	sprite:setFillColor( self:decodeTiledColor( colour ) )
 
 end
 
---- Sets the stroke colour ( tint ) of a sprite.
+------------------------------------------------------------------------------------------------
+-- Sets the stroke colour ( tint ) of a sprite.
+--
 -- @param sprite The sprite to tint. Or a display object.
 -- @param colour The colour to use. Table containing up to 4 values.
+------------------------------------------------------------------------------------------------
 function M:setSpriteStrokeColor( sprite, colour )
 
 	sprite:setStrokeColor( self:decodeTiledColor( colour ) )
 
 end
 
---- Converting two-dimensional table to one-dimensional table.
+------------------------------------------------------------------------------------------------
+-- Converting two-dimensional table to one-dimensional table.
+--
 -- @param points The two-dimensional table.
 -- @return The one-dimensional table.
--- -- https://github.com/ponywolf/ponytiled
+------------------------------------------------------------------------------------------------
 function M:unpackPoints( points )
-  local t = {}
+	-- Code borrowed from https://github.com/ponywolf/ponytiled 	
 
-  for i = 1, #points do
+	local t = {}
 
-    t[#t+1] = points[i].x
+	for i = 1, #points do
 
-    t[#t+1] = points[i].y
+		t[#t+1] = points[i].x
 
-  end
+		t[#t+1] = points[i].y
 
-  return t
+	end
+
+	return t
 
 end
 
+------------------------------------------------------------------------------------------------
 -- Centering merged from code by Micheal Wilson/ponytiled.
---- Center display object
+--
+-- Center display object
 -- @param image The object to center.
+------------------------------------------------------------------------------------------------
 function M:centerAnchor( image )
 
   if image.contentBounds then 
@@ -203,10 +220,13 @@ function M:centerAnchor( image )
 
 end
 
---- Adds a displayObject to a displayGroup
+------------------------------------------------------------------------------------------------
+-- Adds a displayObject to a displayGroup
+--
 -- @param displayObject The object to add.
 -- @param group The group to add the object to.
 -- @return The displayObject
+------------------------------------------------------------------------------------------------
 function M:addObjectToGroup( displayObject, group )
 	
 	local _displayObject = displayObject
@@ -222,9 +242,12 @@ function M:addObjectToGroup( displayObject, group )
 	
 end
 
---- Applies physical properties to a body.
+------------------------------------------------------------------------------------------------
+-- Applies physical properties to a body.
+--
 -- @param body The body to apply the properties to.
 -- @param params The physical properties.
+------------------------------------------------------------------------------------------------
 function M:applyPhysicalParametersToBody( body, params )
  
 	local _body = body
@@ -246,9 +269,14 @@ function M:applyPhysicalParametersToBody( body, params )
 	end
 end
 
--- Code borrowed from Rob Miracle
--- https://github.com/robmiracle/print_r
+------------------------------------------------------------------------------------------------
+-- Lua based table printing funciton similar to the PHP print_r function. 
+--
+-- @param t The table to print.
+------------------------------------------------------------------------------------------------
 function M:print_r ( t ) 
+	-- Code borrowed from https://github.com/robmiracle/print_r
+
     local print_r_cache={}
         local function sub_print_r(t,indent)
         if (print_r_cache[tostring(t)]) then

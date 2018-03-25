@@ -1,0 +1,413 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Berry documenatation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Berry</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>utils</strong></li>
+</ul>
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Map.html">Map</a></li>
+  <li><a href="../classes/Object.html">Object</a></li>
+  <li><a href="../classes/ObjectLayer.html">ObjectLayer</a></li>
+  <li><a href="../classes/Properties.html">Properties</a></li>
+  <li><a href="../classes/Property.html">Property</a></li>
+  <li><a href="../classes/Tile.html">Tile</a></li>
+  <li><a href="../classes/TileLayer.html">TileLayer</a></li>
+  <li><a href="../classes/TileSet.html">TileSet</a></li>
+  <li><a href="../classes/Berry.html">Berry</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>utils</code></h1>
+<p>The helper module.</p>
+<p>
+
+</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: Łukasz Durniat, Jan-2018</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: Łukasz Durniat</li>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#moveObject">moveObject (object, x, y)</a></td>
+	<td class="summary">Moves an object a set distance.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#round">round (number, fudge)</a></td>
+	<td class="summary">Rounds a number.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#copyPropertiesToObject">copyPropertiesToObject (objectA, objectB, propertiesToIgnore)</a></td>
+	<td class="summary">Copies the Properties of one object to another.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#decodeTiledColor">decodeTiledColor (hex)</a></td>
+	<td class="summary">Decoding color in hex format to ARGB.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setSpriteFillColor">setSpriteFillColor (sprite, colour)</a></td>
+	<td class="summary">Sets the fill colour ( tint ) of a sprite.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setSpriteStrokeColor">setSpriteStrokeColor (sprite, colour)</a></td>
+	<td class="summary">Sets the stroke colour ( tint ) of a sprite.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#unpackPoints">unpackPoints (points)</a></td>
+	<td class="summary">Converting two-dimensional table to one-dimensional table.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#centerAnchor">centerAnchor (image)</a></td>
+	<td class="summary">Centering merged from code by Micheal Wilson/ponytiled.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#addObjectToGroup">addObjectToGroup (displayObject, group)</a></td>
+	<td class="summary">Adds a displayObject to a displayGroup</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#applyPhysicalParametersToBody">applyPhysicalParametersToBody (body, params)</a></td>
+	<td class="summary">Applies physical properties to a body.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#print_r">print_r (t)</a></td>
+	<td class="summary">Lua based table printing funciton similar to the PHP print_r function.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "moveObject"></a>
+    <strong>moveObject (object, x, y)</strong>
+    </dt>
+    <dd>
+    Moves an object a set distance. </p>
+
+<p> (something that has an X and Y property)
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+         The object to move.
+        </li>
+        <li><span class="parameter">x</span>
+         The amount to move the object along the X axis.
+        </li>
+        <li><span class="parameter">y</span>
+         The amount to move the object along the Y axis.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "round"></a>
+    <strong>round (number, fudge)</strong>
+    </dt>
+    <dd>
+    Rounds a number.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">number</span>
+         The number to utils:round.
+        </li>
+        <li><span class="parameter">fudge</span>
+         A value to add to the number before rounding. Optional.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The rounded number.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "copyPropertiesToObject"></a>
+    <strong>copyPropertiesToObject (objectA, objectB, propertiesToIgnore)</strong>
+    </dt>
+    <dd>
+    Copies the Properties of one object to another.  </p>
+
+<p> For adding to an object that doesn't have 'addProperty' such as a Sprite.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">objectA</span>
+         The object that has the Properties.
+        </li>
+        <li><span class="parameter">objectB</span>
+         The object that will have the Properties coped to it.
+        </li>
+        <li><span class="parameter">propertiesToIgnore</span>
+         A list of properties to not add if they exist. Optional.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "decodeTiledColor"></a>
+    <strong>decodeTiledColor (hex)</strong>
+    </dt>
+    <dd>
+    Decoding color in hex format to ARGB.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">hex</span>
+         The color to decode.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+         The color in ARGB format.
+ https://github.com/ponywolf/ponytiled
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "setSpriteFillColor"></a>
+    <strong>setSpriteFillColor (sprite, colour)</strong>
+    </dt>
+    <dd>
+    Sets the fill colour ( tint ) of a sprite.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">sprite</span>
+         The sprite to tint. Or a display object.
+        </li>
+        <li><span class="parameter">colour</span>
+         The colour to use. Table containing up to 4 values.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "setSpriteStrokeColor"></a>
+    <strong>setSpriteStrokeColor (sprite, colour)</strong>
+    </dt>
+    <dd>
+    Sets the stroke colour ( tint ) of a sprite.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">sprite</span>
+         The sprite to tint. Or a display object.
+        </li>
+        <li><span class="parameter">colour</span>
+         The colour to use. Table containing up to 4 values.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "unpackPoints"></a>
+    <strong>unpackPoints (points)</strong>
+    </dt>
+    <dd>
+    Converting two-dimensional table to one-dimensional table.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">points</span>
+         The two-dimensional table.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The one-dimensional table.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "centerAnchor"></a>
+    <strong>centerAnchor (image)</strong>
+    </dt>
+    <dd>
+    Centering merged from code by Micheal Wilson/ponytiled. </p>
+
+<p> Center display object
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">image</span>
+         The object to center.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "addObjectToGroup"></a>
+    <strong>addObjectToGroup (displayObject, group)</strong>
+    </dt>
+    <dd>
+    Adds a displayObject to a displayGroup
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">displayObject</span>
+         The object to add.
+        </li>
+        <li><span class="parameter">group</span>
+         The group to add the object to.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The displayObject
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "applyPhysicalParametersToBody"></a>
+    <strong>applyPhysicalParametersToBody (body, params)</strong>
+    </dt>
+    <dd>
+    Applies physical properties to a body.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">body</span>
+         The body to apply the properties to.
+        </li>
+        <li><span class="parameter">params</span>
+         The physical properties.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "print_r"></a>
+    <strong>print_r (t)</strong>
+    </dt>
+    <dd>
+    Lua based table printing funciton similar to the PHP print_r function.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">t</span>
+         The table to print.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-03-25 11:32:34 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

@@ -1,59 +1,53 @@
-----------------------------------------------------------------------------------------------------
----- Lime - 2D Tile Engine for Corona SDK. (Original author: Graham Ranson)
----- http://OutlawGameTools.com
----- Copyright 2013 Three Ring Ranch
----- The MIT License (MIT) (see LICENSE.txt for details)
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+-- The Object class representing Tiled object.
 --
-----------------------------------------------------------------------------------------------------
----- Berry - 2D Tile Engine for Corona SDK. 
----- Author: Łukasz Durniat
-----------------------------------------------------------------------------------------------------
---
--- Date: Jan-2018
---
--- Version: 3.5
---
--- File name: Object.lua
---
-----------------------------------------------------------------------------------------------------
-----									REQUIRED MODULES										----
-----------------------------------------------------------------------------------------------------
+-- @classmod Object
+-- @author Łukasz Durniat
+-- @license MIT
+-- @copyright Łukasz Durniat, Jan-2018
+------------------------------------------------------------------------------------------------
+
+-- ------------------------------------------------------------------------------------------ --
+--                                 REQUIRED MODULES	                                          --						
+-- ------------------------------------------------------------------------------------------ --
+
 local class      = require 'pl.ldurniat.lib.30log-clean'
 local Properties = require 'pl.ldurniat.Properties'
 local utils      = require 'pl.ldurniat.utils'
 
-----------------------------------------------------------------------------------------------------
-----									CLASS 													----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  CLASS                                                     --												
+-- ------------------------------------------------------------------------------------------ --
 
 local Object = Properties:extend( 'Object' )
 
-----------------------------------------------------------------------------------------------------
-----									LOCALISED VARIABLES										----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  LOCALISED VARIABLES                                       --	
+-- ------------------------------------------------------------------------------------------ --
 
 local FlippedHorizontallyFlag = 0x80000000
 local FlippedVerticallyFlag   = 0x40000000
 local FlippedDiagonallyFlag   = 0x20000000
 
-----------------------------------------------------------------------------------------------------
-----									PRIVATE METHODS											----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--									PRIVATE METHODS		   									  --
+-- ------------------------------------------------------------------------------------------ --
 
 local function hasbit( x, p ) return x % ( p + p ) >= p end
 local function setbit( x, p ) return hasbit( x, p ) and x or x + p end
 local function clearbit( x, p ) return hasbit( x, p ) and x - p or x end
 
-----------------------------------------------------------------------------------------------------
-----									PUBLIC METHODS											----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  PUBLIC METHODS                                            --	
+-- ------------------------------------------------------------------------------------------ --
 
---- Create a new instance of an Object object.
+------------------------------------------------------------------------------------------------
+-- Create a new instance of an Object object.
 -- @param data The JSON data.
 -- @param map The current Map object.
 -- @param objectLayer The ObjectLayer the the Object resides on.
 -- @return The newly created object instance.
+------------------------------------------------------------------------------------------------
 function Object:init( data, map, objectLayer )
 
 	-- Make sure we have a properties table
@@ -100,9 +94,11 @@ function Object:init( data, map, objectLayer )
     
 end	
 
---- Sets the position of the Object.
+------------------------------------------------------------------------------------------------
+-- Sets the position of the Object.
 -- @param x The new X position of the Object.
 -- @param y The new Y position of the Object.
+------------------------------------------------------------------------------------------------
 function Object:setPosition( x, y )
 
 	self.x = x
@@ -115,16 +111,20 @@ function Object:setPosition( x, y )
 
 end
 
---- Gets the position of the Object.
+------------------------------------------------------------------------------------------------
+-- Gets the position of the Object.
 -- @return The X position of the Object.
 -- @return The Y position of the Object.
+------------------------------------------------------------------------------------------------
 function Object:getPosition()
 	return self.x, self.y
 end
 
---- Moves the Object.
+------------------------------------------------------------------------------------------------
+-- Moves the Object.
 -- @param x The amount to move the Object along the X axis.
 -- @param y The amount to move the Object along the Y axis.
+------------------------------------------------------------------------------------------------
 function Object:move( x, y )
 
 	utils:moveObject( self, x, y )
@@ -133,7 +133,9 @@ function Object:move( x, y )
 
 end
 
---- Shows the Object.
+------------------------------------------------------------------------------------------------
+-- Shows the Object.
+------------------------------------------------------------------------------------------------
 function Object:show()
 	
 	if self.sprite then
@@ -144,7 +146,9 @@ function Object:show()
 	
 end
 
---- Hides the Object.
+------------------------------------------------------------------------------------------------
+-- Hides the Object.
+------------------------------------------------------------------------------------------------
 function Object:hide()
 	
 	if self.sprite then
@@ -155,15 +159,19 @@ function Object:hide()
 	
 end
 
---- Gets the Object visual.
+------------------------------------------------------------------------------------------------
+-- Gets the Object visual.
+------------------------------------------------------------------------------------------------
 function Object:getVisual()
 
 	return self.sprite
 
 end
 
---- Gets the rotation of the Object.
+------------------------------------------------------------------------------------------------
+-- Gets the rotation of the Object.
 -- @return The rotation of the object.
+------------------------------------------------------------------------------------------------
 function Object:getRotation()
 
 	if self.sprite then
@@ -174,8 +182,10 @@ function Object:getRotation()
    
 end
 
---- Sets the rotation of the Object.
--- @param The new rotation.
+------------------------------------------------------------------------------------------------
+-- Sets the rotation of the Object.
+-- @param angle The new rotation.
+------------------------------------------------------------------------------------------------
 function Object:setRotation( angle )
 	
 	if self.sprite then
@@ -186,8 +196,10 @@ function Object:setRotation( angle )
 	
 end
 
---- Rotates the Object.
--- @param The angle to rotate by
+------------------------------------------------------------------------------------------------
+-- Rotates the Object.
+-- @param angle The angle to rotate by
+------------------------------------------------------------------------------------------------
 function Object:rotate( angle )
 
 	if self.sprite then
@@ -198,7 +210,9 @@ function Object:rotate( angle )
 	
 end
 
---- Creates the visual representation of the Object.
+------------------------------------------------------------------------------------------------
+-- Creates the visual representation of the Object.
+------------------------------------------------------------------------------------------------
 function Object:create ()
 
 	local data = self.data
@@ -398,8 +412,9 @@ function Object:create ()
 
 end	
 
-
---- Builds the physical representation of the Object.
+------------------------------------------------------------------------------------------------
+-- Builds the physical representation of the Object.
+------------------------------------------------------------------------------------------------
 function Object:build()
 	local visual = self:getVisual()
 	local body = visual
@@ -488,7 +503,9 @@ function Object:build()
 
 end	
 
---- Completely removes all visual and physical objects associated with the Object if not nil.
+------------------------------------------------------------------------------------------------
+-- Completely removes all visual and physical objects associated with the Object if not nil.
+------------------------------------------------------------------------------------------------
 function Object:destroy()
 	
 	-- Destroy the visual object

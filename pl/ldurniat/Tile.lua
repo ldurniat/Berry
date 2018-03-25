@@ -1,37 +1,29 @@
-----------------------------------------------------------------------------------------------------
----- Lime - 2D Tile Engine for Corona SDK. (Original author: Graham Ranson)
----- http://OutlawGameTools.com
----- Copyright 2013 Three Ring Ranch
----- The MIT License (MIT) (see LICENSE.txt for details)
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+-- The Tile class representing single tile image.
 --
-----------------------------------------------------------------------------------------------------
----- Berry - 2D Tile Engine for Corona SDK. 
----- Author: Łukasz Durniat
-----------------------------------------------------------------------------------------------------
---
--- Date: Jan-2018
---
--- Version: 3.5
---
--- File name: Tile.lua
---
-----------------------------------------------------------------------------------------------------
-----									REQUIRED MODULES										----
-----------------------------------------------------------------------------------------------------
+-- @classmod Tile
+-- @author Łukasz Durniat
+-- @license MIT
+-- @copyright Łukasz Durniat, Jan-2018
+------------------------------------------------------------------------------------------------
+
+-- ------------------------------------------------------------------------------------------ --
+--                                 REQUIRED MODULES	                                          --						
+-- ------------------------------------------------------------------------------------------ --
+
 local class 	 = require 'pl.ldurniat.lib.30log-clean'
 local Properties = require 'pl.ldurniat.Properties'
 local utils      = require 'pl.ldurniat.utils'
 
-----------------------------------------------------------------------------------------------------
-----									CLASS METATABLE											----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  CLASS                                                     --												
+-- ------------------------------------------------------------------------------------------ --
 
 local Tile = Properties:extend( 'Tile' )
 
-----------------------------------------------------------------------------------------------------
-----									LOCALISED VARIABLES										----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  LOCALISED VARIABLES                                       --	
+-- ------------------------------------------------------------------------------------------ --
 
 local contentWidth = display.contentWidth
 local contentHeight = display.contentHeight
@@ -40,19 +32,22 @@ local abs = math.abs
 local floor = math.floor
 local ceil = math.ceil
 
-----------------------------------------------------------------------------------------------------
-----									PRIVATE METHODS											----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--									PRIVATE METHODS		   									  --
+-- ------------------------------------------------------------------------------------------ --
 
-----------------------------------------------------------------------------------------------------
-----									PUBLIC METHODS											----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  PUBLIC METHODS                                            --	
+-- ------------------------------------------------------------------------------------------ --
 
---- Create a new instance of a Tile object.
+------------------------------------------------------------------------------------------------
+-- Create a new instance of a Tile object.
+--
 -- @param data The JSON data.
 -- @param map The current Map object.
 -- @param tileLayer The TileLayer the the Tile resides on.
 -- @return The newly created tile.
+------------------------------------------------------------------------------------------------
 function Tile:init( data, map, tileLayer )
 
 	-- Make sure we have a properties table
@@ -86,8 +81,11 @@ function Tile:init( data, map, tileLayer )
 
 end	
 
---- Sets the rotation of the Tile.
--- @param The new rotation.
+------------------------------------------------------------------------------------------------
+-- Sets the rotation of the Tile.
+--
+-- @param angle The new rotation.
+------------------------------------------------------------------------------------------------
 function Tile:setRotation( angle )
 	
 	if self.sprite then
@@ -98,8 +96,11 @@ function Tile:setRotation( angle )
 	
 end
 
---- Rotates the Tile.
--- @param The angle to rotate by
+------------------------------------------------------------------------------------------------
+-- Rotates the Tile.
+--
+-- @param angle The angle to rotate by
+------------------------------------------------------------------------------------------------
 function Tile:rotate( angle )
 
 	if self.sprite then
@@ -110,15 +111,20 @@ function Tile:rotate( angle )
 	
 end
 
---- Gets the Tile visual.
+------------------------------------------------------------------------------------------------
+-- Gets the Tile visual.
+------------------------------------------------------------------------------------------------
 function Tile:getVisual()
 
 	return self.sprite
 
 end
 
---- Gets the rotation of the Tile.
+------------------------------------------------------------------------------------------------
+-- Gets the rotation of the Tile.
+--
 -- @return The rotation of the tile.
+------------------------------------------------------------------------------------------------
 function Tile:getRotation()
 
 	if self.sprite then
@@ -129,7 +135,9 @@ function Tile:getRotation()
    
 end
 
---- Shows the Tile.
+------------------------------------------------------------------------------------------------
+-- Shows the Tile.
+------------------------------------------------------------------------------------------------
 function Tile:show()
 	
 	if self.sprite then
@@ -140,7 +148,9 @@ function Tile:show()
 	
 end
 
---- Hides the Tile.
+------------------------------------------------------------------------------------------------
+-- Hides the Tile.
+------------------------------------------------------------------------------------------------
 function Tile:hide()
 	
 	if self.sprite then
@@ -151,9 +161,12 @@ function Tile:hide()
 	
 end
 
---- Moves the Tile.
+------------------------------------------------------------------------------------------------
+-- Moves the Tile.
+--
 -- @param x The amount to move the Tile along the X axis.
 -- @param y The amount to move the Tile along the Y axis.
+------------------------------------------------------------------------------------------------
 function Tile:move( x, y )
 
 	utils:moveObject( self, x, y )
@@ -162,8 +175,11 @@ function Tile:move( x, y )
 
 end
 
---- Creates the visual representation of the Tile.
+------------------------------------------------------------------------------------------------
+-- Creates the visual representation of the Tile.
+--
 -- @param index The Tile number. Not the gid.
+------------------------------------------------------------------------------------------------
 function Tile:create( index )
 
 	self.index = index
@@ -229,7 +245,9 @@ function Tile:create( index )
 
 end	
 
---- Builds the physical representation of the Tile.
+------------------------------------------------------------------------------------------------
+-- Builds the physical representation of the Tile.
+------------------------------------------------------------------------------------------------
 function Tile:build()
 	local visual = self:getVisual()
 	local body = visual
@@ -313,7 +331,9 @@ function Tile:build()
 
 end	
 
---- Completely removes all visual and physical objects associated with the Tile if not nil.
+------------------------------------------------------------------------------------------------
+-- Completely removes all visual and physical objects associated with the Tile if not nil.
+------------------------------------------------------------------------------------------------
 function Tile:destroy()
 	
 	-- Destroy the visual object

@@ -1,0 +1,418 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Berry documenatation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Berry</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Methods">Methods</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Map.html">Map</a></li>
+  <li><a href="../classes/Object.html">Object</a></li>
+  <li><a href="../classes/ObjectLayer.html">ObjectLayer</a></li>
+  <li><a href="../classes/Properties.html">Properties</a></li>
+  <li><a href="../classes/Property.html">Property</a></li>
+  <li><a href="../classes/Tile.html">Tile</a></li>
+  <li><strong>TileLayer</strong></li>
+  <li><a href="../classes/TileSet.html">TileSet</a></li>
+  <li><a href="../classes/Berry.html">Berry</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/utils.html">utils</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>TileLayer</code></h1>
+<p>The TileLayer class representing Tiled tile layer.</p>
+<p>
+
+</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: Łukasz Durniat, Jan-2018</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: Łukasz Durniat</li>
+    </ul>
+
+
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#TileLayer:init">TileLayer:init (data, map)</a></td>
+	<td class="summary">Create a new instance of a TileLayer object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileLayer:toggleVisibility">TileLayer:toggleVisibility ()</a></td>
+	<td class="summary">Toggle visibility of the TileLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileLayer:show">TileLayer:show ()</a></td>
+	<td class="summary">Shows the TileLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileLayer:hide">TileLayer:hide ()</a></td>
+	<td class="summary">Hides the TileLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileLayer:getVisual">TileLayer:getVisual ()</a></td>
+	<td class="summary">Gets the TileLayers visual.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileLayer:getTilesWithProperty">TileLayer:getTilesWithProperty (name)</a></td>
+	<td class="summary">Gets a list of Tiles on this TileLayer that have a specified property.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileLayer:addObject">TileLayer:addObject (displayObject)</a></td>
+	<td class="summary">Adds a display object to the layer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileLayer:setPosition">TileLayer:setPosition (x, y)</a></td>
+	<td class="summary">Sets the position of the TileLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileLayer:move">TileLayer:move (x, y)</a></td>
+	<td class="summary">Moves the TileLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileLayer:setRotation">TileLayer:setRotation (angle)</a></td>
+	<td class="summary">Sets the rotation of the TileLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileLayer:rotate">TileLayer:rotate (angle)</a></td>
+	<td class="summary">Rotates the TileLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileLayer:create">TileLayer:create ()</a></td>
+	<td class="summary">Creates the visual representation of the layer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileLayer:build">TileLayer:build ()</a></td>
+	<td class="summary">Builds the physical representation of the TileLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TileLayer:destroy">TileLayer:destroy ()</a></td>
+	<td class="summary">Completely removes all visual and physical objects associated with the TileLayer.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "TileLayer:init"></a>
+    <strong>TileLayer:init (data, map)</strong>
+    </dt>
+    <dd>
+    Create a new instance of a TileLayer object.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+         The XML data.
+        </li>
+        <li><span class="parameter">map</span>
+         The current Map object.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created tileLayer.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileLayer:toggleVisibility"></a>
+    <strong>TileLayer:toggleVisibility ()</strong>
+    </dt>
+    <dd>
+    Toggle visibility of the TileLayer.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileLayer:show"></a>
+    <strong>TileLayer:show ()</strong>
+    </dt>
+    <dd>
+    Shows the TileLayer.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileLayer:hide"></a>
+    <strong>TileLayer:hide ()</strong>
+    </dt>
+    <dd>
+    Hides the TileLayer.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileLayer:getVisual"></a>
+    <strong>TileLayer:getVisual ()</strong>
+    </dt>
+    <dd>
+    Gets the TileLayers visual.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileLayer:getTilesWithProperty"></a>
+    <strong>TileLayer:getTilesWithProperty (name)</strong>
+    </dt>
+    <dd>
+    Gets a list of Tiles on this TileLayer that have a specified property.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+         The name of the Property to look for.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        A list of found Tiles. Empty if none found.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileLayer:addObject"></a>
+    <strong>TileLayer:addObject (displayObject)</strong>
+    </dt>
+    <dd>
+    Adds a display object to the layer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">displayObject</span>
+         The display object to add.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The added display object.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileLayer:setPosition"></a>
+    <strong>TileLayer:setPosition (x, y)</strong>
+    </dt>
+    <dd>
+    Sets the position of the TileLayer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+         The new X position of the TileLayer.
+        </li>
+        <li><span class="parameter">y</span>
+         The new Y position of the TileLayer.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileLayer:move"></a>
+    <strong>TileLayer:move (x, y)</strong>
+    </dt>
+    <dd>
+    Moves the TileLayer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+         The amount to move the ObjectLayer along the X axis.
+        </li>
+        <li><span class="parameter">y</span>
+         The amount to move the ObjectLayer along the Y axis.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileLayer:setRotation"></a>
+    <strong>TileLayer:setRotation (angle)</strong>
+    </dt>
+    <dd>
+    Sets the rotation of the TileLayer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">angle</span>
+         The new rotation.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileLayer:rotate"></a>
+    <strong>TileLayer:rotate (angle)</strong>
+    </dt>
+    <dd>
+    Rotates the TileLayer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">angle</span>
+         The angle to rotate by.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileLayer:create"></a>
+    <strong>TileLayer:create ()</strong>
+    </dt>
+    <dd>
+    Creates the visual representation of the layer.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The group containing the newly created layer.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileLayer:build"></a>
+    <strong>TileLayer:build ()</strong>
+    </dt>
+    <dd>
+    Builds the physical representation of the TileLayer.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "TileLayer:destroy"></a>
+    <strong>TileLayer:destroy ()</strong>
+    </dt>
+    <dd>
+    Completely removes all visual and physical objects associated with the TileLayer.
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-03-25 11:32:34 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

@@ -1,51 +1,46 @@
-----------------------------------------------------------------------------------------------------
----- Lime - 2D Tile Engine for Corona SDK. (Original author: Graham Ranson)
----- http://OutlawGameTools.com
----- Copyright 2013 Three Ring Ranch
----- The MIT License (MIT) (see LICENSE.txt for details)
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+-- The TileLayer class representing Tiled tile layer.
 --
-----------------------------------------------------------------------------------------------------
----- Berry - 2D Tile Engine for Corona SDK. 
----- Author: Łukasz Durniat
-----------------------------------------------------------------------------------------------------
---
--- Date: Jan-2018
---
--- Version: 3.5
---
--- File name: TileLayer.lua
---
-----------------------------------------------------------------------------------------------------
-----									REQUIRED MODULES										----
-----------------------------------------------------------------------------------------------------
+-- @classmod TileLayer
+-- @author Łukasz Durniat
+-- @license MIT
+-- @copyright Łukasz Durniat, Jan-2018
+------------------------------------------------------------------------------------------------
+
+-- ------------------------------------------------------------------------------------------ --
+--                                 REQUIRED MODULES	                                          --						
+-- ------------------------------------------------------------------------------------------ --
+
 local class      = require 'pl.ldurniat.lib.30log-clean'
 local Properties = require 'pl.ldurniat.Properties'
 local Tile       = require 'pl.ldurniat.Tile'
 local utils      = require 'pl.ldurniat.utils'
 
-----------------------------------------------------------------------------------------------------
-----									CLASS 													----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  CLASS                                                     --												
+-- ------------------------------------------------------------------------------------------ --
 
 local TileLayer = Properties:extend( 'TileLayer' )
 
-----------------------------------------------------------------------------------------------------
-----									LOCALISED VARIABLES										----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  LOCALISED VARIABLES                                       --	
+-- ------------------------------------------------------------------------------------------ --
 
-----------------------------------------------------------------------------------------------------
-----									PRIVATE METHODS											----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--									PRIVATE METHODS		   									  --
+-- ------------------------------------------------------------------------------------------ --
 
-----------------------------------------------------------------------------------------------------
-----									PUBLIC METHODS											----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  PUBLIC METHODS                                            --	
+-- ------------------------------------------------------------------------------------------ --
 
---- Create a new instance of a TileLayer object.
+------------------------------------------------------------------------------------------------
+-- Create a new instance of a TileLayer object.
+--
 -- @param data The XML data.
 -- @param map The current Map object.
 -- @return The newly created tileLayer.
+------------------------------------------------------------------------------------------------
 function TileLayer:init( data, map )
 
 	if data.compression or data.encoding then
@@ -95,7 +90,9 @@ function TileLayer:init( data, map )
 
 end
 
---- Toggle visibility of the TileLayer.
+------------------------------------------------------------------------------------------------
+-- Toggle visibility of the TileLayer.
+------------------------------------------------------------------------------------------------
 function TileLayer:toggleVisibility()
 	
 	local visual = self:getVisual()
@@ -108,7 +105,9 @@ function TileLayer:toggleVisibility()
 	
 end
 
---- Shows the TileLayer.
+------------------------------------------------------------------------------------------------
+-- Shows the TileLayer.
+------------------------------------------------------------------------------------------------
 function TileLayer:show()
 	
 	local visual = self:getVisual()
@@ -121,7 +120,9 @@ function TileLayer:show()
 
 end
 
---- Hides the TileLayer.
+------------------------------------------------------------------------------------------------
+-- Hides the TileLayer.
+------------------------------------------------------------------------------------------------
 function TileLayer:hide()
 	
 	local visual = self:getVisual()
@@ -134,16 +135,21 @@ function TileLayer:hide()
 	
 end
 
---- Gets the TileLayers visual.
+------------------------------------------------------------------------------------------------
+-- Gets the TileLayers visual.
+------------------------------------------------------------------------------------------------
 function TileLayer:getVisual()
 
 	return self.group
 	
 end
 
---- Gets a list of Tiles on this TileLayer that have a specified property. 
+------------------------------------------------------------------------------------------------
+-- Gets a list of Tiles on this TileLayer that have a specified property. 
+--
 -- @param name The name of the Property to look for.
 -- @return A list of found Tiles. Empty if none found.
+------------------------------------------------------------------------------------------------
 function TileLayer:getTilesWithProperty( name )
 
 	local allTiles = self.tiles
@@ -164,18 +170,24 @@ function TileLayer:getTilesWithProperty( name )
 
 end
 
---- Adds a display object to the layer. 
+------------------------------------------------------------------------------------------------
+-- Adds a display object to the layer. 
+--
 -- @param displayObject The display object to add.
 -- @return The added display object.
+------------------------------------------------------------------------------------------------
 function TileLayer:addObject( displayObject )
 
 	return utils:addObjectToGroup( displayObject, self.group )
 
 end
 
---- Sets the position of the TileLayer.
+------------------------------------------------------------------------------------------------
+-- Sets the position of the TileLayer.
+--
 -- @param x The new X position of the TileLayer.
 -- @param y The new Y position of the TileLayer.
+------------------------------------------------------------------------------------------------
 function TileLayer:setPosition( x, y )
 
 	if self.group then
@@ -187,17 +199,23 @@ function TileLayer:setPosition( x, y )
 	
 end
 
---- Moves the TileLayer.
+------------------------------------------------------------------------------------------------
+-- Moves the TileLayer.
+--
 -- @param x The amount to move the ObjectLayer along the X axis.
 -- @param y The amount to move the ObjectLayer along the Y axis.
+------------------------------------------------------------------------------------------------
 function TileLayer:move( x, y )
 
 	utils:moveObject( self.group, x, y )
 
 end
 
---- Sets the rotation of the TileLayer.
--- @param The new rotation.
+------------------------------------------------------------------------------------------------
+-- Sets the rotation of the TileLayer.
+--
+-- @param angle The new rotation.
+------------------------------------------------------------------------------------------------
 function TileLayer:setRotation( angle )
 
 	for i=1, #self.tiles, 1 do 
@@ -208,8 +226,11 @@ function TileLayer:setRotation( angle )
 
 end
 
---- Rotates the TileLayer.
--- @param The angle to rotate by.
+------------------------------------------------------------------------------------------------
+-- Rotates the TileLayer.
+--
+-- @param angle The angle to rotate by.
+------------------------------------------------------------------------------------------------
 function TileLayer:rotate( angle )
 
 	for i=1, #self.tiles, 1 do 
@@ -220,8 +241,11 @@ function TileLayer:rotate( angle )
 
 end
 
---- Creates the visual representation of the layer.
+------------------------------------------------------------------------------------------------
+-- Creates the visual representation of the layer.
+--
 -- @return The group containing the newly created layer.
+------------------------------------------------------------------------------------------------
 function TileLayer:create()
 
 	if berry:isDebugModeEnabled() then
@@ -262,7 +286,9 @@ function TileLayer:create()
 
 end	
 
---- Builds the physical representation of the TileLayer.
+------------------------------------------------------------------------------------------------
+-- Builds the physical representation of the TileLayer.
+------------------------------------------------------------------------------------------------
 function TileLayer:build()
 
 	if berry:isDebugModeEnabled() then
@@ -283,7 +309,9 @@ function TileLayer:build()
 
 end	
 
---- Completely removes all visual and physical objects associated with the TileLayer.
+------------------------------------------------------------------------------------------------
+-- Completely removes all visual and physical objects associated with the TileLayer.
+------------------------------------------------------------------------------------------------
 function TileLayer:destroy()
 
 	if self.group and self.tiles then

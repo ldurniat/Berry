@@ -1,24 +1,16 @@
-----------------------------------------------------------------------------------------------------
----- Lime - 2D Tile Engine for Corona SDK. (Original author: Graham Ranson)
----- http://OutlawGameTools.com
----- Copyright 2013 Three Ring Ranch
----- The MIT License (MIT) (see LICENSE.txt for details)
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+-- The Map class representing Tiled map.
 --
-----------------------------------------------------------------------------------------------------
----- Berry - 2D Tile Engine for Corona SDK. 
----- Author: Łukasz Durniat
-----------------------------------------------------------------------------------------------------
---
--- Date: Jan-2018
---
--- Version: 3.5
---
--- File name: Map.lua
---
-----------------------------------------------------------------------------------------------------
-----									REQUIRED MODULES										----
-----------------------------------------------------------------------------------------------------
+-- @classmod  Map
+-- @author Łukasz Durniat
+-- @license MIT
+-- @copyright Łukasz Durniat, Jan-2018
+------------------------------------------------------------------------------------------------
+
+-- ------------------------------------------------------------------------------------------ --
+--                                 REQUIRED MODULES	                                          --						
+-- ------------------------------------------------------------------------------------------ --
+
 local class 	  = require 'pl.ldurniat.lib.30log-clean'
 local Properties  = require 'pl.ldurniat.Properties'
 local TileSet     = require 'pl.ldurniat.TileSet'
@@ -27,31 +19,31 @@ local TileLayer   = require 'pl.ldurniat.TileLayer'
 local utils       = require 'pl.ldurniat.utils'
 local json        = require 'json' 
 
-----------------------------------------------------------------------------------------------------
-----									CLASS 													----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  CLASS                                                     --												
+-- ------------------------------------------------------------------------------------------ --
+
 
 local Map = Properties:extend( 'Map' )
 
-----------------------------------------------------------------------------------------------------
-----									LOCALISED VARIABLES										----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  LOCALISED VARIABLES                                       --	
+-- ------------------------------------------------------------------------------------------ --
 
 local abs = math.abs 
 local floor = math.floor
 
-----------------------------------------------------------------------------------------------------
-----									PRIVATE METHODS											----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  PUBLIC METHODS                                            --	
+-- ------------------------------------------------------------------------------------------ --
 
-----------------------------------------------------------------------------------------------------
-----									PUBLIC METHODS											----
-----------------------------------------------------------------------------------------------------
-
---- Create a new instance of a Map object.
+------------------------------------------------------------------------------------------------
+-- Create a new instance of a Map object.
+--
 -- @param filename
 -- @param tileSetsDirectory
 -- @return The newly created Map instance.
+------------------------------------------------------------------------------------------------
 function Map:init( filename, tileSetsDirectory )
 
 	if berry:isDebugModeEnabled() then
@@ -140,9 +132,12 @@ function Map:init( filename, tileSetsDirectory )
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets a TileLayer.
+--
 -- @param indexOrName The index or name of the TileLayer to get.
 -- @return The tile layer at indexOrName.
+------------------------------------------------------------------------------------------------
 function Map:getTileLayer( indexOrName )
 	
 	if type( indexOrName ) == 'number' then
@@ -165,9 +160,12 @@ function Map:getTileLayer( indexOrName )
 	
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets an ObjectLayer.
+--
 -- @param indexOrName The index or name of the ObjectLayer to get.
 -- @return The object layer at indexOrName.
+------------------------------------------------------------------------------------------------
 function Map:getObjectLayer( indexOrName )
 	
 	if type( indexOrName ) == 'number' then
@@ -190,9 +188,12 @@ function Map:getObjectLayer( indexOrName )
 	
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets a list of TileLayers across the map that have a specified property. 
+--
 -- @param name The name of the Property to look for.
 -- @return A list of found TileLayer. Empty if none found.
+------------------------------------------------------------------------------------------------
 function Map:getTileLayersWithProperty( name )
 
 	local tileLayers = {}
@@ -210,9 +211,12 @@ function Map:getTileLayersWithProperty( name )
 	
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets a list of ObjectLayers across the map that have a specified property. 
+--
 -- @param name The name of the Property to look for.
 -- @return A list of found ObjectLayer. Empty if none found.
+------------------------------------------------------------------------------------------------
 function Map:getObjectLayersWithProperty( name )
 
 	local objectLayers = {}
@@ -230,9 +234,12 @@ function Map:getObjectLayersWithProperty( name )
 	
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets a TileSet.
+--
 -- @param indexOrName The index or name of the TileSet to get.
 -- @return The tileset at indexOrName.
+------------------------------------------------------------------------------------------------
 function Map:getTileSet( indexOrName )
 
 	if type( indexOrName ) == 'number' then
@@ -255,11 +262,13 @@ function Map:getTileSet( indexOrName )
 	
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets a property value from a tileset.
---	Originally created by FrankS - http://developer.anscamobile.com/forum/2011/02/19/additional-convenience-functions-navigate-lime-world-tree
+--
 -- @param gid The gid of the tile to check.
 -- @param name The name of the property to look for.
 -- @return The value of the property. Nil if none found.
+------------------------------------------------------------------------------------------------
 function Map:getTilePropertyValueForGID( gid, name )
 
 	local properties = self:getTilePropertiesForGID( gid )
@@ -276,9 +285,12 @@ function Map:getTilePropertyValueForGID( gid, name )
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets the tile properties for a tile 
+--
 -- @param gid The gid of the tile to check
 -- @return the set of properties for that tile or {}
+------------------------------------------------------------------------------------------------
 function Map:getTilePropertiesForGID( gid )
 
 	local tileSet = self:getTileSetFromGID( gid )
@@ -293,10 +305,12 @@ function Map:getTilePropertiesForGID( gid )
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets a Tile image from a GID.
--- Fixed fantastically by FrankS - http://developer.anscamobile.com/forum/2011/02/18/bug-mapgettilesetfromgidgid
+--
 -- @param gid The gid to use.
 -- @return The tileset at the gid location.
+------------------------------------------------------------------------------------------------
 function Map:getTileSetFromGID( gid )
 	
 	for i = 1, #self.tileSets do
@@ -317,7 +331,9 @@ function Map:getTileSetFromGID( gid )
 
 end	
 
+------------------------------------------------------------------------------------------------
 --- Shows the Map.
+------------------------------------------------------------------------------------------------
 function Map:show()
 
 	local visual = self:getVisual()
@@ -330,7 +346,9 @@ function Map:show()
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Hides the Map.
+------------------------------------------------------------------------------------------------
 function Map:hide()
 
 	local visual = self:getVisual()
@@ -343,16 +361,21 @@ function Map:hide()
 	
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets the Maps visual.
+------------------------------------------------------------------------------------------------
 function Map:getVisual()
 
 	return self.world
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Moves the Map.
+--
 -- @param x The amount to move the Map along the X axis.
 -- @param y The amount to move the Map along the Y axis.
+------------------------------------------------------------------------------------------------
 function Map:move( x, y )
 	
 	if self.world then
@@ -363,8 +386,11 @@ function Map:move( x, y )
 	
 end
 
+------------------------------------------------------------------------------------------------
 --- Sets the rotation of the Map.
+--
 -- @param angle The new rotation.
+------------------------------------------------------------------------------------------------
 function Map:setRotation( angle )
 
 	for i=1, #self.tileLayers, 1 do 
@@ -381,8 +407,11 @@ function Map:setRotation( angle )
 	
 end
 
+------------------------------------------------------------------------------------------------
 --- Rotates the Map.
+--
 -- @param angle The angle to rotate by.
+------------------------------------------------------------------------------------------------
 function Map:rotate( angle )
 
 	for i=1, #self.tileLayers, 1 do 
@@ -399,9 +428,12 @@ function Map:rotate( angle )
 	
 end
 
+------------------------------------------------------------------------------------------------
 --- Sets the scale of the Map.
+--
 -- @param xScale The new scale of the map by in the X direction.
 -- @param yScale The new scale of the map by in the Y direction. Leave nil to set X and Y as the first paramater.
+------------------------------------------------------------------------------------------------
 function Map:setScale( xScale, yScale )
 
 	if self.world then
@@ -413,9 +445,12 @@ function Map:setScale( xScale, yScale )
 	
 end
 
+------------------------------------------------------------------------------------------------
 --- Scales the Map.
+--
 -- @param xScale The amount to scale the map by in the X direction.
 -- @param yScale The amount to scale the map by in the Y direction. Leave nil to scale X and Y as the first paramater.
+------------------------------------------------------------------------------------------------
 function Map:scale( xScale, yScale )
 
 	if self.world then
@@ -427,9 +462,12 @@ function Map:scale( xScale, yScale )
 	
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets the scale of the Map.
+--
 -- @return The X scale of the Map.
 -- @return The Y scale of the Map.
+------------------------------------------------------------------------------------------------
 function Map:getScale()
 
 	if self.world then
@@ -440,9 +478,12 @@ function Map:getScale()
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Sets the position of the Map.
+--
 -- @param x The new X position of the Map.
 -- @param y The new Y position of the Map.
+------------------------------------------------------------------------------------------------
 function Map:setPosition( x, y )
 
 	if self.world then
@@ -454,9 +495,12 @@ function Map:setPosition( x, y )
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets the position of the Map.
+--
 -- @return The X position of the Map.
 -- @return The Y position of the Map.
+------------------------------------------------------------------------------------------------
 function Map:getPosition()
 
 	if self.world then
@@ -467,9 +511,12 @@ function Map:getPosition()
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets a list of Tiles across all TileLayers that have a specified property. 
+--
 -- @param name The name of the Property to look for.
 -- @return A list of found Tiles. Empty if none found.
+------------------------------------------------------------------------------------------------
 function Map:getTilesWithProperty( name )
 
 	local tiles = {}
@@ -491,9 +538,12 @@ function Map:getTilesWithProperty( name )
 	return tiles
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets a list of Objects across all ObjectLayers that have a specified property. 
+--
 -- @param name The name of the Property to look for.
 -- @return A list of found Objects. Empty if none found.
+------------------------------------------------------------------------------------------------
 function Map:getObjectsWithProperty( name )
 
 	local objects = {}
@@ -515,9 +565,12 @@ function Map:getObjectsWithProperty( name )
 	return objects
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets a list of Objects across all ObjectLayers that have a specified name. 
+--
 -- @param name The name of the Objects to look for.
 -- @return A list of found Objects. Empty if none found.
+------------------------------------------------------------------------------------------------
 function Map:getObjectsWithName( name )
 
 	local objects = {}
@@ -540,9 +593,12 @@ function Map:getObjectsWithName( name )
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets a first Object across all ObjectLayers that have a specified name. 
+--
 -- @param name The name of the Object to look for.
 -- @return A found Object. False if none found.
+------------------------------------------------------------------------------------------------
 function Map:getObjectWithName( name )
 	
 	for i = 1, #self.objectLayers, 1 do
@@ -560,9 +616,12 @@ function Map:getObjectWithName( name )
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets a list of Objects across all ObjectLayers that have a specified type. 
+--
 -- @param objectType The type of the Objects to look for.
 -- @return A list of found Objects. Empty if none found.
+------------------------------------------------------------------------------------------------
 function Map:getObjectsWithType( objectType )
 
 	local objects = {}
@@ -585,18 +644,24 @@ function Map:getObjectsWithType( objectType )
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Adds a displayObject to the world. 
+--
 -- @param displayObject The displayObject to add.
 -- @return The added displayObject.
+------------------------------------------------------------------------------------------------
 function Map:addObject( displayObject )
 
 	return utils:addObjectToGroup( displayObject, self.world )
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Adds an Object listener to the Map.
+--
 -- @param objectType The type of Object to listen for.
 -- @param listener The listener function.
+------------------------------------------------------------------------------------------------
 function Map:addObjectListener( objectType, listener )
 	
 	if objectType and listener then
@@ -613,17 +678,23 @@ function Map:addObjectListener( objectType, listener )
 	
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets a table containing all the object listeners that have been added to the Map.
+--
 -- @return The object listeners.
+------------------------------------------------------------------------------------------------
 function Map:getObjectListeners()
 
 	return self.objectListeners
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Adds a Property listener to the Map.
+--
 -- @param propertyName The name of the Property to listen for.
 -- @param listener The listener function.
+------------------------------------------------------------------------------------------------
 function Map:addPropertyListener( propertyName, listener )
 	if propertyName and listener then
 
@@ -637,18 +708,24 @@ function Map:addPropertyListener( propertyName, listener )
 	end		
 end
 
+------------------------------------------------------------------------------------------------
 --- Gets a table containing all the property listeners that have been added to the Map.
+--
 -- @return The property listeners.
+------------------------------------------------------------------------------------------------
 function Map:getPropertyListeners()
 
 	return self.propertyListeners
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Fires an already added property listener.
+--
 -- @param property The property object that was hit.
 -- @param propertyType The type of the property object. 'map', 'tileLayer', 'objectLayer', 'tile', 'object'.
 -- @param object The object that has the property.
+------------------------------------------------------------------------------------------------
 function Map:firePropertyListener( property, propertyType, object )
 	
 	local listeners = self.propertyListeners[property.name] or {}
@@ -661,8 +738,11 @@ function Map:firePropertyListener( property, propertyType, object )
 
 end
 
+------------------------------------------------------------------------------------------------
 --- Fires an already added object listener
+--
 -- @param object The object that the listener was waiting for.
+------------------------------------------------------------------------------------------------
 function Map:fireObjectListener( object )
 
 	local listeners = self.objectListeners[object.type] or {}
@@ -675,9 +755,11 @@ function Map:fireObjectListener( object )
 
 end	
 
+------------------------------------------------------------------------------------------------
 --- Sort the objects on layers.
--- https://github.com/ponywolf
+------------------------------------------------------------------------------------------------
 function Map:sort()
+	-- Code borrowed from https://github.com/ponywolf
 
 	local function rightToLeft( a, b )
 
@@ -723,14 +805,16 @@ function Map:sort()
 
 end	
 
---- Extend Objects using modules with custom code.
--- @param The list of types of objects to extend
--- https://github.com/ponywolf
+------------------------------------------------------------------------------------------------
+--- Extend objects using modules with custom code.
+--
+-- @param table The list of types of objects to extend
+------------------------------------------------------------------------------------------------
 function Map:extendObjects( ... )
+	-- Code borrowed from https://github.com/ponywolf
 
     local objectTypes = arg or {}
 
-    -- each custom object above has its own ponywolf.plugin module
     for i = 1, #objectTypes do 
 
       -- load each module based on type
@@ -755,8 +839,11 @@ function Map:extendObjects( ... )
 
 end    
 
+------------------------------------------------------------------------------------------------
 --- Creates the visual representation of the map.
+--
 -- @return The newly created world a visual representation of the map.
+------------------------------------------------------------------------------------------------
 function Map:create()
 
 	self.world = display.newGroup()
@@ -787,7 +874,9 @@ function Map:create()
 
 end	
 
+------------------------------------------------------------------------------------------------
 --- Builds the physical representation of the Map.
+------------------------------------------------------------------------------------------------
 function Map:build()
 	local physics = require( 'physics' )
 
@@ -823,7 +912,9 @@ function Map:build()
 
 end	
 
+------------------------------------------------------------------------------------------------
 --- Completely removes all visual and physical objects associated with the Map.
+------------------------------------------------------------------------------------------------
 function Map:destroy()
 
 	if self.world then

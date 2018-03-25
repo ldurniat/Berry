@@ -1,0 +1,563 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Berry documenatation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Berry</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Methods">Methods</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Map.html">Map</a></li>
+  <li><a href="../classes/Object.html">Object</a></li>
+  <li><strong>ObjectLayer</strong></li>
+  <li><a href="../classes/Properties.html">Properties</a></li>
+  <li><a href="../classes/Property.html">Property</a></li>
+  <li><a href="../classes/Tile.html">Tile</a></li>
+  <li><a href="../classes/TileLayer.html">TileLayer</a></li>
+  <li><a href="../classes/TileSet.html">TileSet</a></li>
+  <li><a href="../classes/Berry.html">Berry</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/utils.html">utils</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>ObjectLayer</code></h1>
+<p>The ObjectLayer class representing Tiled object layer.</p>
+<p>
+
+</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: Łukasz Durniat, Jan-2018</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: Łukasz Durniat</li>
+    </ul>
+
+
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:init">ObjectLayer:init (data, map)</a></td>
+	<td class="summary">Create a new instance of an ObjectLayer object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:getObject">ObjectLayer:getObject (name, objectType)</a></td>
+	<td class="summary">Get an object by its name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:getObjects">ObjectLayer:getObjects (name, objectType)</a></td>
+	<td class="summary">Get a list of objects by their name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:getObjectsWithProperty">ObjectLayer:getObjectsWithProperty (name)</a></td>
+	<td class="summary">Gets a list of Objects on this ObjectLayer that have a specified property.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:getObjectsWithName">ObjectLayer:getObjectsWithName (name)</a></td>
+	<td class="summary">Gets a list of Objects on this ObjectLayer that have a certain name.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:getObjectsWithType">ObjectLayer:getObjectsWithType (objectType)</a></td>
+	<td class="summary">Gets a list of Objects on this ObjectLayer that have a certain type.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:toggleVisibility">ObjectLayer:toggleVisibility ()</a></td>
+	<td class="summary">Toggle visibility of the ObjectLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:show">ObjectLayer:show ()</a></td>
+	<td class="summary">Shows the ObjectLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:hide">ObjectLayer:hide ()</a></td>
+	<td class="summary">Hides the ObjectLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:getVisual">ObjectLayer:getVisual ()</a></td>
+	<td class="summary">Gets the ObjectLayers visual.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:move">ObjectLayer:move (x, y)</a></td>
+	<td class="summary">Moves the ObjectLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:setPosition">ObjectLayer:setPosition (x, y)</a></td>
+	<td class="summary">Sets the position of the ObjectLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:setRotation">ObjectLayer:setRotation (angle)</a></td>
+	<td class="summary">Sets the rotation of the ObjectLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:rotate">ObjectLayer:rotate (angle)</a></td>
+	<td class="summary">Rotates the ObjectLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:addObject">ObjectLayer:addObject (displayObject)</a></td>
+	<td class="summary">Adds a displayObject to the layer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:destroyObject">ObjectLayer:destroyObject (object)</a></td>
+	<td class="summary">Destroy an object by its reference.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:create">ObjectLayer:create ()</a></td>
+	<td class="summary">Creates the visual debug representation of the Object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:build">ObjectLayer:build ()</a></td>
+	<td class="summary">Builds the physical representation of the ObjectLayer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ObjectLayer:destroy">ObjectLayer:destroy ()</a></td>
+	<td class="summary">Completely removes all visual and physical objects associated with the ObjectLayer.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "ObjectLayer:init"></a>
+    <strong>ObjectLayer:init (data, map)</strong>
+    </dt>
+    <dd>
+    Create a new instance of an ObjectLayer object.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+         The JSON data.
+        </li>
+        <li><span class="parameter">map</span>
+         The current Map object.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created object layer.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:getObject"></a>
+    <strong>ObjectLayer:getObject (name, objectType)</strong>
+    </dt>
+    <dd>
+    Get an object by its name.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+         The name of the Object to get.
+        </li>
+        <li><span class="parameter">objectType</span>
+         The type of the Object to get. Optional.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The found Object. nil if none found.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:getObjects"></a>
+    <strong>ObjectLayer:getObjects (name, objectType)</strong>
+    </dt>
+    <dd>
+    Get a list of objects by their name.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+         The name of the Objects to get.
+        </li>
+        <li><span class="parameter">objectType</span>
+         The type of the Objects to get. Optional.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        A list of the found Objects. Empty if none found.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:getObjectsWithProperty"></a>
+    <strong>ObjectLayer:getObjectsWithProperty (name)</strong>
+    </dt>
+    <dd>
+    Gets a list of Objects on this ObjectLayer that have a specified property.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+         The name of the Property to look for.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        A list of found Objects. Empty if none found.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:getObjectsWithName"></a>
+    <strong>ObjectLayer:getObjectsWithName (name)</strong>
+    </dt>
+    <dd>
+    Gets a list of Objects on this ObjectLayer that have a certain name.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+         The name of the Object to look for.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        A list of found Objects. Empty if none found.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:getObjectsWithType"></a>
+    <strong>ObjectLayer:getObjectsWithType (objectType)</strong>
+    </dt>
+    <dd>
+    Gets a list of Objects on this ObjectLayer that have a certain type.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">objectType</span>
+
+<ul>
+    <li>The type of the Object to look for.</li>
+</ul>
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        A list of found Objects. Empty if none found.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:toggleVisibility"></a>
+    <strong>ObjectLayer:toggleVisibility ()</strong>
+    </dt>
+    <dd>
+    Toggle visibility of the ObjectLayer.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:show"></a>
+    <strong>ObjectLayer:show ()</strong>
+    </dt>
+    <dd>
+    Shows the ObjectLayer.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:hide"></a>
+    <strong>ObjectLayer:hide ()</strong>
+    </dt>
+    <dd>
+    Hides the ObjectLayer.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:getVisual"></a>
+    <strong>ObjectLayer:getVisual ()</strong>
+    </dt>
+    <dd>
+    Gets the ObjectLayers visual.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:move"></a>
+    <strong>ObjectLayer:move (x, y)</strong>
+    </dt>
+    <dd>
+    Moves the ObjectLayer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+         The amount to move the ObjectLayer along the X axis.
+        </li>
+        <li><span class="parameter">y</span>
+         The amount to move the ObjectLayer along the Y axis.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:setPosition"></a>
+    <strong>ObjectLayer:setPosition (x, y)</strong>
+    </dt>
+    <dd>
+    Sets the position of the ObjectLayer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+         The new X position of the ObjectLayer.
+        </li>
+        <li><span class="parameter">y</span>
+         The new Y position of the ObjectLayer.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:setRotation"></a>
+    <strong>ObjectLayer:setRotation (angle)</strong>
+    </dt>
+    <dd>
+    Sets the rotation of the ObjectLayer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">angle</span>
+         The new rotation.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:rotate"></a>
+    <strong>ObjectLayer:rotate (angle)</strong>
+    </dt>
+    <dd>
+    Rotates the ObjectLayer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">angle</span>
+         The angle to rotate by.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:addObject"></a>
+    <strong>ObjectLayer:addObject (displayObject)</strong>
+    </dt>
+    <dd>
+    Adds a displayObject to the layer.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">displayObject</span>
+         The displayObject to add.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The added displayObject.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:destroyObject"></a>
+    <strong>ObjectLayer:destroyObject (object)</strong>
+    </dt>
+    <dd>
+    Destroy an object by its reference.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">object</span>
+         The Object reference of the Object to destroy.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:create"></a>
+    <strong>ObjectLayer:create ()</strong>
+    </dt>
+    <dd>
+    Creates the visual debug representation of the Object.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:build"></a>
+    <strong>ObjectLayer:build ()</strong>
+    </dt>
+    <dd>
+    Builds the physical representation of the ObjectLayer.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ObjectLayer:destroy"></a>
+    <strong>ObjectLayer:destroy ()</strong>
+    </dt>
+    <dd>
+    Completely removes all visual and physical objects associated with the ObjectLayer.
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-03-25 11:32:34 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

@@ -1,51 +1,45 @@
-----------------------------------------------------------------------------------------------------
----- Lime - 2D Tile Engine for Corona SDK. (Original author: Graham Ranson)
----- http://OutlawGameTools.com
----- Copyright 2013 Three Ring Ranch
----- The MIT License (MIT) (see LICENSE.txt for details)
-----------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------
+-- The ObjectLayer class representing Tiled object layer.
 --
-----------------------------------------------------------------------------------------------------
----- Berry - 2D Tile Engine for Corona SDK. 
----- Author: Łukasz Durniat
-----------------------------------------------------------------------------------------------------
---
--- Date: Jan-2018
---
--- Version: 3.5
---
--- File name: ObjectLayer.lua
---
-----------------------------------------------------------------------------------------------------
-----									REQUIRED MODULES										----
-----------------------------------------------------------------------------------------------------
+-- @classmod ObjectLayer
+-- @author Łukasz Durniat
+-- @license MIT
+-- @copyright Łukasz Durniat, Jan-2018
+------------------------------------------------------------------------------------------------
+
+-- ------------------------------------------------------------------------------------------ --
+--                                 REQUIRED MODULES	                                          --						
+-- ------------------------------------------------------------------------------------------ --
+
 local class 	 = require 'pl.ldurniat.lib.30log-clean'
 local Properties = require 'pl.ldurniat.Properties'
 local Object     = require 'pl.ldurniat.Object'
 local utils      = require 'pl.ldurniat.utils'
 
-----------------------------------------------------------------------------------------------------
-----									CLASS 													----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  CLASS                                                     --												
+-- ------------------------------------------------------------------------------------------ --
 
 local ObjectLayer = Properties:extend( 'ObjectLayer' )
 
-----------------------------------------------------------------------------------------------------
-----									LOCALISED VARIABLES										----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  LOCALISED VARIABLES                                       --	
+-- ------------------------------------------------------------------------------------------ --
 
-----------------------------------------------------------------------------------------------------
-----									PRIVATE METHODS											----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--									PRIVATE METHODS		   									  --
+-- ------------------------------------------------------------------------------------------ --
 
-----------------------------------------------------------------------------------------------------
-----									PUBLIC METHODS											----
-----------------------------------------------------------------------------------------------------
+-- ------------------------------------------------------------------------------------------ --
+--                                  PUBLIC METHODS                                            --	
+-- ------------------------------------------------------------------------------------------ --
 
---- Create a new instance of an ObjectLayer object.
+------------------------------------------------------------------------------------------------
+-- Create a new instance of an ObjectLayer object.
 -- @param data The JSON data.
 -- @param map The current Map object.
 -- @return The newly created object layer.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:init( data, map )
 
 	-- Make sure we have a properties table
@@ -79,10 +73,12 @@ function ObjectLayer:init( data, map )
 
 end
 
---- Get an object by its name. 
+------------------------------------------------------------------------------------------------
+-- Get an object by its name. 
 -- @param name The name of the Object to get.
 -- @param objectType The type of the Object to get. Optional.
 -- @return The found Object. nil if none found.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:getObject( name, objectType )
 
 	for i=1, #self.objects, 1 do
@@ -118,10 +114,12 @@ function ObjectLayer:getObject( name, objectType )
 	return nil
 end
 
---- Get a list of objects by their name. 
+------------------------------------------------------------------------------------------------
+-- Get a list of objects by their name. 
 -- @param name The name of the Objects to get.
 -- @param objectType The type of the Objects to get. Optional.
 -- @return A list of the found Objects. Empty if none found.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:getObjects( name, objectType )
 	
 	local objects = {}
@@ -158,10 +156,11 @@ function ObjectLayer:getObjects( name, objectType )
 	return objects
 end
 
-
---- Gets a list of Objects on this ObjectLayer that have a specified property. 
+------------------------------------------------------------------------------------------------
+-- Gets a list of Objects on this ObjectLayer that have a specified property. 
 -- @param name The name of the Property to look for.
 -- @return A list of found Objects. Empty if none found.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:getObjectsWithProperty( name )
 
 	local objects = {}
@@ -179,9 +178,11 @@ function ObjectLayer:getObjectsWithProperty( name )
 	return objects
 end
 
---- Gets a list of Objects on this ObjectLayer that have a certain name. 
+------------------------------------------------------------------------------------------------
+-- Gets a list of Objects on this ObjectLayer that have a certain name. 
 -- @param name The name of the Object to look for.
 -- @return A list of found Objects. Empty if none found.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:getObjectsWithName( name )
 
 	local objects = {}
@@ -199,9 +200,11 @@ function ObjectLayer:getObjectsWithName( name )
 	return objects
 end
 
---- Gets a list of Objects on this ObjectLayer that have a certain type. 
+------------------------------------------------------------------------------------------------
+-- Gets a list of Objects on this ObjectLayer that have a certain type. 
 -- @param objectType - The type of the Object to look for.
 -- @return A list of found Objects. Empty if none found.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:getObjectsWithType( objectType )
 
 	local objects = {}
@@ -220,7 +223,9 @@ function ObjectLayer:getObjectsWithType( objectType )
 
 end
 
---- Toggle visibility of the ObjectLayer.
+------------------------------------------------------------------------------------------------
+-- Toggle visibility of the ObjectLayer.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:toggleVisibility()
 	
 	local visual = self:getVisual()
@@ -233,7 +238,9 @@ function ObjectLayer:toggleVisibility()
 	
 end
 
---- Shows the ObjectLayer.
+------------------------------------------------------------------------------------------------
+-- Shows the ObjectLayer.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:show()
 	
 	local visual = self:getVisual()
@@ -246,7 +253,9 @@ function ObjectLayer:show()
 	
 end
 
---- Hides the ObjectLayer.
+------------------------------------------------------------------------------------------------
+-- Hides the ObjectLayer.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:hide()
 	
 	local visual = self:getVisual()
@@ -259,25 +268,31 @@ function ObjectLayer:hide()
 	
 end
 
---- Gets the ObjectLayers visual.
+------------------------------------------------------------------------------------------------
+-- Gets the ObjectLayers visual.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:getVisual()
 
 	return self.group
 
 end
 
---- Moves the ObjectLayer.
+------------------------------------------------------------------------------------------------
+-- Moves the ObjectLayer.
 -- @param x The amount to move the ObjectLayer along the X axis.
 -- @param y The amount to move the ObjectLayer along the Y axis.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:move( x, y )
 
 	utils:moveObject( self.group, x, y )
 
 end
 
---- Sets the position of the ObjectLayer.
+------------------------------------------------------------------------------------------------
+-- Sets the position of the ObjectLayer.
 -- @param x The new X position of the ObjectLayer.
 -- @param y The new Y position of the ObjectLayer.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:setPosition( x, y )
 
 	if self.group then
@@ -289,8 +304,10 @@ function ObjectLayer:setPosition( x, y )
 	
 end
 
---- Sets the rotation of the ObjectLayer.
--- @param The new rotation.
+------------------------------------------------------------------------------------------------
+-- Sets the rotation of the ObjectLayer.
+-- @param angle The new rotation.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:setRotation( angle )
 
 	for i=1, #self.objects, 1 do 
@@ -301,8 +318,10 @@ function ObjectLayer:setRotation( angle )
 
 end
 
---- Rotates the ObjectLayer.
--- @param The angle to rotate by.
+------------------------------------------------------------------------------------------------
+-- Rotates the ObjectLayer.
+-- @param angle The angle to rotate by.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:rotate( angle )
 
 	for i=1, #self.objects, 1 do 
@@ -313,17 +332,21 @@ function ObjectLayer:rotate( angle )
 
 end
 
---- Adds a displayObject to the layer. 
+------------------------------------------------------------------------------------------------
+-- Adds a displayObject to the layer. 
 -- @param displayObject The displayObject to add.
 -- @return The added displayObject.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:addObject( displayObject )
 
 	return utils:addObjectToGroup( displayObject, self.group )
 
 end
 
---- Destroy an object by its reference.
+------------------------------------------------------------------------------------------------
+-- Destroy an object by its reference.
 -- @param object The Object reference of the Object to destroy.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:destroyObject( object )
 	
 	for i=1, #self.objects, 1 do
@@ -340,7 +363,9 @@ function ObjectLayer:destroyObject( object )
 
 end
 
---- Creates the visual debug representation of the Object.
+------------------------------------------------------------------------------------------------
+-- Creates the visual debug representation of the Object.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:create()
 
 	if berry:isDebugModeEnabled() then
@@ -384,7 +409,9 @@ function ObjectLayer:create()
 
 end
 
---- Builds the physical representation of the ObjectLayer.
+------------------------------------------------------------------------------------------------
+-- Builds the physical representation of the ObjectLayer.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:build()
 
 	if berry:isDebugModeEnabled() then
@@ -405,7 +432,9 @@ function ObjectLayer:build()
 
 end	
 
---- Completely removes all visual and physical objects associated with the ObjectLayer.
+------------------------------------------------------------------------------------------------
+-- Completely removes all visual and physical objects associated with the ObjectLayer.
+------------------------------------------------------------------------------------------------
 function ObjectLayer:destroy()
 
 	if self.group and self.objects then

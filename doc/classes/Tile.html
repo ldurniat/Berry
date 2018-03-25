@@ -1,0 +1,342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Berry documenatation</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>Berry</h1>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Methods">Methods</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="nowrap">
+  <li><a href="../classes/Map.html">Map</a></li>
+  <li><a href="../classes/Object.html">Object</a></li>
+  <li><a href="../classes/ObjectLayer.html">ObjectLayer</a></li>
+  <li><a href="../classes/Properties.html">Properties</a></li>
+  <li><a href="../classes/Property.html">Property</a></li>
+  <li><strong>Tile</strong></li>
+  <li><a href="../classes/TileLayer.html">TileLayer</a></li>
+  <li><a href="../classes/TileSet.html">TileSet</a></li>
+  <li><a href="../classes/Berry.html">Berry</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><a href="../modules/utils.html">utils</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>Tile</code></h1>
+<p>The Tile class representing single tile image.</p>
+<p>
+
+</p>
+    <h3>Info:</h3>
+    <ul>
+        <li><strong>Copyright</strong>: Łukasz Durniat, Jan-2018</li>
+        <li><strong>License</strong>: MIT</li>
+        <li><strong>Author</strong>: Łukasz Durniat</li>
+    </ul>
+
+
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Tile:init">Tile:init (data, map, tileLayer)</a></td>
+	<td class="summary">Create a new instance of a Tile object.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Tile:setRotation">Tile:setRotation (angle)</a></td>
+	<td class="summary">Sets the rotation of the Tile.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Tile:rotate">Tile:rotate (angle)</a></td>
+	<td class="summary">Rotates the Tile.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Tile:getVisual">Tile:getVisual ()</a></td>
+	<td class="summary">Gets the Tile visual.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Tile:getRotation">Tile:getRotation ()</a></td>
+	<td class="summary">Gets the rotation of the Tile.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Tile:show">Tile:show ()</a></td>
+	<td class="summary">Shows the Tile.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Tile:hide">Tile:hide ()</a></td>
+	<td class="summary">Hides the Tile.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Tile:move">Tile:move (x, y)</a></td>
+	<td class="summary">Moves the Tile.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Tile:create">Tile:create (index)</a></td>
+	<td class="summary">Creates the visual representation of the Tile.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Tile:build">Tile:build ()</a></td>
+	<td class="summary">Builds the physical representation of the Tile.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Tile:destroy">Tile:destroy ()</a></td>
+	<td class="summary">Completely removes all visual and physical objects associated with the Tile if not nil.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Methods"></a>Methods</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Tile:init"></a>
+    <strong>Tile:init (data, map, tileLayer)</strong>
+    </dt>
+    <dd>
+    Create a new instance of a Tile object.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+         The JSON data.
+        </li>
+        <li><span class="parameter">map</span>
+         The current Map object.
+        </li>
+        <li><span class="parameter">tileLayer</span>
+         The TileLayer the the Tile resides on.
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The newly created tile.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Tile:setRotation"></a>
+    <strong>Tile:setRotation (angle)</strong>
+    </dt>
+    <dd>
+    Sets the rotation of the Tile.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">angle</span>
+         The new rotation.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Tile:rotate"></a>
+    <strong>Tile:rotate (angle)</strong>
+    </dt>
+    <dd>
+    Rotates the Tile.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">angle</span>
+         The angle to rotate by
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Tile:getVisual"></a>
+    <strong>Tile:getVisual ()</strong>
+    </dt>
+    <dd>
+    Gets the Tile visual.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Tile:getRotation"></a>
+    <strong>Tile:getRotation ()</strong>
+    </dt>
+    <dd>
+    Gets the rotation of the Tile.
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The rotation of the tile.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Tile:show"></a>
+    <strong>Tile:show ()</strong>
+    </dt>
+    <dd>
+    Shows the Tile.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Tile:hide"></a>
+    <strong>Tile:hide ()</strong>
+    </dt>
+    <dd>
+    Hides the Tile.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Tile:move"></a>
+    <strong>Tile:move (x, y)</strong>
+    </dt>
+    <dd>
+    Moves the Tile.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+         The amount to move the Tile along the X axis.
+        </li>
+        <li><span class="parameter">y</span>
+         The amount to move the Tile along the Y axis.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Tile:create"></a>
+    <strong>Tile:create (index)</strong>
+    </dt>
+    <dd>
+    Creates the visual representation of the Tile.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+         The Tile number. Not the gid.
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Tile:build"></a>
+    <strong>Tile:build ()</strong>
+    </dt>
+    <dd>
+    Builds the physical representation of the Tile.
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Tile:destroy"></a>
+    <strong>Tile:destroy ()</strong>
+    </dt>
+    <dd>
+    Completely removes all visual and physical objects associated with the Tile if not nil.
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2018-03-25 11:32:34 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

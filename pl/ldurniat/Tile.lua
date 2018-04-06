@@ -294,7 +294,7 @@ function Tile:build()
 			-- Use polygon or rectangle as collision shape
 			if object.polygon or ( not object.ellipse and not object.polyline ) then
 				
-				local vertices = object.polygon or { 
+				local vertices = utils:deepCopy( object.polygon ) or { 
 					{ x=0, y=0 },
 					{ x=object.width, y=0 },
 					{ x=object.width, y=object.height },

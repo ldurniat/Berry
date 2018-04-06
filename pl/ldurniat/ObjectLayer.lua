@@ -421,12 +421,8 @@ function ObjectLayer:build()
 	end
 	
 	for i=1, #self.objects, 1 do
-		
-		if self.objects[i]:hasProperty( 'hasBody' ) then
 
 			self.objects[i]:build()
-
-		end
 		
 	end
 

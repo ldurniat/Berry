@@ -419,7 +419,7 @@ function Object:build()
 	local visual = self:getVisual()
 	local body = visual
 	
-	if self.hasBody and visual then
+	if visual and visual.hasBody then
 
 		if self.gid and self.gid > 0 then
 
@@ -497,6 +497,7 @@ function Object:build()
 
 		physics.addBody( body, visual ) 
 
+		utils:applyPhysicalParametersToBody( body, self.objectLayer )
 		utils:applyPhysicalParametersToBody( body, self )
 
 	end	

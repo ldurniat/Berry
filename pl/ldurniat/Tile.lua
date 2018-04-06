@@ -252,7 +252,7 @@ function Tile:build()
 	local visual = self:getVisual()
 	local body = visual
 	
-	if self.hasBody and visual then
+	if visual and visual.hasBody then
 		local tileid = self.gid - self.tileSet.firstgid + 1
 		local object = self.tileSet:getCollisionShapeForTile( tileid ) 
 		local mSin = math.sin
@@ -325,6 +325,7 @@ function Tile:build()
 
 		physics.addBody( body, visual ) 
 
+		utils:applyPhysicalParametersToBody( body, self.tileLayer )
 		utils:applyPhysicalParametersToBody( body, self )
 
 	end	

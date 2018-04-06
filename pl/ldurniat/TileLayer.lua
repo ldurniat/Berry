@@ -298,12 +298,8 @@ function TileLayer:build()
 	end
 	
 	for i=1, #self.tiles, 1 do
-		
-		if self.tiles[i]:hasProperty( 'hasBody' ) then
 			
-			self.tiles[i]:build()
-
-		end
+		self.tiles[i]:build()
 		
 	end
 

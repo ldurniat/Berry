@@ -309,26 +309,27 @@ function Object:create ()
 	elseif data.polygon or data.polyline then 
 		local points = data.polygon or data.polyline
 
+		local xMax, xMin, yMax, yMin = -4294967296, 4294967296, -4294967296, 4294967296 -- 32 ^ 2 a large number 
+
+		for p = 1, #points do
+
+			if points[p].x < xMin then xMin = points[p].x end  
+			if points[p].y < yMin then yMin = points[p].y end 
+			if points[p].x > xMax then xMax = points[p].x end   
+			if points[p].y > yMax then yMax = points[p].y end  
+
+    	end
+
+    	local centerX, centerY = ( xMax + xMin ) * 0.5, ( yMax + yMin ) * 0.5
+
 	    if data.polygon then 
-			local xMax, xMin, yMax, yMin = -4294967296, 4294967296, -4294967296, 4294967296 -- 32 ^ 2 a large number 
 
-			for p = 1, #points do
-
-				if points[p].x < xMin then xMin = points[p].x end  
-				if points[p].y < yMin then yMin = points[p].y end 
-				if points[p].x > xMax then xMax = points[p].x end   
-				if points[p].y > yMax then yMax = points[p].y end  
-
-	    	end
-
-			local centerX, centerY = ( xMax + xMin ) * 0.5, ( yMax + yMin ) * 0.5
 			self.sprite = display.newPolygon( group, data.x, data.y, utils:unpackPoints( points ) )
 			self.sprite:translate( centerX, centerY )
 
 	    else
 
 			self.sprite = display.newLine( group, points[1].x, points[1].y, points[2].x, points[2].y ) 
-			local originX, originY = points[1].x, points[1].y
 
 			for p = 3, #points do
 
@@ -336,8 +337,9 @@ function Object:create ()
 
 			end  
 
+			self.sprite.anchorSegments = true
 			self.sprite.x, self.sprite.y = data.x, data.y
-			self.sprite:translate( originX, originY )
+			self.sprite:translate( centerX, centerY )
 
 	    end
 

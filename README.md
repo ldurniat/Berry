@@ -3,7 +3,9 @@
 
 ![Screenshot of berry in action](https://i.imgur.com/DbHD6EL.png)
 
-**berry** supports only part of functionality offered to user by Tiled. This includes tile and object layers, tilesets and collections of images. Neverthless it can be extended by using custom properties and executing custom code to gain more flexibility and control.  
+**berry** supports only part of functionality offered to user by Tiled Map Editor. This includes tile and object layers, tilesets and collections of images. Neverthless it can be extended by using custom properties and executing custom code to gain more flexibility and control.  
+
+Tested with Tiled v1.2.0
 
 ### List of features: 
 
@@ -12,18 +14,18 @@
 - [x] Supports object layers and tile layers
 - [x] Supports collections of images and tileset images
 - [x] Supports object x/y flipping and re-centering of anchorX/anchorY for Corona
-- [x] Supports object animations using Corona sequences
+- [x] Supports object animations using Tile Animation Editor
 - [x] Rectangle shape with fillColor and strokeColor support
 - [x] Supports custom collision shapes. Only rectangles and polygons for now
-- [x] Supports Text object
+- [x] Supports Text object via plugins
 
 ### Quick Start Guide
 
 ```lua
-berry = require( 'pl.ldurniat.berry' )
-local map = berry.loadMap( filename, tileSetsDirectory )
-local visual = berry.createVisual( map )
-berry.buildPhysical( map )
+local berry = require( 'pl.ldurniat.berry' )
+local map   = berry.new( filename, tilesetsDirectory )
+-- If you use composer you will need it as well
+scene.view:insert( map ) 
 ```
 
 ### filename
@@ -32,37 +34,31 @@ The filename specify path to file with map.
 
 ![Saved Map](https://i.imgur.com/pCvRX2q.png)
 
-#### tileSetsDirectory
+#### tilesetsDirectory
 
 Most of the time you will store you maps and images/tilesets in a directory. The tileSetsDirectory parameter overides where **berry** looks for images.
 
 ```lua
-local map = berry.loadMap( 'scene/game/map/sandbox.json', 'scene/game/map' ) -- look for images in /scene/game/map/
+local map = berry.new( 'scene/game/map/level1.json', 'scene/game/map' ) -- look for images in /scene/game/map/
 ```
 
 #### map
 
-The map object exposes methods to manipulate adn find layers, objects and tiles. See [documentation](https://github.com/ldurniat/Berry/tree/master/doc) for more information.
+The map object is [display group](https://docs.coronalabs.com/api/library/display/newGroup.html). All objects are inserted into this group. The map object exposes methods to manipulate and find layers, objects and tiles.
 
 *map.designedWidth* and *map.designedHeight* are the width and height of your map as specified in tiled's new map options. The map will be centered on the screen by default.
 
 ![Character in game](https://i.imgur.com/b6CpA65.png)
 
-### visual
-
-**berry** returns a group object that contains all the layers, objects and tiles for the exported map. 
-
 ### Extensions
 
-#### map:extendObjects( types )
+#### map:extend( types )
 
-The *extendObjects()* function attaches a lua code module to a *image object*. You can use this to build custom classes in your game.
+The *extend()* function attaches a lua code module to a *image object*. You can use this to build custom classes in your game.
 
 ### Custom Properties
 
 The most exciting part of working in Tiled & Corona is the idea of custom properites. You can select any *image object* on any *object layer* in Tiled and add any number of custom properties. **berry** will apply those properties to the image object as it loads. This allows you to put physics properties, custom draw modes, user data, etc. on an in-game item via the editor.
-
-Note: Tile properties will not be inherited by objects so you have to add it to objects itself with the exception of animation properties. 
 
 ![Custom Properties](https://i.imgur.com/bY9vfxC.png)
 
@@ -74,17 +70,9 @@ One special custom property is *hasBody*. This triggers **berry** to add a physi
 
 #### isAnimated
 
-One more special property you may want to use is *isAnimated*. This triggers **berry** to replace simple image object with animation created in Tiled using the Animation Editor. 
+One more special property you may want to use is *isAnimated*. This triggers **berry** to replace simple image object with animation created in Tiled. 
 
 ![Setting a isAnimated property](https://i.imgur.com/7GrkP6t.png)  
-
-### Debug information
-
-To gain some useful information about what is going on use `berry:enableDebugMode()` and `berry:enableDebugMode()` methods. If debug mode is enabled **berry** print out simple messages what he is doing. Use `berry:isDebugModeEnabled()` to check if debug mode is currently enabled or disabled. 
-
-### Example
-
-See [Sticker-Knight-Platformer](https://github.com/ldurniat/Sticker-Knight-Platformer-and-Berry) and [wiki](https://github.com/ldurniat/Berry/wiki/Making-Your-First-Maps). 
 
 ### What's next
 

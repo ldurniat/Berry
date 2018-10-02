@@ -917,6 +917,9 @@ function M.new( filename, tilesetsDirectory )
     map.designedWidth     = data.width  * data.tilewidth
     map.designedHeight    = data.height * data.tileheight
 
+    -- Center map
+    map.x, map.y = display.contentCenterX - map.designedWidth * 0.5, display.contentCenterY - map.designedHeight * 0.5
+
 	-- Set the background color to the map background
 	display.setDefault( 'background', decodeTiledColor( data.backgroundcolor ) )
     

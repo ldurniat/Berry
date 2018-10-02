@@ -85,6 +85,12 @@ One more special property you may want to use is *isAnimated*. This triggers **b
 - [ ] Support for custom object types
 - [ ] Support for multi-element bodies
 
+### Images
+
+All images come from 
+ - [https://opengameart.org/content/free-platformer-game-tileset](https://opengameart.org/content/free-platformer-game-tileset)
+ - [https://opengameart.org/content/free-dino-sprites](https://opengameart.org/content/free-dino-sprites)
+
 ### Donations
 
 If you think that any information you obtained here is worth of some money and are willing to pay for it, feel free to send any amount through paypal. Thanks :) 

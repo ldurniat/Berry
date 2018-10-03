@@ -357,7 +357,7 @@ end
 local function buildSequences( tileset )
 
 	local sequences       = {}
-	local tiles 		  = tileset.tiles
+	local tiles 		  = tileset.tiles or {}
 	local animation, frames, tile 
 
 	for i=1, #tiles do

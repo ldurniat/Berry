@@ -87,9 +87,8 @@ One more special property you may want to use is *isAnimated*. This triggers **b
 
 ### Images
 
-All images come from 
- - [https://opengameart.org/content/free-platformer-game-tileset](https://opengameart.org/content/free-platformer-game-tileset)
- - [https://opengameart.org/content/free-dino-sprites](https://opengameart.org/content/free-dino-sprites)
+All images come from [https://opengameart.org/content/platformer-pack-redux-360-assets](https://opengameart.org/content/platformer-pack-redux-360-assets)
+
 
 ### Donations
 

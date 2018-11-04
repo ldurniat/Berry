@@ -74,6 +74,10 @@ One more special property you may want to use is *isAnimated*. This triggers **b
 
 ![Setting a isAnimated property](https://i.imgur.com/7GrkP6t.png)  
 
+#### Example
+
+See [Sticker-Knight-Platformer-for-Berry](https://github.com/ldurniat/Sticker-Knight-Platformer-for-Berry)
+
 ### What's next
 
 - [ ] Support for isometric maps

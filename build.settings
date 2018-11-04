@@ -1,0 +1,17 @@
+settings = {
+	orientation =
+	{
+		default = "landscapeLeft",
+		supported = { "landscapeLeft", "landscapeRight" },
+	},
+	android =
+    {
+        supportsScreens =
+        {
+            smallScreens  = true,
+            normalScreens = true,
+            largeScreens  = true,
+            xlargeScreens = true,
+        },
+    },
+}

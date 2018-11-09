@@ -547,19 +547,15 @@ function M.new( filename, tilesetsDirectory )
 							points = unpackPoints( points, deltaX, deltaY, rotation )
 
 							-- Corona shape have limit of 8 vertex
-							if #points > 8 then
+							if #points > 8 * 2 then
 
 								-- Add two new physics properties
-								local property = { name = 'chain', value = points }
-								object.properties[#object.properties + 1] = property
-								property = { name = 'connectFirstAndLastChainVertex', value = true }
-								object.properties[#object.properties + 1] = property
+								object.properties[#object.properties + 1] = { name = 'chain', value = points }
+								object.properties[#object.properties + 1] = { name = 'connectFirstAndLastChainVertex', value = true }
 
 							else 
 
 								-- Add new physics property
-								local property = { name = 'shape', value = points }
-								object.properties[#object.properties + 1] = property
 
 							end	
 
@@ -591,7 +587,24 @@ function M.new( filename, tilesetsDirectory )
 
 				    if object.polygon then 
 						
-						image = display.newPolygon( objectLayer, object.x, object.y, unpackPoints( points ) )	
+						image = display.newPolygon( objectLayer, object.x, object.y, unpackPoints( points ) )
+
+						local deltaX =  -image.width * 0.5 
+						local deltaY =  image.height * 0.5 
+
+			    		-- Corona shape have limit of 8 vertex
+						if #points > 8 * 2 then 
+
+							-- Add two new physics properties
+							object.properties[#object.properties + 1] = { name = 'chain', value = unpackPoints( points, deltaX, deltaY ) }
+							object.properties[#object.properties + 1] = { name = 'connectFirstAndLastChainVertex', value = true }
+
+						else 
+
+							-- Add new physics property
+							object.properties[#object.properties + 1] = { name = 'shape', value = unpackPoints( points, deltaX, deltaY ) }
+
+						end		
 
 				    else
 

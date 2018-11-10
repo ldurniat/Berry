@@ -556,6 +556,7 @@ function M.new( filename, tilesetsDirectory )
 							else 
 
 								-- Add new physics property
+								object.properties[#object.properties + 1] = { name = 'shape', value = points }
 
 							end	
 

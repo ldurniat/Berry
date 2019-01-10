@@ -904,9 +904,18 @@ function M.new( filename, tilesetsDirectory )
 
 				object = layer[j]
 
-				if ( not name or object.name == name ) and ( not objType or object.type == objType ) then
+				if name and objType then -- must match both
+					if ( object.name == name ) and ( object.type == objType ) then
 
-					objects[#objects + 1] = object
+						objects[#objects + 1] = object
+
+					end
+				else  -- must match one
+					if ( object.name == name ) or ( object.type == objType ) then
+
+						objects[#objects + 1] = object
+
+					end
 
 				end	
 

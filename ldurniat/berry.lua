@@ -478,6 +478,9 @@ function M.new( filename, tilesetsDirectory )
 
 		-- Make sure we have a properties table
 		layer.properties = layer.properties or {}
+
+		-- Get offsets if they exist (note - not every tileLayer has an offset)
+		layer.offset_x, layer.offset_y = layer.offsetx or 0, layer.offsety or 0		
 		
 		if layer.type == 'objectgroup' then
 			
@@ -567,7 +570,7 @@ function M.new( filename, tilesetsDirectory )
 
 						-- Apply base properties
 						image.anchorX, image.anchorY = 0, 1
-						image.x, image.y             = object.x, object.y
+						image.x, image.y             = object.x + layer.offset_x, object.y + layer.offset_y
 						image.tileId                 = tileId
 						image.gid                    = object.gid
 
@@ -597,7 +600,7 @@ function M.new( filename, tilesetsDirectory )
 
 						image                = display.newLine( objectLayer, unpack( unpackPoints( points ) ) )
 						image.anchorSegments = true
-						image.x, image.y     = object.x, object.y
+						image.x, image.y     = object.x + layer.offset_x, object.y + layer.offset_y
 
 				    end
 
@@ -609,7 +612,7 @@ function M.new( filename, tilesetsDirectory )
 
 					-- Apply base properties
 				    image.anchorX, image.anchorY = 0,        0
-				    image.x,       image.y       = object.x, object.y
+				    image.x,       image.y       = object.x + layer.offset_x, object.y + layer.offset_y
 				
 				end
 
@@ -699,7 +702,7 @@ function M.new( filename, tilesetsDirectory )
 
 							-- Apply basic properties
 							image.anchorX, image.anchorY = 0,                                     1  
-							image.x,       image.y       = ( image.column - 1 ) * data.tilewidth, image.row * data.tileheight
+							image.x,       image.y       = ( image.column - 1 ) * data.tilewidth + layer.offset_x, image.row * data.tileheight + layer.offset_y
 
 							centerAnchor( image )
 

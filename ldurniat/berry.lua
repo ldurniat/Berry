@@ -594,7 +594,7 @@ function M.new( filename, tilesetsDirectory )
 
 				    if object.polygon then 
 						
-						image = display.newPolygon( objectLayer, object.x, object.y, unpackPoints( points ) )	
+						image = display.newPolygon( objectLayer, object.x + layer.offset_x, object.y + layer.offset_y, unpackPoints( points ) )	
 
 				    else
 

@@ -701,11 +701,55 @@ function M.new( filename, tilesetsDirectory )
 							image.column = i - ( image.row - 1 ) * layer.width
 
 							-- Apply basic properties
-							image.anchorX, image.anchorY = 0,                                     1  
-							image.x,       image.y       = ( image.column - 1 ) * data.tilewidth + layer.offset_x, image.row * data.tileheight + layer.offset_y
+							image.anchorX, image.anchorY = 0, 1
+
+							if data.orientation == 'isometric' then
+
+								image.x = (-1*image.row*data.tilewidth/2) + (image.column*data.tilewidth/2) + layer.offset_x
+								image.y = (image.column*data.tileheight/2) - (-1*image.row*data.tileheight/2) + layer.offset_y
+
+							elseif data.orientation == 'staggered' then
+						    	local staggered_offset_y, staggered_offset_x = (data.tileheight/2), (data.tilewidth/2)
+
+						    	if data.staggeraxis == 'y' then
+						    		if data.staggerindex == 'odd' then
+						    			if image.row % 2 == 0 then
+						    				image.x = (image.column * data.tilewidth) + staggered_offset_x + layer.offset_x
+						    			else
+						    				image.x = (image.column * data.tilewidth) + layer.offset_x
+						    			end
+						    		else
+						    			if image.row % 2 == 0  then
+						    				image.x = (image.column * data.tilewidth) + layer.offset_x
+										else
+						    				image.x = (image.column * data.tilewidth) + staggered_offset_x + layer.offset_x
+										end
+						    		end
+						    		image.y = (image.row * (data.tileheight - data.tileheight/2)) + layer.offset_y
+						    	else
+						    		if data.staggerindex == 'odd' then
+						    			if image.column % 2 == 0  then
+						    				image.y = (image.row * data.tileheight) + staggered_offset_y + layer.offset_y
+						    			else
+						    				image.y = (image.row * data.tileheight) + layer.offset_y
+						    			end
+						    		else
+						    			if image.column % 2 == 0  then
+						    				image.y = (image.row * data.tileheight) + layer.offset_y
+										else
+						    				image.y = (image.row * data.tileheight) + staggered_offset_y + layer.offset_y
+										end
+						    		end
+						    		image.x = (image.column * (data.tilewidth - data.tilewidth/2)) + layer.offset_x
+						    	end
+							elseif data.orientation == 'orthogonal' then
+
+								image.x = ( image.column - 1 ) * data.tilewidth + layer.offset_x
+								image.y = image.row * data.tileheight + layer.offset_y
+
+							end
 
 							centerAnchor( image )
-
 							inherit( image, layer.properties )
 
 						end	

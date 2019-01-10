@@ -923,7 +923,7 @@ function M.new( filename, tilesetsDirectory )
 
 		end
 
-		return objects
+		return unpack(objects)
 
 	end  
 

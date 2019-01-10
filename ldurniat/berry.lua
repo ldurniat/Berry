@@ -927,45 +927,6 @@ function M.new( filename, tilesetsDirectory )
 
 	end  
 
-	------------------------------------------------------------------------------------------------
-	--- Find the object by name and type.
-	--
-	-- @param options The table which contains two fields name and type.
-	-- @return The object if found.
-	-- 
-	-- Original code from https://github.com/ponywolf/ponytiled 
-	------------------------------------------------------------------------------------------------
-	function map:getObject( options ) 
-
-		options = options or {}
-
-		local name    = options.name
-		local objType = options.type
-
-		local object, layer
-
-		for i = 1, self.numChildren do
-
-			layer = self[i]
-
-			for j = 1, layer.numChildren do
-
-				object = layer[j]
-
-				if ( not name or object.name == name ) and ( not objType or object.type == objType ) then
-
-					return object
-
-				end	
-
-			end	
-
-		end
-
-		return nil
-
-	end  
-
 	-- Add useful properties
     map.defaultExtensions = 'berry.plugins.'
     map.tilewidth         = data.tilewidth

@@ -881,7 +881,8 @@ function M.new( filename, tilesetsDirectory )
 		layer.objects = {}
 
 		self:insert( layer )
-			
+		
+		return layer
 	end  
 
 	------------------------------------------------------------------------------------------------

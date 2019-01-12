@@ -625,7 +625,7 @@ function M.new( filename, tilesetsDirectory )
 		end	
     end
 
-    local function createTile(tile, layer) end
+    --local function createTile(tile, layer) end
 	
 	for i=1, #data.layers do
 
@@ -860,6 +860,31 @@ function M.new( filename, tilesetsDirectory )
 	end 
 
 	------------------------------------------------------------------------------------------------
+	--- Add an object layer by name.
+	--
+	-- @param name The name of layer to add.
+	-- @return The added layer.
+	------------------------------------------------------------------------------------------------
+	function map:addLayer( name ) 
+
+		local layer = display.newGroup()
+
+		layer.name = name
+
+		-- These are the defaults
+		layer.properties = {}
+		layer.type = 'objectgroup'
+		layer.alpha = 1
+		layer.isVisible = true
+		layer.offset_x = 0
+		layer.offset_y = 0
+		layer.objects = {}
+
+		self:insert( layer )
+			
+	end  
+
+	------------------------------------------------------------------------------------------------
 	--- Find the layer by name.
 	--
 	-- @param name The name of layer.
@@ -892,6 +917,7 @@ function M.new( filename, tilesetsDirectory )
 	-- @param layer The layer to add the object to.
 	-- @return The added displayObject.
 	------------------------------------------------------------------------------------------------
+	map.createObject = createObject
 
 	------------------------------------------------------------------------------------------------
 	--- Find the objects by name and type.

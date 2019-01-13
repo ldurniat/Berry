@@ -15,7 +15,7 @@ local json = require 'json'
 --                                  MODULE                                                     --												
 -- ------------------------------------------------------------------------------------------ --
 
-local M = {}
+local Map = {}
 
 -- ------------------------------------------------------------------------------------------ --
 --                                  LOCALISED VARIABLES                                       --	
@@ -447,7 +447,10 @@ end
 -- @param tilesetsDirectory The path to tilesets.
 -- @return The newly created map.
 ------------------------------------------------------------------------------------------------
-function M.new( filename, tilesetsDirectory )
+
+Map.__index = Map
+
+function Map:new( filename, tilesetsDirectory )
 
 	tilesetsDirectory = tilesetsDirectory and tilesetsDirectory .. '/' or ''
 
@@ -472,7 +475,7 @@ function M.new( filename, tilesetsDirectory )
 
     end
 
-    local function createObject(object, layer)
+    local function createObject(map, object, layer)
 		-- Make sure we have a properties table
 		object.properties = object.properties or {}
 
@@ -653,7 +656,7 @@ function M.new( filename, tilesetsDirectory )
 			for j=1, #objects do
 
 				-- From here we start process Tiled object into display object
-				createObject(objects[j], objectLayer)			
+				createObject(map, objects[j], objectLayer)			
 			end
 
 			map:insert( objectLayer )
@@ -772,202 +775,6 @@ function M.new( filename, tilesetsDirectory )
 
 	end 
 
-
-	------------------------------------------------------------------------------------------------
-	--- Sort objects on layers.
-	-- 
-	-- Original code from https://github.com/ponywolf/ponytiled 
-	------------------------------------------------------------------------------------------------
-	function map:sort()
-
-		local function rightToLeft( a, b )
-
-			return ( a.x or 0 ) + ( a.width or 0 ) * 0.5 > ( b.x or 0 ) + ( b.width or 0 ) * 0.5
-
-		end
-
-		local function upToDown( a, b )
-
-			return ( a.y or 0 ) + ( a.height or 0 ) * 0.5 < ( b.y or 0 ) + ( b.height or 0 ) * 0.5 
-
-		end
-
-	    for layer = 1, self.numChildren do
-
-			local objects = {}    
-			local layerToSort = self[layer] or {}
-
-			if layerToSort.numChildren then 
-
-				for i = 1, layerToSort.numChildren do
-
-					objects[#objects+1] = layerToSort[i]
-
-				end
-
-				table.sort( objects, rightToLeft )  
-				table.sort( objects, upToDown )   
-
-			end
-
-			for i = #objects, 1, -1 do
-
-				if objects[i].toBack then
-
-				  objects[i]:toBack()
-
-				end  
-
-			end    
-
-		end
-
-	end	
-
-	------------------------------------------------------------------------------------------------
-	--- Extend objects using modules with custom code.
-	--
-	-- @param table The list of types of objects to extend
-	-- 
-	-- Original code from https://github.com/ponywolf/ponytiled 
-	------------------------------------------------------------------------------------------------
-	function map:extend( ... )
-		
-	    local objectTypes = arg or {}
-
-	    for i = 1, #objectTypes do 
-
-	      -- Load each module based on type
-			local plugin = require ( ( self.extensions or self.defaultExtensions ) .. objectTypes[i] )
-
-			-- Find each type of tiled object
-			local images = self:getObjects( { type=objectTypes[i] } )
-
-			if images then 
-
-				-- Do we have at least one?
-				for i = 1, #images do
-					
-					-- Extend the object with its own custom code
-					images[i] = plugin.new( images[i] )
-
-				end
-
-			end  
-
-	    end
-
-	end 
-
-	------------------------------------------------------------------------------------------------
-	--- Add an object layer by name.
-	--
-	-- @param name The name of layer to add.
-	-- @return The added layer.
-	------------------------------------------------------------------------------------------------
-	function map:addLayer( name ) 
-
-		local layer = display.newGroup()
-
-		layer.name = name
-
-		-- These are the defaults
-		layer.properties = {}
-		layer.type = 'objectgroup'
-		layer.alpha = 1
-		layer.isVisible = true
-		layer.offset_x = 0
-		layer.offset_y = 0
-		layer.objects = {}
-
-		self:insert( layer )
-		
-		return layer
-	end  
-
-	------------------------------------------------------------------------------------------------
-	--- Find the layer by name.
-	--
-	-- @param name The name of layer.
-	-- @return The layer object if found.
-	-- 
-	-- Original code from https://github.com/ponywolf/ponytiled 
-	------------------------------------------------------------------------------------------------
-	function map:getLayer( name ) 
-
-		local layer
-
-		for i = 1, self.numChildren do
-
-			layer = self[i]
-
-			if layer.name == name then
-
-				return layer
-
-			end	
-
-		end
-			
-	end  
-
-	------------------------------------------------------------------------------------------------
-	--- Adds a object to a layer
-	--
-	-- @param object The object to add.
-	-- @param layer The layer to add the object to.
-	-- @return The added displayObject.
-	------------------------------------------------------------------------------------------------
-	map.createObject = createObject
-
-	------------------------------------------------------------------------------------------------
-	--- Find the objects by name and type.
-	--
-	-- @param options The table which contains two fields name and type.
-	-- @return The table with found objects.
-	-- 
-	-- Original code from https://github.com/ponywolf/ponytiled 
-	------------------------------------------------------------------------------------------------
-	function map:getObjects( options ) 
-
-		options = options or {}
-
-		local name    = options.name
-		local objType = options.type
-
-		local objects, object, layer = {}
-
-		for i = 1, self.numChildren do
-
-			layer = self[i]
-
-			for j = 1, layer.numChildren do
-
-				object = layer[j]
-
-				if name and objType then -- must match both
-					if ( object.name == name ) and ( object.type == objType ) then
-
-						objects[#objects + 1] = object
-
-					end
-				else  -- must match one
-					if ( object.name == name ) or ( object.type == objType ) then
-
-						objects[#objects + 1] = object
-
-					end
-
-				end	
-
-			end	
-
-		end
-
-		return unpack(objects)
-
-	end  
-
 	-- Add useful properties
     map.defaultExtensions = 'berry.plugins.'
     map.tilewidth         = data.tilewidth
@@ -980,9 +787,205 @@ function M.new( filename, tilesetsDirectory )
 
 	-- Set the background color to the map background
 	display.setDefault( 'background', decodeTiledColor( data.backgroundcolor ) )
-    
+
+	setmetatable(map, self)    
 	return map
 
 end
 
-return M	
+------------------------------------------------------------------------------------------------
+--- Sort objects on layers.
+-- 
+-- Original code from https://github.com/ponywolf/ponytiled 
+------------------------------------------------------------------------------------------------
+function Map:sort()
+
+	local function rightToLeft( a, b )
+
+		return ( a.x or 0 ) + ( a.width or 0 ) * 0.5 > ( b.x or 0 ) + ( b.width or 0 ) * 0.5
+
+	end
+
+	local function upToDown( a, b )
+
+		return ( a.y or 0 ) + ( a.height or 0 ) * 0.5 < ( b.y or 0 ) + ( b.height or 0 ) * 0.5 
+
+	end
+
+    for layer = 1, self.numChildren do
+
+		local objects = {}    
+		local layerToSort = self[layer] or {}
+
+		if layerToSort.numChildren then 
+
+			for i = 1, layerToSort.numChildren do
+
+				objects[#objects+1] = layerToSort[i]
+
+			end
+
+			table.sort( objects, rightToLeft )  
+			table.sort( objects, upToDown )   
+
+		end
+
+		for i = #objects, 1, -1 do
+
+			if objects[i].toBack then
+
+			  objects[i]:toBack()
+
+			end  
+
+		end    
+
+	end
+
+end	
+
+------------------------------------------------------------------------------------------------
+--- Extend objects using modules with custom code.
+--
+-- @param table The list of types of objects to extend
+-- 
+-- Original code from https://github.com/ponywolf/ponytiled 
+------------------------------------------------------------------------------------------------
+function Map:extend( ... )
+	
+    local objectTypes = arg or {}
+
+    for i = 1, #objectTypes do 
+
+      -- Load each module based on type
+		local plugin = require ( ( self.extensions or self.defaultExtensions ) .. objectTypes[i] )
+
+		-- Find each type of tiled object
+		local images = self:getObjects( { type=objectTypes[i] } )
+
+		if images then 
+
+			-- Do we have at least one?
+			for i = 1, #images do
+				
+				-- Extend the object with its own custom code
+				images[i] = plugin.new( images[i] )
+
+			end
+
+		end  
+
+    end
+
+end 
+
+------------------------------------------------------------------------------------------------
+--- Add an object layer by name.
+--
+-- @param name The name of layer to add.
+-- @return The added layer.
+------------------------------------------------------------------------------------------------
+function Map:addLayer( name ) 
+
+	local layer = display.newGroup()
+
+	layer.name = name
+
+	-- These are the defaults
+	layer.properties = {}
+	layer.type = 'objectgroup'
+	layer.alpha = 1
+	layer.isVisible = true
+	layer.offset_x = 0
+	layer.offset_y = 0
+	layer.objects = {}
+
+	self:insert( layer )
+	
+	return layer
+end  
+
+------------------------------------------------------------------------------------------------
+--- Find the layer by name.
+--
+-- @param name The name of layer.
+-- @return The layer object if found.
+-- 
+-- Original code from https://github.com/ponywolf/ponytiled 
+------------------------------------------------------------------------------------------------
+function Map:getLayer( name ) 
+
+	local layer
+
+	for i = 1, self.numChildren do
+
+		layer = self[i]
+
+		if layer.name == name then
+
+			return layer
+
+		end	
+
+	end
+		
+end  
+
+------------------------------------------------------------------------------------------------
+--- Adds a object to a layer
+--
+-- @param object The object to add.
+-- @param layer The layer to add the object to.
+-- @return The added displayObject.
+------------------------------------------------------------------------------------------------
+--map.createObject = createObject
+
+------------------------------------------------------------------------------------------------
+--- Find the objects by name and type.
+--
+-- @param options The table which contains two fields name and type.
+-- @return The table with found objects.
+-- 
+-- Original code from https://github.com/ponywolf/ponytiled 
+------------------------------------------------------------------------------------------------
+function Map:getObjects( options ) 
+
+	options = options or {}
+
+	local name    = options.name
+	local objType = options.type
+
+	local objects, object, layer = {}
+
+	for i = 1, self.numChildren do
+
+		layer = self[i]
+
+		for j = 1, layer.numChildren do
+
+			object = layer[j]
+
+			if name and objType then -- must match both
+				if ( object.name == name ) and ( object.type == objType ) then
+
+					objects[#objects + 1] = object
+
+				end
+			else  -- must match one
+				if ( object.name == name ) or ( object.type == objType ) then
+
+					objects[#objects + 1] = object
+
+				end
+
+			end	
+
+		end	
+
+	end
+
+	return unpack(objects)
+
+end  
+
+return Map

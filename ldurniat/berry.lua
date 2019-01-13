@@ -600,15 +600,13 @@ function Map:new( filename, tilesetsDirectory )
 
 			end
 
-			map.group:insert( layer )
-
 		elseif layer.type == 'tilelayer' then
 
 			createTile()
 
-			map.group:insert( layer )
-
 		end
+
+		map.group:insert( layer )
 
 	end 
 

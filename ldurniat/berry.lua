@@ -718,7 +718,7 @@ function Map:createObject(object, layer)
 
 			-- Apply base properties
 			image.anchorX, image.anchorY = 0, 1
-			image.x, image.y             = object.x + layer.offset_x, object.y + layer.offset_y
+			image.x, image.y             = object.x, object.y
 			image.tileId                 = tileId
 			image.gid                    = object.gid
 
@@ -742,13 +742,13 @@ function Map:createObject(object, layer)
 
 	    if object.polygon then 
 			
-			image = display.newPolygon( layer, object.x + layer.offset_x, object.y + layer.offset_y, unpackPoints( points ) )	
+			image = display.newPolygon( layer, object.x, object.y, unpackPoints( points ) )	
 
 	    else
 
 			image                = display.newLine( layer, unpack( unpackPoints( points ) ) )
 			image.anchorSegments = true
-			image.x, image.y     = object.x + layer.offset_x, object.y + layer.offset_y
+			image.x, image.y     = object.x, object.y
 
 	    end
 
@@ -760,7 +760,7 @@ function Map:createObject(object, layer)
 
 		-- Apply base properties
 	    image.anchorX, image.anchorY = 0,        0
-	    image.x,       image.y       = object.x + layer.offset_x, object.y + layer.offset_y
+	    image.x,       image.y       = object.x, object.y
 	
 	end
 
@@ -772,6 +772,15 @@ function Map:createObject(object, layer)
 		-- Apply base properties
 		image.rotation  = object.rotation or 0
 		image.isVisible = object.visible  or true
+
+		-- If the map is already created and loaded these map_offsets
+		-- will move your object to be in synch with the map at the
+		-- proper position
+		local map_offset_x = self.x or 0
+		local map_offset_y = self.y or 0
+
+		image.x = image.x + layer.offset_x - map_offset_x
+		image.y = image.y + layer.offset_y - map_offset_y
 
 		centerAnchor( image )
 

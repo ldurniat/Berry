@@ -505,10 +505,7 @@ function Map:new( filename, tilesetsDirectory )
 
 			local gid, tileset, image
 
-			for i=1, #info.data do
-
-				-- GID stands for global tile ID
-				gid = info.data[i]
+			for i, gid in ipairs(info.data) do -- GID stands for global tile ID
 
 				if gid > 0 then
 
@@ -537,15 +534,14 @@ function Map:new( filename, tilesetsDirectory )
 							-- The first element from layer.data start at row=1 and column=1
 							image.row    = mFloor( ( i + info.width - 1 ) / info.width )
 							image.column = i - ( image.row - 1 ) * info.width
-print(image.row, image.column)
 
 							-- Apply basic properties
 							image.anchorX, image.anchorY = 0, 1
 
 							if data.orientation == 'isometric' then
 
-								image.x = (-1*image.row*data.tilewidth/2) + (image.column*data.tilewidth/2) + layer.offset_x
-								image.y = (image.column*data.tileheight/2) - (-1*image.row*data.tileheight/2) + layer.offset_y
+								image.x = (-1*image.row*data.tilewidth/2) + (image.column*data.tilewidth/2)
+								image.y = (image.column*data.tileheight/2) - (-1*image.row*data.tileheight/2)
 
 							elseif data.orientation == 'staggered' then
 						    	local staggered_offset_y, staggered_offset_x = (data.tileheight/2), (data.tilewidth/2)
@@ -553,40 +549,43 @@ print(image.row, image.column)
 						    	if data.staggeraxis == 'y' then
 						    		if data.staggerindex == 'odd' then
 						    			if image.row % 2 == 0 then
-						    				image.x = (image.column * data.tilewidth) + staggered_offset_x + layer.offset_x
+						    				image.x = (image.column * data.tilewidth) + staggered_offset_x
 						    			else
-						    				image.x = (image.column * data.tilewidth) + layer.offset_x
+						    				image.x = (image.column * data.tilewidth)
 						    			end
 						    		else
 						    			if image.row % 2 == 0  then
-						    				image.x = (image.column * data.tilewidth) + layer.offset_x
+						    				image.x = (image.column * data.tilewidth)
 										else
-						    				image.x = (image.column * data.tilewidth) + staggered_offset_x + layer.offset_x
+						    				image.x = (image.column * data.tilewidth) + staggered_offset_x
 										end
 						    		end
-						    		image.y = (image.row * (data.tileheight - data.tileheight/2)) + layer.offset_y
+						    		image.y = (image.row * (data.tileheight - data.tileheight/2))
 						    	else
 						    		if data.staggerindex == 'odd' then
 						    			if image.column % 2 == 0  then
-						    				image.y = (image.row * data.tileheight) + staggered_offset_y + layer.offset_y
+						    				image.y = (image.row * data.tileheight) + staggered_offset_y
 						    			else
-						    				image.y = (image.row * data.tileheight) + layer.offset_y
+						    				image.y = (image.row * data.tileheight)
 						    			end
 						    		else
 						    			if image.column % 2 == 0  then
-						    				image.y = (image.row * data.tileheight) + layer.offset_y
+						    				image.y = (image.row * data.tileheight)
 										else
-						    				image.y = (image.row * data.tileheight) + staggered_offset_y + layer.offset_y
+						    				image.y = (image.row * data.tileheight) + staggered_offset_y
 										end
 						    		end
-						    		image.x = (image.column * (data.tilewidth - data.tilewidth/2)) + layer.offset_x
+						    		image.x = (image.column * (data.tilewidth - data.tilewidth/2))
 						    	end
 							elseif data.orientation == 'orthogonal' then
 
-								image.x = ( image.column - 1 ) * data.tilewidth + layer.offset_x
-								image.y = image.row * data.tileheight + layer.offset_y
+								image.x = ( image.column - 1 ) * data.tilewidth
+								image.y = image.row * data.tileheight
 
 							end
+
+							image.x = image.x + layer.offset_x
+							image.y = image.y + layer.offset_y
 
 							centerAnchor( image )
 							inherit( image, layer.properties )
@@ -645,31 +644,25 @@ function Map:createObject(object, layer)
 		-- Get the correct tileset using the GID
 		tileset = getTilesetFromGID( object.gid, self.tilesets )
 
-print(tileset)
 		if tileset then
 
 			local firstgid,   tileId      = tileset.firstgid,  object.gid - tileset.firstgid
 			local width,      height      = object.width, object.height
 			local imageSheet, pathToImage = loadTileset( tileset, self.tilesetsDirectory, tileId ) 
 
-print(imageSheet)
-
 			if imageSheet then
 
 				if findProperty( layer.properties, 'isAnimated' ) or findProperty( object.properties, 'isAnimated' ) then
-print('findProperty?')
+
 					image = display.newSprite( layer, imageSheet, tileset.sequenceData )
 
-				else 
-print('else')
-print(image)
+				else
+
 					image = display.newImageRect( layer, imageSheet, tileId + 1, width, height )
-print(image)
+
 				end
 					
 			else image = display.newImageRect( layer, pathToImage, width, height ) end
-
-assert(image, 'We need an image bro')
 
 			local points, x, y, rotation  = retrieveShapeData( tileId , tileset )
 

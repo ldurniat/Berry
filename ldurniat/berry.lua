@@ -508,9 +508,14 @@ function Map:new( filename, tilesetsDirectory )
 
 		elseif layer.type == 'tilelayer' then
 
-			for i, gid in ipairs(info.data) do -- GID stands for global tile ID
+			-- layer.width variable is already taken due to layer being a display group, 
+			-- so we need a new variable name (layer.size works in this case)
+			layer.size = info.width
+print(map.tilewidth, layer.size)
 
-				if gid > 0 then map:createTile(gid, layer) end
+			for position, gid in ipairs(info.data) do -- GID stands for global tile ID
+
+				if gid > 0 then map:createTile(position, gid, layer) end
 
 			end
 
@@ -539,7 +544,7 @@ end
 --- Create and add tile to layer
 --  
 ------------------------------------------------------------------------------------------------
-function Map:createTile(gid, layer)
+function Map:createTile(position, gid, layer)
 	local tileset
 
 	-- Get the correct tileset using the GID
@@ -566,55 +571,55 @@ function Map:createTile(gid, layer)
 		if image then
 
 			-- The first element from layer.data start at row=1 and column=1
-			image.row    = mFloor( ( i + info.width - 1 ) / info.width )
-			image.column = i - ( image.row - 1 ) * info.width
+			image.row    = mFloor( ( position + layer.size - 1 ) / layer.size )
+			image.column = position - ( image.row - 1 ) * layer.size
 
 			-- Apply basic properties
 			image.anchorX, image.anchorY = 0, 1
 
 			if self.orientation == 'isometric' then
 
-				image.x = (-1*image.row*data.tilewidth/2) + (image.column*data.tilewidth/2)
-				image.y = (image.column*data.tileheight/2) - (-1*image.row*data.tileheight/2)
+				image.x = (-1*image.row*self.tilewidth/2) + (image.column*self.tilewidth/2)
+				image.y = (image.column*self.tileheight/2) - (-1*image.row*self.tileheight/2)
 
-			elseif data.orientation == 'staggered' then
-		    	local staggered_offset_y, staggered_offset_x = (data.tileheight/2), (data.tilewidth/2)
+			elseif self.orientation == 'staggered' then
+		    	local staggered_offset_y, staggered_offset_x = (self.tileheight/2), (self.tilewidth/2)
 
-		    	if data.staggeraxis == 'y' then
-		    		if data.staggerindex == 'odd' then
+		    	if self.staggeraxis == 'y' then
+		    		if self.staggerindex == 'odd' then
 		    			if image.row % 2 == 0 then
-		    				image.x = (image.column * data.tilewidth) + staggered_offset_x
+		    				image.x = (image.column * self.tilewidth) + staggered_offset_x
 		    			else
-		    				image.x = (image.column * data.tilewidth)
+		    				image.x = (image.column * self.tilewidth)
 		    			end
 		    		else
 		    			if image.row % 2 == 0  then
-		    				image.x = (image.column * data.tilewidth)
+		    				image.x = (image.column * self.tilewidth)
 						else
-		    				image.x = (image.column * data.tilewidth) + staggered_offset_x
+		    				image.x = (image.column * self.tilewidth) + staggered_offset_x
 						end
 		    		end
-		    		image.y = (image.row * (data.tileheight - data.tileheight/2))
+		    		image.y = (image.row * (self.tileheight - self.tileheight/2))
 		    	else
-		    		if data.staggerindex == 'odd' then
+		    		if self.staggerindex == 'odd' then
 		    			if image.column % 2 == 0  then
-		    				image.y = (image.row * data.tileheight) + staggered_offset_y
+		    				image.y = (image.row * self.tileheight) + staggered_offset_y
 		    			else
-		    				image.y = (image.row * data.tileheight)
+		    				image.y = (image.row * self.tileheight)
 		    			end
 		    		else
 		    			if image.column % 2 == 0  then
-		    				image.y = (image.row * data.tileheight)
+		    				image.y = (image.row * self.tileheight)
 						else
-		    				image.y = (image.row * data.tileheight) + staggered_offset_y
+		    				image.y = (image.row * self.tileheight) + staggered_offset_y
 						end
 		    		end
-		    		image.x = (image.column * (data.tilewidth - data.tilewidth/2))
+		    		image.x = (image.column * (self.tilewidth - self.tilewidth/2))
 		    	end
-			elseif data.orientation == 'orthogonal' then
+			elseif self.orientation == 'orthogonal' then
 
-				image.x = ( image.column - 1 ) * data.tilewidth
-				image.y = image.row * data.tileheight
+				image.x = ( image.column - 1 ) * self.tilewidth
+				image.y = image.row * self.tileheight
 
 			end
 

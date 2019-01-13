@@ -471,13 +471,11 @@ function Map:new( filename, tilesetsDirectory )
 
     end
 
-    map.tilesets = data.tilesets -- attach our tilesets to map
-
-    -- setup our orientation for isometric, staggered isometric, or orthogonal
+    -- Apply properties from data
+    map.tilesets = data.tilesets
     map.orientation = data.orientation			
     map.staggeraxis = data.staggeraxis
     map.staggerindex = data.staggerindex
-
     map.tilewidth = data.tilewidth
     map.tileheight = data.tileheight
 
@@ -499,10 +497,10 @@ function Map:new( filename, tilesetsDirectory )
 
 			local objects = info.objects or {}
 
-			for j=1, #objects do
+			for _, object in ipairs(objects) do
 
 				-- From here we start process Tiled object into display object
-				map:createObject(objects[j], layer)	
+				map:createObject(object, layer)
 
 			end
 
@@ -622,9 +620,8 @@ function Map:createTile(position, gid, layer)
 
 			end
 
-			-- If the map is already created and loaded these map_offsets
-			-- will move your object to be in synch with the map at the
-			-- proper position
+			-- If the map is already created these map_offsets will move your 
+			-- object to be in synch with the map at the proper position
 			local map_offset_x = self.x or 0
 			local map_offset_y = self.y or 0
 
@@ -773,9 +770,8 @@ function Map:createObject(object, layer)
 		image.rotation  = object.rotation or 0
 		image.isVisible = object.visible  or true
 
-		-- If the map is already created and loaded these map_offsets
-		-- will move your object to be in synch with the map at the
-		-- proper position
+		-- If the map is already created these map_offsets will move your 
+		-- object to be in synch with the map at the proper position
 		local map_offset_x = self.x or 0
 		local map_offset_y = self.y or 0
 

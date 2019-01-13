@@ -16,6 +16,7 @@ local json = require 'json'
 -- ------------------------------------------------------------------------------------------ --
 
 local Map = {}
+Map.__index = Map
 
 -- ------------------------------------------------------------------------------------------ --
 --                                  LOCALISED VARIABLES                                       --	
@@ -447,8 +448,6 @@ end
 -- @param tilesetsDirectory The path to tilesets.
 -- @return The newly created map.
 ------------------------------------------------------------------------------------------------
-
-Map.__index = Map
 
 function Map:new( filename, tilesetsDirectory )
 

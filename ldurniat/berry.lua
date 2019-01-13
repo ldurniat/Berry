@@ -461,9 +461,6 @@ function Map:new( filename, tilesetsDirectory )
 	-- Read map file
     local data = json.decodeFile( system.pathForFile( filename, system.ResourceDirectory ) )
 
-    -- Store the flipped states
-    local flip = {}  -- prune this once tileLayer gets refactored
-
     -- Purpose of computation here is simplification of code
     for i, tileset in ipairs(data.tilesets) do
 
@@ -496,14 +493,15 @@ function Map:new( filename, tilesetsDirectory )
 			for j=1, #objects do
 
 				-- From here we start process Tiled object into display object
-				map:createObject(objects[j], layer)			
+				map:createObject(objects[j], layer)	
+
 			end
 
 			map.group:insert( layer )
 
 		elseif layer.type == 'tilelayer' then
 
-			local gid, tileset, image
+			local gid, tileset
 
 			for i, gid in ipairs(info.data) do -- GID stands for global tile ID
 
@@ -514,6 +512,7 @@ function Map:new( filename, tilesetsDirectory )
 
 					if tileset then
 
+						local image 
 						local firstgid, tileId = tileset.firstgid,  gid - tileset.firstgid
 						local width,    height = tileset.tilewidth, tileset.tileheight 
 						
@@ -617,7 +616,6 @@ function Map:new( filename, tilesetsDirectory )
 	-- Set the background color to the map background
 	display.setDefault( 'background', decodeTiledColor( data.backgroundcolor ) )   
 	return map
-
 end
 
 function Map:createObject(object, layer)

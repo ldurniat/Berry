@@ -501,7 +501,7 @@ function Map:new( filename, tilesetsDirectory )
 
 		elseif layer.type == 'tilelayer' then
 
-			local gid, tileset
+			local tileset
 
 			for i, gid in ipairs(info.data) do -- GID stands for global tile ID
 

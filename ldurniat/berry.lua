@@ -960,15 +960,6 @@ function Map:getLayer( name )
 end  
 
 ------------------------------------------------------------------------------------------------
---- Adds a object to a layer
---
--- @param object The object to add.
--- @param layer The layer to add the object to.
--- @return The added displayObject.
-------------------------------------------------------------------------------------------------
---map.createObject = createObject
-
-------------------------------------------------------------------------------------------------
 --- Find the objects by name and type.
 --
 -- @param options The table which contains two fields name and type.

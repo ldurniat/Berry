@@ -511,7 +511,6 @@ function Map:new( filename, tilesetsDirectory )
 			-- layer.width variable is already taken due to layer being a display group, 
 			-- so we need a new variable name (layer.size works in this case)
 			layer.size = info.width
-print(map.tilewidth, layer.size)
 
 			for position, gid in ipairs(info.data) do -- GID stands for global tile ID
 
@@ -623,8 +622,14 @@ function Map:createTile(position, gid, layer)
 
 			end
 
-			image.x = image.x + layer.offset_x
-			image.y = image.y + layer.offset_y
+			-- If the map is already created and loaded these map_offsets
+			-- will move your object to be in synch with the map at the
+			-- proper position
+			local map_offset_x = self.x or 0
+			local map_offset_y = self.y or 0
+
+			image.x = image.x + layer.offset_x - map_offset_x
+			image.y = image.y + layer.offset_y - map_offset_y
 
 			centerAnchor( image )
 			inherit( image, layer.properties )

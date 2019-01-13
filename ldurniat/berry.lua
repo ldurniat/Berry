@@ -16,7 +16,6 @@ local json = require 'json'
 -- ------------------------------------------------------------------------------------------ --
 
 local Map = {}
-Map.__index = Map
 
 -- ------------------------------------------------------------------------------------------ --
 --                                  LOCALISED VARIABLES                                       --	
@@ -437,6 +436,27 @@ local function retrieveShapeData( tileId, tileset )
 
 end	
 
+------------------------------------------------------------------------------------------------
+-- This creates a new display group with copied methods from a class
+--
+-- @param class The class to copy methods from
+-- @return A display group with class methods.
+------------------------------------------------------------------------------------------------  
+local function setupDisplayGroup( class )
+	local group = display.newGroup()
+
+	-- Okay so normally this process is done via a metatable BUT 
+	-- display groups already have a metatable setup when created
+	-- making it a PIA.
+
+	-- My solution is just a quick way to copy the methods from
+	-- our Map class to our map display group (aka instance) 
+	for name, method in pairs(class) do 
+		group[name] = method 
+	end
+
+	return group 
+end
 -- ------------------------------------------------------------------------------------------ --
 --                                  PUBLIC METHODS                                            --	
 -- ------------------------------------------------------------------------------------------ --
@@ -453,12 +473,8 @@ function Map:new( filename, tilesetsDirectory )
 	-- Read map file
     local data = json.decodeFile( system.pathForFile( filename, system.ResourceDirectory ) )
 
-	local map = {}
-	setmetatable(map, self)
-	-- optional, but try to attach methods from map table to display.newGroup() later on
+	local map = setupDisplayGroup( self )
 
-    -- Create group containg all objects including layer groups
-    map.group  = display.newGroup()
 	map.tilesetsDirectory = (tilesetsDirectory and tilesetsDirectory .. '/') or ''
 
     -- Purpose of computation here is simplification of code
@@ -518,7 +534,7 @@ function Map:new( filename, tilesetsDirectory )
 
 		end
 
-		map.group:insert( layer )
+		map:insert( layer )
 
 	end 
 

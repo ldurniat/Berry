@@ -437,6 +437,109 @@ local function retrieveShapeData( tileId, tileset )
 
 end	
 
+------------------------------------------------------------------------------------------------
+-- Create a tile object 
+--
+-- 
+------------------------------------------------------------------------------------------------ 
+local function createTile()
+	local tileset
+
+	for i, gid in ipairs(info.data) do -- GID stands for global tile ID
+
+		if gid > 0 then
+
+			-- Get the correct tileset using the GID
+			tileset = getTilesetFromGID( gid, map.tilesets )
+
+			if tileset then
+
+				local image 
+				local firstgid, tileId = tileset.firstgid,  gid - tileset.firstgid
+				local width,    height = tileset.tilewidth, tileset.tileheight 
+				
+				local imageSheet, pathToImage, imagewidth, imageheight = loadTileset( tileset, map.tilesetsDirectory, tileId )
+
+				if imageSheet then
+
+					image = display.newImageRect( layer, imageSheet, tileId + 1, width, height )
+
+				else 
+		          	
+		          	image = display.newImageRect( layer, pathToImage, imagewidth, imageheight )
+
+				end	
+
+				if image then
+
+					-- The first element from layer.data start at row=1 and column=1
+					image.row    = mFloor( ( i + info.width - 1 ) / info.width )
+					image.column = i - ( image.row - 1 ) * info.width
+
+					-- Apply basic properties
+					image.anchorX, image.anchorY = 0, 1
+
+					if data.orientation == 'isometric' then
+
+						image.x = (-1*image.row*data.tilewidth/2) + (image.column*data.tilewidth/2)
+						image.y = (image.column*data.tileheight/2) - (-1*image.row*data.tileheight/2)
+
+					elseif data.orientation == 'staggered' then
+				    	local staggered_offset_y, staggered_offset_x = (data.tileheight/2), (data.tilewidth/2)
+
+				    	if data.staggeraxis == 'y' then
+				    		if data.staggerindex == 'odd' then
+				    			if image.row % 2 == 0 then
+				    				image.x = (image.column * data.tilewidth) + staggered_offset_x
+				    			else
+				    				image.x = (image.column * data.tilewidth)
+				    			end
+				    		else
+				    			if image.row % 2 == 0  then
+				    				image.x = (image.column * data.tilewidth)
+								else
+				    				image.x = (image.column * data.tilewidth) + staggered_offset_x
+								end
+				    		end
+				    		image.y = (image.row * (data.tileheight - data.tileheight/2))
+				    	else
+				    		if data.staggerindex == 'odd' then
+				    			if image.column % 2 == 0  then
+				    				image.y = (image.row * data.tileheight) + staggered_offset_y
+				    			else
+				    				image.y = (image.row * data.tileheight)
+				    			end
+				    		else
+				    			if image.column % 2 == 0  then
+				    				image.y = (image.row * data.tileheight)
+								else
+				    				image.y = (image.row * data.tileheight) + staggered_offset_y
+								end
+				    		end
+				    		image.x = (image.column * (data.tilewidth - data.tilewidth/2))
+				    	end
+					elseif data.orientation == 'orthogonal' then
+
+						image.x = ( image.column - 1 ) * data.tilewidth
+						image.y = image.row * data.tileheight
+
+					end
+
+					image.x = image.x + layer.offset_x
+					image.y = image.y + layer.offset_y
+
+					centerAnchor( image )
+					inherit( image, layer.properties )
+
+				end	
+
+			end	
+
+		end	
+			
+	end	
+end
+
 -- ------------------------------------------------------------------------------------------ --
 --                                  PUBLIC METHODS                                            --	
 -- ------------------------------------------------------------------------------------------ --
@@ -501,105 +604,11 @@ function Map:new( filename, tilesetsDirectory )
 
 		elseif layer.type == 'tilelayer' then
 
-			local tileset
-
-			for i, gid in ipairs(info.data) do -- GID stands for global tile ID
-
-				if gid > 0 then
-
-					-- Get the correct tileset using the GID
-					tileset = getTilesetFromGID( gid, map.tilesets )
-
-					if tileset then
-
-						local image 
-						local firstgid, tileId = tileset.firstgid,  gid - tileset.firstgid
-						local width,    height = tileset.tilewidth, tileset.tileheight 
-						
-						local imageSheet, pathToImage, imagewidth, imageheight = loadTileset( tileset, map.tilesetsDirectory, tileId )
-
-						if imageSheet then
-
-							image = display.newImageRect( layer, imageSheet, tileId + 1, width, height )
-
-						else 
-				          	
-				          	image = display.newImageRect( layer, pathToImage, imagewidth, imageheight )
-
-						end	
-
-						if image then
-
-							-- The first element from layer.data start at row=1 and column=1
-							image.row    = mFloor( ( i + info.width - 1 ) / info.width )
-							image.column = i - ( image.row - 1 ) * info.width
-
-							-- Apply basic properties
-							image.anchorX, image.anchorY = 0, 1
-
-							if data.orientation == 'isometric' then
-
-								image.x = (-1*image.row*data.tilewidth/2) + (image.column*data.tilewidth/2)
-								image.y = (image.column*data.tileheight/2) - (-1*image.row*data.tileheight/2)
-
-							elseif data.orientation == 'staggered' then
-						    	local staggered_offset_y, staggered_offset_x = (data.tileheight/2), (data.tilewidth/2)
-
-						    	if data.staggeraxis == 'y' then
-						    		if data.staggerindex == 'odd' then
-						    			if image.row % 2 == 0 then
-						    				image.x = (image.column * data.tilewidth) + staggered_offset_x
-						    			else
-						    				image.x = (image.column * data.tilewidth)
-						    			end
-						    		else
-						    			if image.row % 2 == 0  then
-						    				image.x = (image.column * data.tilewidth)
-										else
-						    				image.x = (image.column * data.tilewidth) + staggered_offset_x
-										end
-						    		end
-						    		image.y = (image.row * (data.tileheight - data.tileheight/2))
-						    	else
-						    		if data.staggerindex == 'odd' then
-						    			if image.column % 2 == 0  then
-						    				image.y = (image.row * data.tileheight) + staggered_offset_y
-						    			else
-						    				image.y = (image.row * data.tileheight)
-						    			end
-						    		else
-						    			if image.column % 2 == 0  then
-						    				image.y = (image.row * data.tileheight)
-										else
-						    				image.y = (image.row * data.tileheight) + staggered_offset_y
-										end
-						    		end
-						    		image.x = (image.column * (data.tilewidth - data.tilewidth/2))
-						    	end
-							elseif data.orientation == 'orthogonal' then
-
-								image.x = ( image.column - 1 ) * data.tilewidth
-								image.y = image.row * data.tileheight
-
-							end
-
-							image.x = image.x + layer.offset_x
-							image.y = image.y + layer.offset_y
-
-							centerAnchor( image )
-							inherit( image, layer.properties )
-
-						end	
-
-					end	
-
-				end	
-					
-			end	
+			createTile()
 
 			map.group:insert( layer )
 
-		end	
+		end
 
 	end 
 

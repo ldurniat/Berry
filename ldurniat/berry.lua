@@ -450,271 +450,102 @@ end
 ------------------------------------------------------------------------------------------------
 
 function Map:new( filename, tilesetsDirectory )
+	local map = {}
+	setmetatable(map, self)
+	-- optional, but try to attach methods from map table to display.newGroup() later on
 
-	tilesetsDirectory = tilesetsDirectory and tilesetsDirectory .. '/' or ''
+    -- Create group containg all objects including layer groups
+    map.group  = display.newGroup()
+	map.tilesetsDirectory = (tilesetsDirectory and tilesetsDirectory .. '/') or ''
 
 	-- Read map file
     local data = json.decodeFile( system.pathForFile( filename, system.ResourceDirectory ) )
 
-    -- Create group containg all objects including another groups
-    local map  = display.newGroup()
-
     -- Store the flipped states
-    local flip, tilesets = {}, data.tilesets
-    local tileLayer, objectLayer, layer, tileset, nextTileset, objects, object, image
+    local flip = {}  -- prune this once tileLayer gets refactored
 
     -- Purpose of computation here is simplification of code
-    for i=1, #tilesets do 
+    for i, tileset in ipairs(data.tilesets) do
 
     	-- The tilesets are sorted always in ascending order by their firstgid
-    	tileset                = tilesets[i]
-    	nextTileset            = tilesets[i + 1]
+    	local nextTileset      = data.tilesets[i + 1]
     	tileset.lastgid        = findLastGID( tileset, nextTileset ) 
     	tileset.sequenceData   = buildSequences( tileset )
 
     end
 
-    local function createObject(map, object, layer)
-		-- Make sure we have a properties table
-		object.properties = object.properties or {}
-
-		-- Image/Sprite	
-		-- GID stands for global tile ID
-		if object.gid then
-
-			-- Original code from https://github.com/ponywolf/ponytiled    
-		    flip.x  = hasbit( object.gid, FlippedHorizontallyFlag )
-		    flip.y  = hasbit( object.gid, FlippedVerticallyFlag )          
-		    flip.xy = hasbit( object.gid, FlippedDiagonallyFlag )
-
-		    object.gid = clearbit( object.gid, FlippedHorizontallyFlag )
-		    object.gid = clearbit( object.gid, FlippedVerticallyFlag )
-		    object.gid = clearbit( object.gid, FlippedDiagonallyFlag )
-
-			-- Get the correct tileset using the GID
-			tileset = getTilesetFromGID( object.gid, tilesets )
-
-			if tileset then
-
-				local firstgid,   tileId      = tileset.firstgid,  object.gid - tileset.firstgid
-				local width,      height      = object.width, object.height
-				local imageSheet, pathToImage = loadTileset( tileset, tilesetsDirectory, tileId ) 
-
-				if imageSheet then
-
-					if findProperty( layer.properties, 'isAnimated' ) or findProperty( object.properties, 'isAnimated' ) then
-
-						image = display.newSprite( objectLayer, imageSheet, tileset.sequenceData )
-
-					else 
-
-						image = display.newImageRect( objectLayer, imageSheet, tileId + 1, width, height )
-
-					end
-						
-				else image = display.newImageRect( objectLayer, pathToImage, width, height ) end
-
-				local points, x, y, rotation  = retrieveShapeData( tileId , tileset )
-
-				-- Add collsion shape
-				if points then
-
-					local deltaX = x - image.width * 0.5 
-					local deltaY = y - image.height * 0.5 
-
-					points = unpackPoints( points, deltaX, deltaY, rotation )
-
-					-- Corona shape have limit of 8 vertex
-					if #points > 8 then
-
-						-- Add two new physics properties
-						local property = { name = 'chain', value = points }
-						object.properties[#object.properties + 1] = property
-						property = { name = 'connectFirstAndLastChainVertex', value = true }
-						object.properties[#object.properties + 1] = property
-
-					else 
-
-						-- Add new physics property
-						local property = { name = 'shape', value = points }
-						object.properties[#object.properties + 1] = property
-
-					end	
-
-				end	  
-
-				-- Apply base properties
-				image.anchorX, image.anchorY = 0, 1
-				image.x, image.y             = object.x + layer.offset_x, object.y + layer.offset_y
-				image.tileId                 = tileId
-				image.gid                    = object.gid
-
-			end	
-
-		elseif object.polygon or object.polyline then 
-			local points = object.polygon or object.polyline
-
-			local xMax, xMin, yMax, yMin = -mHuge, mHuge, -mHuge, mHuge 
-
-			for i = 1, #points do
-
-				if points[i].x < xMin then xMin = points[i].x end  
-				if points[i].y < yMin then yMin = points[i].y end 
-				if points[i].x > xMax then xMax = points[i].x end   
-				if points[i].y > yMax then yMax = points[i].y end  
-
-	    	end
-
-			local centerX, centerY = ( xMax + xMin ) * 0.5, ( yMax + yMin ) * 0.5
-
-		    if object.polygon then 
-				
-				image = display.newPolygon( objectLayer, object.x + layer.offset_x, object.y + layer.offset_y, unpackPoints( points ) )	
-
-		    else
-
-				image                = display.newLine( objectLayer, unpack( unpackPoints( points ) ) )
-				image.anchorSegments = true
-				image.x, image.y     = object.x + layer.offset_x, object.y + layer.offset_y
-
-		    end
-
-		    image:translate( centerX, centerY )
-
-		else
-
-			image = display.newRect( objectLayer, 0, 0, object.width, object.height )
-
-			-- Apply base properties
-		    image.anchorX, image.anchorY = 0,        0
-		    image.x,       image.y       = object.x + layer.offset_x, object.y + layer.offset_y
-		
-		end
-
-		if image then
-			-- Name and type
-			image.name = object.name
-			image.type = object.type
-
-			-- Apply base properties
-			image.rotation  = object.rotation or 0
-			image.isVisible = object.visible  or true
-
-			centerAnchor( image )
-
-			-- Flip it
-			if flip.xy then
-
-				print( 'Berry: Unsupported Tiled rotation x,y in ', image.name )
-
-			else
-
-				if flip.x then image.xScale = -1 end
-				if flip.y then image.yScale = -1 end
-
-			end
-
-			if  findProperty( object.properties, 'hasBody' ) then 
-
-				local params = inherit( {}, object.properties )
-				physics.addBody( image, 'dynamic', params ) 
-
-			end	
-
-			inherit( image, layer.properties )
-			inherit( image, object.properties )
-
-		end	
-    end
-
-    --local function createTile(tile, layer) end
+    map.tilesets = data.tilesets -- attach our tilesets to map
 	
-	for i=1, #data.layers do
+	for _, info in ipairs(data.layers) do
 
-		layer = data.layers[i]
+		local layer = display.newGroup() 
 
-		-- Make sure we have a properties table
-		layer.properties = layer.properties or {}	
+		-- Apply properties from info
+	    layer.name       = info.name
+	    layer.type       = info.type
+	    layer.alpha      = info.opacity
+	    layer.isVisible  = info.visible
+		layer.offset_x   = info.offsetx or 0
+		layer.offset_y   = info.offsety or 0
+		layer.properties = info.properties or {} -- Make sure we have a properties table
 		
-		if layer.type == 'objectgroup' then
-			
-			objectLayer = display.newGroup()
-			-- Name and type
-		    objectLayer.name = layer.name
-		    objectLayer.type = layer.type
+		if info.type == 'objectgroup' then
 
-		    -- Apply basic properties
-		    objectLayer.alpha     = layer.opacity 
-		    objectLayer.isVisible = layer.visible
-
-			-- Apply offsets if they exist (note - not every tileLayer has an offset)
-			objectLayer.offset_x, objectLayer.offset_y = layer.offsetx or 0, layer.offsety or 0	
-
-			objects = layer.objects or {}
+			local objects = info.objects or {}
 
 			for j=1, #objects do
 
 				-- From here we start process Tiled object into display object
-				createObject(map, objects[j], objectLayer)			
+				map:createObject(objects[j], layer)			
 			end
 
-			map:insert( objectLayer )
+			map.group:insert( layer )
 
 		elseif layer.type == 'tilelayer' then
 
-			tileLayer = display.newGroup()
-			-- Name and type
-		    tileLayer.name = layer.name
-		    tileLayer.type = layer.type
-
-		    -- Apply base properties
-		    tileLayer.alpha     = layer.opacity 
-		    tileLayer.isVisible = layer.visible
-
-			-- Apply offsets if they exist (note - not every tileLayer has an offset)
-			tileLayer.offset_x, tileLayer.offset_y = layer.offsetx or 0, layer.offsety or 0	
-
 			local gid, tileset, image
-			for i=1, #layer.data do
+
+			for i=1, #info.data do
 
 				-- GID stands for global tile ID
-				gid = layer.data[i]
+				gid = info.data[i]
 
 				if gid > 0 then
 
 					-- Get the correct tileset using the GID
-					tileset = getTilesetFromGID( gid, tilesets )
+					tileset = getTilesetFromGID( gid, map.tilesets )
 
 					if tileset then
 
 						local firstgid, tileId = tileset.firstgid,  gid - tileset.firstgid
 						local width,    height = tileset.tilewidth, tileset.tileheight 
 						
-						local imageSheet, pathToImage, imagewidth, imageheight = loadTileset( tileset, tilesetsDirectory, tileId )
+						local imageSheet, pathToImage, imagewidth, imageheight = loadTileset( tileset, map.tilesetsDirectory, tileId )
 
 						if imageSheet then
 
-							image = display.newImageRect( tileLayer, imageSheet, tileId + 1, width, height )
+							image = display.newImageRect( layer, imageSheet, tileId + 1, width, height )
 
 						else 
 				          	
-				          	image = display.newImageRect( tileLayer, pathToImage, imagewidth, imageheight )
+				          	image = display.newImageRect( layer, pathToImage, imagewidth, imageheight )
 
 						end	
 
 						if image then
 
 							-- The first element from layer.data start at row=1 and column=1
-							image.row    = mFloor( ( i + layer.width - 1 ) / layer.width )
-							image.column = i - ( image.row - 1 ) * layer.width
+							image.row    = mFloor( ( i + info.width - 1 ) / info.width )
+							image.column = i - ( image.row - 1 ) * info.width
+print(image.row, image.column)
 
 							-- Apply basic properties
 							image.anchorX, image.anchorY = 0, 1
 
 							if data.orientation == 'isometric' then
 
-								image.x = (-1*image.row*data.tilewidth/2) + (image.column*data.tilewidth/2) + tileLayer.offset_x
-								image.y = (image.column*data.tileheight/2) - (-1*image.row*data.tileheight/2) + tileLayer.offset_y
+								image.x = (-1*image.row*data.tilewidth/2) + (image.column*data.tilewidth/2) + layer.offset_x
+								image.y = (image.column*data.tileheight/2) - (-1*image.row*data.tileheight/2) + layer.offset_y
 
 							elseif data.orientation == 'staggered' then
 						    	local staggered_offset_y, staggered_offset_x = (data.tileheight/2), (data.tilewidth/2)
@@ -722,38 +553,38 @@ function Map:new( filename, tilesetsDirectory )
 						    	if data.staggeraxis == 'y' then
 						    		if data.staggerindex == 'odd' then
 						    			if image.row % 2 == 0 then
-						    				image.x = (image.column * data.tilewidth) + staggered_offset_x + tileLayer.offset_x
+						    				image.x = (image.column * data.tilewidth) + staggered_offset_x + layer.offset_x
 						    			else
-						    				image.x = (image.column * data.tilewidth) + tileLayer.offset_x
+						    				image.x = (image.column * data.tilewidth) + layer.offset_x
 						    			end
 						    		else
 						    			if image.row % 2 == 0  then
-						    				image.x = (image.column * data.tilewidth) + tileLayer.offset_x
+						    				image.x = (image.column * data.tilewidth) + layer.offset_x
 										else
-						    				image.x = (image.column * data.tilewidth) + staggered_offset_x + tileLayer.offset_x
+						    				image.x = (image.column * data.tilewidth) + staggered_offset_x + layer.offset_x
 										end
 						    		end
-						    		image.y = (image.row * (data.tileheight - data.tileheight/2)) + tileLayer.offset_y
+						    		image.y = (image.row * (data.tileheight - data.tileheight/2)) + layer.offset_y
 						    	else
 						    		if data.staggerindex == 'odd' then
 						    			if image.column % 2 == 0  then
-						    				image.y = (image.row * data.tileheight) + staggered_offset_y + tileLayer.offset_y
+						    				image.y = (image.row * data.tileheight) + staggered_offset_y + layer.offset_y
 						    			else
-						    				image.y = (image.row * data.tileheight) + tileLayer.offset_y
+						    				image.y = (image.row * data.tileheight) + layer.offset_y
 						    			end
 						    		else
 						    			if image.column % 2 == 0  then
-						    				image.y = (image.row * data.tileheight) + tileLayer.offset_y
+						    				image.y = (image.row * data.tileheight) + layer.offset_y
 										else
-						    				image.y = (image.row * data.tileheight) + staggered_offset_y + tileLayer.offset_y
+						    				image.y = (image.row * data.tileheight) + staggered_offset_y + layer.offset_y
 										end
 						    		end
-						    		image.x = (image.column * (data.tilewidth - data.tilewidth/2)) + tileLayer.offset_x
+						    		image.x = (image.column * (data.tilewidth - data.tilewidth/2)) + layer.offset_x
 						    	end
 							elseif data.orientation == 'orthogonal' then
 
-								image.x = ( image.column - 1 ) * data.tilewidth + tileLayer.offset_x
-								image.y = image.row * data.tileheight + tileLayer.offset_y
+								image.x = ( image.column - 1 ) * data.tilewidth + layer.offset_x
+								image.y = image.row * data.tileheight + layer.offset_y
 
 							end
 
@@ -768,7 +599,7 @@ function Map:new( filename, tilesetsDirectory )
 					
 			end	
 
-			map:insert( tileLayer )
+			map.group:insert( layer )
 
 		end	
 
@@ -785,11 +616,172 @@ function Map:new( filename, tilesetsDirectory )
     map.x, map.y = display.contentCenterX - map.designedWidth * 0.5, display.contentCenterY - map.designedHeight * 0.5
 
 	-- Set the background color to the map background
-	display.setDefault( 'background', decodeTiledColor( data.backgroundcolor ) )
-
-	setmetatable(map, self)    
+	display.setDefault( 'background', decodeTiledColor( data.backgroundcolor ) )   
 	return map
 
+end
+
+function Map:createObject(object, layer)
+    -- Store the flipped states
+    local flip = {}
+    local image
+
+	-- Make sure we have a properties table
+	object.properties = object.properties or {}
+
+	-- Image/Sprite	
+	-- GID stands for global tile ID
+	if object.gid then
+
+		-- Original code from https://github.com/ponywolf/ponytiled    
+	    flip.x  = hasbit( object.gid, FlippedHorizontallyFlag )
+	    flip.y  = hasbit( object.gid, FlippedVerticallyFlag )          
+	    flip.xy = hasbit( object.gid, FlippedDiagonallyFlag )
+
+	    object.gid = clearbit( object.gid, FlippedHorizontallyFlag )
+	    object.gid = clearbit( object.gid, FlippedVerticallyFlag )
+	    object.gid = clearbit( object.gid, FlippedDiagonallyFlag )
+
+		-- Get the correct tileset using the GID
+		tileset = getTilesetFromGID( object.gid, self.tilesets )
+
+print(tileset)
+		if tileset then
+
+			local firstgid,   tileId      = tileset.firstgid,  object.gid - tileset.firstgid
+			local width,      height      = object.width, object.height
+			local imageSheet, pathToImage = loadTileset( tileset, self.tilesetsDirectory, tileId ) 
+
+print(imageSheet)
+
+			if imageSheet then
+
+				if findProperty( layer.properties, 'isAnimated' ) or findProperty( object.properties, 'isAnimated' ) then
+print('findProperty?')
+					image = display.newSprite( layer, imageSheet, tileset.sequenceData )
+
+				else 
+print('else')
+print(image)
+					image = display.newImageRect( layer, imageSheet, tileId + 1, width, height )
+print(image)
+				end
+					
+			else image = display.newImageRect( layer, pathToImage, width, height ) end
+
+assert(image, 'We need an image bro')
+
+			local points, x, y, rotation  = retrieveShapeData( tileId , tileset )
+
+			-- Add collsion shape
+			if points then
+
+				local deltaX = x - image.width * 0.5 
+				local deltaY = y - image.height * 0.5 
+
+				points = unpackPoints( points, deltaX, deltaY, rotation )
+
+				-- Corona shape have limit of 8 vertex
+				if #points > 8 then
+
+					-- Add two new physics properties
+					local property = { name = 'chain', value = points }
+					object.properties[#object.properties + 1] = property
+					property = { name = 'connectFirstAndLastChainVertex', value = true }
+					object.properties[#object.properties + 1] = property
+
+				else 
+
+					-- Add new physics property
+					local property = { name = 'shape', value = points }
+					object.properties[#object.properties + 1] = property
+
+				end	
+
+			end	  
+
+			-- Apply base properties
+			image.anchorX, image.anchorY = 0, 1
+			image.x, image.y             = object.x + layer.offset_x, object.y + layer.offset_y
+			image.tileId                 = tileId
+			image.gid                    = object.gid
+
+		end	
+
+	elseif object.polygon or object.polyline then 
+		local points = object.polygon or object.polyline
+
+		local xMax, xMin, yMax, yMin = -mHuge, mHuge, -mHuge, mHuge 
+
+		for i = 1, #points do
+
+			if points[i].x < xMin then xMin = points[i].x end  
+			if points[i].y < yMin then yMin = points[i].y end 
+			if points[i].x > xMax then xMax = points[i].x end   
+			if points[i].y > yMax then yMax = points[i].y end  
+
+    	end
+
+		local centerX, centerY = ( xMax + xMin ) * 0.5, ( yMax + yMin ) * 0.5
+
+	    if object.polygon then 
+			
+			image = display.newPolygon( layer, object.x + layer.offset_x, object.y + layer.offset_y, unpackPoints( points ) )	
+
+	    else
+
+			image                = display.newLine( layer, unpack( unpackPoints( points ) ) )
+			image.anchorSegments = true
+			image.x, image.y     = object.x + layer.offset_x, object.y + layer.offset_y
+
+	    end
+
+	    image:translate( centerX, centerY )
+
+	else
+
+		image = display.newRect( layer, 0, 0, object.width, object.height )
+
+		-- Apply base properties
+	    image.anchorX, image.anchorY = 0,        0
+	    image.x,       image.y       = object.x + layer.offset_x, object.y + layer.offset_y
+	
+	end
+
+	if image then
+		-- Name and type
+		image.name = object.name
+		image.type = object.type
+
+		-- Apply base properties
+		image.rotation  = object.rotation or 0
+		image.isVisible = object.visible  or true
+
+		centerAnchor( image )
+
+		-- Flip it
+		if flip.xy then
+
+			print( 'Berry: Unsupported Tiled rotation x,y in ', image.name )
+
+		else
+
+			if flip.x then image.xScale = -1 end
+			if flip.y then image.yScale = -1 end
+
+		end
+
+		if  findProperty( object.properties, 'hasBody' ) then 
+
+			local params = inherit( {}, object.properties )
+			physics.addBody( image, 'dynamic', params ) 
+
+		end	
+
+		inherit( image, layer.properties )
+		inherit( image, object.properties )
+
+	end	
 end
 
 ------------------------------------------------------------------------------------------------

@@ -767,6 +767,16 @@ function Map:createObject(object, layer)
 
 	    image:translate( centerX, centerY )
 
+	elseif object.sprite then
+		local imageSheet = graphics.newImageSheet(object.image, object.imageSheetInfo:getSheet())
+
+		-- switch this to display.newImageRect later (see if it works?)
+		image = display.newImage( layer, imageSheet, object.imageSheetInfo:getFrameIndex(object.name))  
+
+		-- Apply base properties
+	    image.anchorX, image.anchorY = 0,        0
+	    image.x,       image.y       = object.x, object.y
+
 	else
 
 		image = display.newRect( layer, 0, 0, object.width, object.height )

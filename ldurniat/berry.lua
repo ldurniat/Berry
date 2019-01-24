@@ -1001,7 +1001,7 @@ function Map:getObjects( options )
 
 				end
 			else  -- must match one
-				if ( object.name == name ) or ( object.type == objType ) then
+				if ( name and object.name == name ) or ( objType and object.type == objType ) then
 
 					objects[#objects + 1] = object
 

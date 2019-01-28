@@ -151,8 +151,8 @@ local function centerAnchor( object )
     local actualCenterY = ( bounds.yMin + bounds.yMax ) * 0.5
 
     object.anchorX, object.anchorY = 0.5, 0.5  
-    object.x = actualCenterX
-    object.y = actualCenterY
+    object.x, object.y = object.parent:contentToLocal( actualCenterX, 
+    												   actualCenterY)
 
   end
 
@@ -513,8 +513,8 @@ function Map:new( filename, tilesetsDirectory )
 	    layer.type       = info.type
 	    layer.alpha      = info.opacity
 	    layer.isVisible  = info.visible
-		layer.offset_x   = info.offsetx or 0
-		layer.offset_y   = info.offsety or 0
+		layer.x          = info.offsetx or 0
+		layer.y          = info.offsety or 0
 		layer.properties = info.properties or {}
 		
 		if layer.type == 'objectgroup' then
@@ -697,8 +697,8 @@ function Map:createTile( position, gid, layer )
 			local map_offset_x = self.x or 0
 			local map_offset_y = self.y or 0
 
-			image.x = image.x + layer.offset_x - map_offset_x
-			image.y = image.y + layer.offset_y - map_offset_y
+			image.x = image.x - map_offset_x
+			image.y = image.y - map_offset_y
 
 			centerAnchor( image )
 			inherit( image, layer.properties )
@@ -876,8 +876,8 @@ function Map:createObject( object, layer )
 		local map_offset_x = self.x or 0
 		local map_offset_y = self.y or 0
 
-		image.x = image.x + layer.offset_x - map_offset_x
-		image.y = image.y + layer.offset_y - map_offset_y
+		image.x = image.x - map_offset_x
+		image.y = image.y - map_offset_y
 
 		centerAnchor( image )
 

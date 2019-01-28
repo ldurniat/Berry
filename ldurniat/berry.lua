@@ -1,25 +1,25 @@
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- The Map module representing Tiled map.
 --
 -- @module  Berry
 -- @author Łukasz Durniat
 -- @license MIT
 -- @copyright Łukasz Durniat, Jan-2018
-------------------------------------------------------------------------------------------------
---                                 REQUIRED MODULES	                                          --						
--- ------------------------------------------------------------------------------------------ --
+--------------------------------------------------------------------------------
+--                                 REQUIRED MODULES	                          --						
+-- -------------------------------------------------------------------------- --
 
 local json = require 'json' 
 
--- ------------------------------------------------------------------------------------------ --
---                                  MODULE                                                     --												
--- ------------------------------------------------------------------------------------------ --
+-- -------------------------------------------------------------------------- --
+--                                  MODULE                                    --												
+-- -------------------------------------------------------------------------- --
 
 local Map = {}
 
--- ------------------------------------------------------------------------------------------ --
---                                  LOCALISED VARIABLES                                       --	
--- ------------------------------------------------------------------------------------------ --
+-- -------------------------------------------------------------------------- --
+--                                  LOCALISED VARIABLES                       --	
+-- -------------------------------------------------------------------------- --
 
 local mFloor = math.floor
 local mSin   = math.sin
@@ -31,28 +31,28 @@ local FlippedHorizontallyFlag = 0x80000000
 local FlippedVerticallyFlag   = 0x40000000
 local FlippedDiagonallyFlag   = 0x20000000
 
--- ------------------------------------------------------------------------------------------ --
---                                  LOCAL VARIABLES                                       --	
--- ------------------------------------------------------------------------------------------ --
+-- -------------------------------------------------------------------------- --
+--                                  LOCAL VARIABLES                           --	
+-- -------------------------------------------------------------------------- --
 
 local imageSheets = {}
 
--- ------------------------------------------------------------------------------------------ --
---									LOCAL FUNCTIONS	   									  --
--- ------------------------------------------------------------------------------------------ --
+-- -------------------------------------------------------------------------- --
+--									LOCAL FUNCTIONS	                          --
+-- -------------------------------------------------------------------------- --
 
 local function hasbit( x, p ) return x % ( p + p ) >= p end
 local function setbit( x, p ) return hasbit( x, p ) and x or x + p end
 local function clearbit( x, p ) return hasbit( x, p ) and x - p or x end
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Assign given properties to object.
 -- @param object The object which get new properties.
 -- @param properties Properties to assign.
 -- return The object.
 --
 -- Original code from https://github.com/ponywolf/ponytiled 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 local function inherit( object, properties )
 
 	properties = properties or {}
@@ -70,8 +70,9 @@ local function inherit( object, properties )
 
 end	
 
-------------------------------------------------------------------------------------------------
--- Convert two-dimensional table to one-dimensional table and apply traslation/rotation.
+--------------------------------------------------------------------------------
+-- Convert two-dimensional table to one-dimensional table and apply 
+-- traslation/rotation.
 --
 -- @param points The two-dimensional table with x and y properties.
 -- @param deltaX The value added to x coordinate.
@@ -80,7 +81,7 @@ end
 -- @return The one-dimensional table.
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 local function unpackPoints( points, deltaX, deltaY, angle )
 
 	local listOfXY = {}
@@ -135,18 +136,19 @@ local function unpackPoints( points, deltaX, deltaY, angle )
 
 end
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Center display object anchor point.
 -- @param object The object to center.
 --
 -- Original code from https://github.com/ponywolf/ponytiled 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 local function centerAnchor( object )
 
   if object.contentBounds then 
 
     local bounds = object.contentBounds
-    local actualCenterX, actualCenterY = ( bounds.xMin + bounds.xMax ) * 0.5, ( bounds.yMin + bounds.yMax ) * 0.5
+    local actualCenterX = ( bounds.xMin + bounds.xMax ) * 0.5
+    local actualCenterY = ( bounds.yMin + bounds.yMax ) * 0.5
 
     object.anchorX, object.anchorY = 0.5, 0.5  
     object.x = actualCenterX
@@ -156,14 +158,14 @@ local function centerAnchor( object )
 
 end
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Decoding color in hex format to ARGB.
 --
 -- @param hex The color to decode.
 -- @return The color in ARGB format.
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 local function decodeTiledColor( hex )
 
 	hex = hex or '#FF888888'
@@ -171,18 +173,20 @@ local function decodeTiledColor( hex )
 	-- Change #RRGGBB to #AARRGGBB 
 	hex = string.len( hex ) == 6 and 'FF' .. hex or hex
 
-	local function hexToFloat( part ) return tonumber( '0x'.. part or '00' ) / 255 end
+	local function hexToFloat( part ) 
+		return tonumber( '0x'.. part or '00' ) / 255 
+	end
 
-	local a = hexToFloat( hex:sub( 1,2 ) )
-	local r = hexToFloat( hex:sub( 3,4 ) )
-	local g = hexToFloat( hex:sub( 5,6 ) )
-	local b = hexToFloat( hex:sub( 7,8 ) )
+	local a = hexToFloat( hex:sub( 1, 2 ) )
+	local r = hexToFloat( hex:sub( 3, 4 ) )
+	local g = hexToFloat( hex:sub( 5, 6 ) )
+	local b = hexToFloat( hex:sub( 7, 8 ) )
 
 	return r, g, b, a
 
 end
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Load tileset.
 --
 -- @param tileset The object which contains information about tileset.
@@ -191,7 +195,7 @@ end
 -- @return The newly created image sheet.
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
------------------------------------------------------------------------------------------------   
+--------------------------------------------------------------------------------   
 local function loadTileset( tileset, dir, tileId )
 
     if tileset.image then
@@ -258,13 +262,13 @@ local function loadTileset( tileset, dir, tileId )
 
 end
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 --- Gets a Tile image from a GID.
 --
 -- @param gid The gid to use.
 -- @param tilesets All tilesets.
 -- @return The tileset at the gid location.
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 local function getTilesetFromGID( gid, tilesets )
 	
 	for i = 1, #tilesets do
@@ -285,7 +289,7 @@ local function getTilesetFromGID( gid, tilesets )
 
 end	
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Find GID for last element in tileset based on firstgids.
 --
 -- @param tileset The object which contains information about tileset.
@@ -293,7 +297,7 @@ end
 -- @return The number.
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
-------------------------------------------------------------------------------------------------    
+--------------------------------------------------------------------------------    
 local function findLastGID( tileset, nextTileset )
 
     local firstgid  = tileset.firstgid 
@@ -323,13 +327,13 @@ local function findLastGID( tileset, nextTileset )
 
 end
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Find property by name.
 --
 -- @param properties The table with properties.
 -- @param name The name of property to find.
 -- @return The value of found property.
-------------------------------------------------------------------------------------------------   
+--------------------------------------------------------------------------------   
 local function findProperty( properties, name )
 
 	properties = properties or {}
@@ -348,12 +352,12 @@ local function findProperty( properties, name )
 
 end	
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Collect all sequences data from a tileset.
 --
 -- @param tileset The tileset object.
 -- @return The table.
-------------------------------------------------------------------------------------------------  
+--------------------------------------------------------------------------------  
 local function buildSequences( tileset )
 
 	local sequences       = {}
@@ -369,15 +373,18 @@ local function buildSequences( tileset )
 
 			frames = {}
 
-			-- The property tileid starts from 0 (in JSON format) but frames count from 1
-			for i=1, #animation do frames[#frames + 1] = animation[i].tileid + 1 end
+			-- The property tileid starts from 0 (in JSON format) 
+			-- but frames count from 1
+			for i=1, #animation do 
+				frames[#frames + 1] = animation[i].tileid + 1 
+			end
 
 			sequences[#sequences + 1] = {
 				frames        = frames,
 	            time          = findProperty( tile.properties, 'time' ),
 	            name          = findProperty( tile.properties, 'sequenceName' ),
 	            loopCount     = findProperty( tile.properties, 'loopCount' ),
-	            loopDirection = findProperty( tile.properties, 'loopDirection' ),
+	            loopDirection = findProperty( tile.properties, 'loopDirection' )
 	        }
 	        
 	    end 
@@ -388,13 +395,13 @@ local function buildSequences( tileset )
 
 end	
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- Retrieve shape data from a tileset based on id.
 --
 -- @param tileId The id of tile.
 -- @param tileset The object which contains information about tileset.
 -- @return Multiple values.
-------------------------------------------------------------------------------------------------  
+--------------------------------------------------------------------------------  
 local function retrieveShapeData( tileId, tileset )
 
 	local tiles = tileset.tiles or {}
@@ -413,11 +420,12 @@ local function retrieveShapeData( tileId, tileset )
 
 		local objectgroup = tile.objectgroup
 
-	    if objectgroup and objectgroup.objects and #objectgroup.objects > 0 then
+		if objectgroup and objectgroup.objects and #objectgroup.objects > 0 then
 
-	    	object = objectgroup.objects[1] 
+			object = objectgroup.objects[1] 
 
-			if object.polygon or ( not object.ellipse and not object.polyline ) then
+			local notothershape = ( not object.ellipse and not object.polyline )
+			if object.polygon or notothershape then
 				
 				local vertices = object.polygon or { 
 					{ x=0,            y=0 },
@@ -436,12 +444,12 @@ local function retrieveShapeData( tileId, tileset )
 
 end	
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 -- This creates a new display group with copied methods from a class
 --
 -- @param class The class to copy methods from
 -- @return A display group with class methods.
-------------------------------------------------------------------------------------------------  
+--------------------------------------------------------------------------------  
 local function setupDisplayGroup( class )
 	local group = display.newGroup()
 
@@ -451,34 +459,34 @@ local function setupDisplayGroup( class )
 
 	-- My solution is just a quick way to copy the methods from
 	-- our Map class to our map display group (aka instance) 
-	for name, method in pairs(class) do 
-		group[name] = method 
-	end
-
+	for name, method in pairs( class ) do group[name] = method end
 	return group 
-end
--- ------------------------------------------------------------------------------------------ --
---                                  PUBLIC METHODS                                            --	
--- ------------------------------------------------------------------------------------------ --
 
-------------------------------------------------------------------------------------------------
+end
+-- -------------------------------------------------------------------------- --
+--                                  PUBLIC METHODS                            --	
+-- -------------------------------------------------------------------------- --
+
+--------------------------------------------------------------------------------
 -- Create a new map object.
 --
 -- @param filename Name of map file.
 -- @param tilesetsDirectory The path to tilesets.
 -- @return The newly created map.
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 function Map:new( filename, tilesetsDirectory )
+
 	-- Read map file
-    local data = json.decodeFile( system.pathForFile( filename, system.ResourceDirectory ) )
+	local path = system.pathForFile( filename, system.ResourceDirectory ) 
+    local data = json.decodeFile( path )
 
 	local map = setupDisplayGroup( self )
 
-	map.tilesetsDirectory = (tilesetsDirectory and tilesetsDirectory .. '/') or ''
+	map.tilesetsDirectory = tilesetsDirectory and tilesetsDirectory .. '/' or ''
 
     -- Purpose of computation here is simplification of code
-    for i, tileset in ipairs(data.tilesets) do
+    for i, tileset in ipairs( data.tilesets ) do
 
     	-- The tilesets are sorted always in ascending order by their firstgid
     	local nextTileset      = data.tilesets[i + 1]
@@ -488,15 +496,15 @@ function Map:new( filename, tilesetsDirectory )
     end
 
     -- Apply properties from data
-    map.tilesets = data.tilesets
-    map.orientation = data.orientation			
-    map.staggeraxis = data.staggeraxis
+    map.tilesets     = data.tilesets
+    map.orientation  = data.orientation			
+    map.staggeraxis  = data.staggeraxis
     map.staggerindex = data.staggerindex
-    map.tilewidth = data.tilewidth
-    map.tileheight = data.tileheight
+    map.tilewidth    = data.tilewidth
+    map.tileheight   = data.tileheight
 
 	
-	for _, info in ipairs(data.layers) do
+	for _, info in ipairs( data.layers ) do
 
 		local layer = display.newGroup() 
 
@@ -507,28 +515,27 @@ function Map:new( filename, tilesetsDirectory )
 	    layer.isVisible  = info.visible
 		layer.offset_x   = info.offsetx or 0
 		layer.offset_y   = info.offsety or 0
-		layer.properties = info.properties or {} -- Make sure we have a properties table
+		layer.properties = info.properties or {}
 		
 		if info.type == 'objectgroup' then
 
 			local objects = info.objects or {}
 
-			for _, object in ipairs(objects) do
+			for _, object in ipairs( objects ) do
 
 				-- From here we start process Tiled object into display object
-				map:createObject(object, layer)
+				map:createObject( object, layer )
 
 			end
 
 		elseif layer.type == 'tilelayer' then
 
-			-- layer.width variable is already taken due to layer being a display group, 
-			-- so we need a new variable name (layer.size works in this case)
 			layer.size = info.width
 
-			for position, gid in ipairs(info.data) do -- GID stands for global tile ID
+			-- GID stands for global tile ID
+			for position, gid in ipairs( info.data ) do
 
-				if gid > 0 then map:createTile(position, gid, layer) end
+				if gid > 0 then map:createTile( position, gid, layer ) end
 
 			end
 
@@ -546,18 +553,19 @@ function Map:new( filename, tilesetsDirectory )
     map.designedHeight    = data.height * data.tileheight
 
     -- Center map
-    map.x, map.y = display.contentCenterX - map.designedWidth * 0.5, display.contentCenterY - map.designedHeight * 0.5
+    map.x = display.contentCenterX - map.designedWidth * 0.5
+    map.y = display.contentCenterY - map.designedHeight * 0.5
 
 	-- Set the background color to the map background
 	display.setDefault( 'background', decodeTiledColor( data.backgroundcolor ) )   
 	return map
 end
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 --- Create and add tile to layer
 --  
-------------------------------------------------------------------------------------------------
-function Map:createTile(position, gid, layer)
+--------------------------------------------------------------------------------
+function Map:createTile( position, gid, layer )
 	local tileset
 
 	-- Get the correct tileset using the GID
@@ -569,15 +577,18 @@ function Map:createTile(position, gid, layer)
 		local firstgid, tileId = tileset.firstgid,  gid - tileset.firstgid
 		local width,    height = tileset.tilewidth, tileset.tileheight 
 		
-		local imageSheet, pathToImage, imagewidth, imageheight = loadTileset( tileset, self.tilesetsDirectory, tileId )
+		local imageSheet, pathToImage, imagewidth, imageheight = loadTileset( 
+			tileset, self.tilesetsDirectory, tileId )
 
 		if imageSheet then
 
-			image = display.newImageRect( layer, imageSheet, tileId + 1, width, height )
+			image = display.newImageRect( layer, imageSheet, 
+										  tileId + 1, width, height )
 
 		else 
           	
-          	image = display.newImageRect( layer, pathToImage, imagewidth, imageheight )
+          	image = display.newImageRect( layer, pathToImage, 
+          								  imagewidth, imageheight )
 
 		end	
 
@@ -592,43 +603,89 @@ function Map:createTile(position, gid, layer)
 
 			if self.orientation == 'isometric' then
 
-				image.x = (-1*image.row*self.tilewidth/2) + (image.column*self.tilewidth/2)
-				image.y = (image.column*self.tileheight/2) - (-1*image.row*self.tileheight/2)
+				image.x = ( -1 * image.row * self.tilewidth / 2 ) + 
+						  ( image.column * self.tilewidth / 2 )
+
+				image.y = ( image.column * self.tileheight / 2) - 
+						  ( -1 * image.row * self.tileheight / 2)
 
 			elseif self.orientation == 'staggered' then
-		    	local staggered_offset_y, staggered_offset_x = (self.tileheight/2), (self.tilewidth/2)
+
+		    	local staggered_offset_y = ( self.tileheight / 2 )
+		    	local staggered_offset_x = ( self.tilewidth / 2 )
 
 		    	if self.staggeraxis == 'y' then
+
 		    		if self.staggerindex == 'odd' then
+
 		    			if image.row % 2 == 0 then
-		    				image.x = (image.column * self.tilewidth) + staggered_offset_x
+
+		    				image.x = ( image.column * self.tilewidth ) + 
+		    							staggered_offset_x
+
 		    			else
-		    				image.x = (image.column * self.tilewidth)
+
+		    				image.x = ( image.column * self.tilewidth )
+
 		    			end
+
 		    		else
+
 		    			if image.row % 2 == 0  then
-		    				image.x = (image.column * self.tilewidth)
+
+		    				image.x = ( image.column * self.tilewidth )
+
 						else
-		    				image.x = (image.column * self.tilewidth) + staggered_offset_x
+
+		    				image.x = ( image.column * self.tilewidth ) + 
+		    							staggered_offset_x
+
 						end
+
 		    		end
-		    		image.y = (image.row * (self.tileheight - self.tileheight/2))
+
+		    		image.y = ( 
+		    					image.row * 
+		    				    ( self.tileheight - self.tileheight / 2 ) 
+		    				  )
+
 		    	else
+
 		    		if self.staggerindex == 'odd' then
+
 		    			if image.column % 2 == 0  then
-		    				image.y = (image.row * self.tileheight) + staggered_offset_y
+
+		    				image.y = ( image.row * self.tileheight ) + 
+		    							staggered_offset_y
+
 		    			else
-		    				image.y = (image.row * self.tileheight)
+
+		    				image.y = ( image.row * self.tileheight )
+
 		    			end
+
 		    		else
+
 		    			if image.column % 2 == 0  then
-		    				image.y = (image.row * self.tileheight)
+
+		    				image.y = ( image.row * self.tileheight )
+
 						else
-		    				image.y = (image.row * self.tileheight) + staggered_offset_y
+
+		    				image.y = ( image.row * self.tileheight ) + 
+		    							staggered_offset_y
+
 						end
+
 		    		end
-		    		image.x = (image.column * (self.tilewidth - self.tilewidth/2))
+
+		    		image.x = ( 
+		    					image.column * 
+		    					( self.tilewidth - self.tilewidth / 2 ) 
+		    				  )
+
 		    	end
+
 			elseif self.orientation == 'orthogonal' then
 
 				image.x = ( image.column - 1 ) * self.tilewidth
@@ -650,13 +707,14 @@ function Map:createTile(position, gid, layer)
 		end	
 
 	end	
+
 end
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 --- Create and add object to layer
 --  
-------------------------------------------------------------------------------------------------
-function Map:createObject(object, layer)
+--------------------------------------------------------------------------------
+function Map:createObject( object, layer )
     -- Store the flipped states
     local flip = {}
     local image
@@ -682,25 +740,38 @@ function Map:createObject(object, layer)
 
 		if tileset then
 
-			local firstgid,   tileId      = tileset.firstgid,  object.gid - tileset.firstgid
+			local firstgid      		  = tileset.firstgid
+			local tileId 				  = object.gid - tileset.firstgid
 			local width,      height      = object.width, object.height
-			local imageSheet, pathToImage = loadTileset( tileset, self.tilesetsDirectory, tileId ) 
+			local imageSheet, pathToImage = loadTileset( 
+												tileset, 
+												self.tilesetsDirectory, 
+												tileId ) 
 
 			if imageSheet then
 
-				if findProperty( layer.properties, 'isAnimated' ) or findProperty( object.properties, 'isAnimated' ) then
+				if findProperty( layer.properties, 'isAnimated' ) or 
+				   findProperty( object.properties, 'isAnimated' ) then
 
-					image = display.newSprite( layer, imageSheet, tileset.sequenceData )
+					image = display.newSprite( layer, 
+											   imageSheet, 
+											   tileset.sequenceData )
 
 				else
 
-					image = display.newImageRect( layer, imageSheet, tileId + 1, width, height )
+					image = display.newImageRect( layer, imageSheet, 
+												  tileId + 1, width, height )
 
 				end
 					
-			else image = display.newImageRect( layer, pathToImage, width, height ) end
+			else 
 
-			local points, x, y, rotation  = retrieveShapeData( tileId , tileset )
+				image = display.newImageRect( layer, pathToImage, 
+											  width, height ) 
+
+			end
+
+			local points, x, y, rotation  = retrieveShapeData( tileId, tileset )
 
 			-- Add collsion shape
 			if points then
@@ -716,7 +787,8 @@ function Map:createObject(object, layer)
 					-- Add two new physics properties
 					local property = { name = 'chain', value = points }
 					object.properties[#object.properties + 1] = property
-					property = { name = 'connectFirstAndLastChainVertex', value = true }
+					property = { name = 'connectFirstAndLastChainVertex', 
+								 value = true }
 					object.properties[#object.properties + 1] = property
 
 				else 
@@ -755,11 +827,12 @@ function Map:createObject(object, layer)
 
 	    if object.polygon then 
 			
-			image = display.newPolygon( layer, object.x, object.y, unpackPoints( points ) )	
+			image = display.newPolygon( layer, object.x, 
+										object.y, unpackPoints( points ) )	
 
 	    else
 
-			image                = display.newLine( layer, unpack( unpackPoints( points ) ) )
+			image = display.newLine( layer, unpack( unpackPoints( points ) ) )
 			image.anchorSegments = true
 			image.x, image.y     = object.x, object.y
 
@@ -768,10 +841,13 @@ function Map:createObject(object, layer)
 	    image:translate( centerX, centerY )
 
 	elseif object.sprite then
-		local imageSheet = graphics.newImageSheet(object.image, object.imageSheetInfo:getSheet())
+		local sheet_info = object.imageSheetInfo
+		local imageSheet = graphics.newImageSheet( object.image, 
+												   sheet_info:getSheet() )
 
 		-- switch this to display.newImageRect later (see if it works?)
-		image = display.newImage( layer, imageSheet, object.imageSheetInfo:getFrameIndex(object.name))  
+		image = display.newImage( layer, imageSheet, 
+								  sheet_info:getFrameIndex( object.name ))  
 
 		-- Apply base properties
 	    image.anchorX, image.anchorY = 0,        0
@@ -829,24 +905,27 @@ function Map:createObject(object, layer)
 		inherit( image, object.properties )
 
 	end	
+
 end
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 --- Sort objects on layers.
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 function Map:sort()
 
 	local function rightToLeft( a, b )
 
-		return ( a.x or 0 ) + ( a.width or 0 ) * 0.5 > ( b.x or 0 ) + ( b.width or 0 ) * 0.5
+		return ( a.x or 0 ) + ( a.width or 0 ) * 0.5 > 
+			   ( b.x or 0 ) + ( b.width or 0 ) * 0.5
 
 	end
 
 	local function upToDown( a, b )
 
-		return ( a.y or 0 ) + ( a.height or 0 ) * 0.5 < ( b.y or 0 ) + ( b.height or 0 ) * 0.5 
+		return ( a.y or 0 ) + ( a.height or 0 ) * 0.5 < 
+			   ( b.y or 0 ) + ( b.height or 0 ) * 0.5 
 
 	end
 
@@ -859,7 +938,7 @@ function Map:sort()
 
 			for i = 1, layerToSort.numChildren do
 
-				objects[#objects+1] = layerToSort[i]
+				objects[#objects + 1] = layerToSort[i]
 
 			end
 
@@ -882,21 +961,23 @@ function Map:sort()
 
 end	
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 --- Extend objects using modules with custom code.
 --
 -- @param table The list of types of objects to extend
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 function Map:extend( ... )
 	
     local objectTypes = arg or {}
 
     for i = 1, #objectTypes do 
 
+    	local extension = self.extensions or self.defaultExtensions
+
       -- Load each module based on type
-		local plugin = require ( ( self.extensions or self.defaultExtensions ) .. objectTypes[i] )
+		local plugin = require ( extension .. objectTypes[i] )
 
 		-- Find each type of tiled object
 		local images = self:getObjects( { type=objectTypes[i] } )
@@ -917,12 +998,12 @@ function Map:extend( ... )
 
 end 
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 --- Add an object layer by name.
 --
 -- @param name The name of layer to add.
 -- @return The added layer.
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 function Map:addLayer( name ) 
 
 	local layer = display.newGroup()
@@ -941,16 +1022,17 @@ function Map:addLayer( name )
 	self:insert( layer )
 	
 	return layer
+
 end  
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 --- Find the layer by name.
 --
 -- @param name The name of layer.
 -- @return The layer object if found.
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 function Map:getLayer( name ) 
 
 	local layer
@@ -969,14 +1051,14 @@ function Map:getLayer( name )
 		
 end  
 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 --- Find the objects by name and type.
 --
 -- @param options The table which contains two fields name and type.
 -- @return The table with found objects.
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
-------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 function Map:getObjects( options ) 
 
 	options = options or {}
@@ -994,14 +1076,20 @@ function Map:getObjects( options )
 
 			object = layer[j]
 
+			local has_name_match = ( name and object.name == name )
+			local has_type_match = ( objType and object.type == objType)
+
 			if name and objType then -- must match both
-				if ( object.name == name ) and ( object.type == objType ) then
+
+				if has_name_match and has_type_match then
 
 					objects[#objects + 1] = object
 
 				end
+
 			else  -- must match one
-				if ( name and object.name == name ) or ( objType and object.type == objType ) then
+
+				if has_name_match or has_type_match then
 
 					objects[#objects + 1] = object
 
@@ -1013,7 +1101,7 @@ function Map:getObjects( options )
 
 	end
 
-	return unpack(objects)
+	return unpack( objects )
 
 end  
 

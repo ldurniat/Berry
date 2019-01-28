@@ -517,7 +517,7 @@ function Map:new( filename, tilesetsDirectory )
 		layer.offset_y   = info.offsety or 0
 		layer.properties = info.properties or {}
 		
-		if info.type == 'objectgroup' then
+		if layer.type == 'objectgroup' then
 
 			local objects = info.objects or {}
 

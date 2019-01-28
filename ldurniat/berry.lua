@@ -566,10 +566,9 @@ end
 --  
 --------------------------------------------------------------------------------
 function Map:createTile( position, gid, layer )
-	local tileset
 
 	-- Get the correct tileset using the GID
-	tileset = getTilesetFromGID( gid, self.tilesets )
+	local tileset = getTilesetFromGID( gid, self.tilesets )
 
 	if tileset then
 

@@ -602,16 +602,13 @@ function Map:createTile( position, gid, layer )
 
 			if self.orientation == 'isometric' then
 
-				image.x = ( -1 * image.row * self.tilewidth / 2 ) + 
-						  ( image.column * self.tilewidth / 2 )
-
-				image.y = ( image.column * self.tileheight / 2) - 
-						  ( -1 * image.row * self.tileheight / 2)
+				image.x = ( image.column - image.row ) * self.tilewidth * 0.5
+				image.y = ( image.column + image.row ) * self.tileheight * 0.5
 
 			elseif self.orientation == 'staggered' then
 
-		    	local staggered_offset_y = ( self.tileheight / 2 )
-		    	local staggered_offset_x = ( self.tilewidth / 2 )
+		    	local staggered_offset_y = ( self.tileheight * 0.5 )
+		    	local staggered_offset_x = ( self.tilewidth * 0.5 )
 
 		    	if self.staggeraxis == 'y' then
 
@@ -645,7 +642,7 @@ function Map:createTile( position, gid, layer )
 
 		    		image.y = ( 
 		    					image.row * 
-		    				    ( self.tileheight - self.tileheight / 2 ) 
+		    				    ( self.tileheight - self.tileheight * 0.5 ) 
 		    				  )
 
 		    	else
@@ -680,7 +677,7 @@ function Map:createTile( position, gid, layer )
 
 		    		image.x = ( 
 		    					image.column * 
-		    					( self.tilewidth - self.tilewidth / 2 ) 
+		    					( self.tilewidth - self.tilewidth * 0.5 ) 
 		    				  )
 
 		    	end

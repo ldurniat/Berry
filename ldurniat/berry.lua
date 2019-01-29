@@ -27,23 +27,23 @@ local mCos   = math.cos
 local mRad   = math.rad
 local mHuge  = math.huge
 
-local FlippedHorizontallyFlag = 0x80000000
-local FlippedVerticallyFlag   = 0x40000000
-local FlippedDiagonallyFlag   = 0x20000000
+local FLIPPED_HORIZONTAL_FLAG = 0x80000000
+local FLIPPED_VERTICAL_FLAG   = 0x40000000
+local FLIPPED_DIAGONAL_FLAG   = 0x20000000
 
 -- -------------------------------------------------------------------------- --
 --                                  LOCAL VARIABLES                           --	
 -- -------------------------------------------------------------------------- --
 
-local imageSheets = {}
+local image_sheets = {}
 
 -- -------------------------------------------------------------------------- --
 --									LOCAL FUNCTIONS	                          --
 -- -------------------------------------------------------------------------- --
 
-local function hasbit( x, p ) return x % ( p + p ) >= p end
-local function setbit( x, p ) return hasbit( x, p ) and x or x + p end
-local function clearbit( x, p ) return hasbit( x, p ) and x - p or x end
+local function hasBit( x, p ) return x % ( p + p ) >= p end
+local function setBit( x, p ) return hasBit( x, p ) and x or x + p end
+local function clearBit( x, p ) return hasBit( x, p ) and x - p or x end
 
 --------------------------------------------------------------------------------
 -- Assign given properties to object.
@@ -75,16 +75,16 @@ end
 -- traslation/rotation.
 --
 -- @param points The two-dimensional table with x and y properties.
--- @param deltaX The value added to x coordinate.
--- @param deltaY The value added to y coordinate.
+-- @param delta_x The value added to x coordinate.
+-- @param delta_y The value added to y coordinate.
 -- @param angle The value of rotation in degrees.
 -- @return The one-dimensional table.
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------
-local function unpackPoints( points, deltaX, deltaY, angle )
+local function unpackPoints( points, delta_x, delta_y, angle )
 
-	local listOfXY = {}
+	local xy_list = {}
 	local x, y
 
 	local function rotate( points, angle )
@@ -105,17 +105,17 @@ local function unpackPoints( points, deltaX, deltaY, angle )
 			
 	end	
 
-	local function translate( points, deltaX, deltaY ) 
+	local function translate( points, delta_x, delta_y ) 
 
-		deltaX = deltaX or 0	
-		deltaY = deltaY or 0
+		delta_x = delta_x or 0	
+		delta_y = delta_y or 0
 
 		for i=1, #points do
 
 			x, y = points[i].x, points[i].y
 
-			points[i].x = x + deltaX
-			points[i].y = y + deltaY 
+			points[i].x = x + delta_x
+			points[i].y = y + delta_y 
 			
 		end	
 
@@ -123,16 +123,16 @@ local function unpackPoints( points, deltaX, deltaY, angle )
 
 	-- All transformations are made in place
 	rotate( points, angle )
-	translate( points, deltaX, deltaY )
+	translate( points, delta_x, delta_y )
 
 	for i = 1, #points do
 
-		listOfXY[#listOfXY + 1] = points[i].x
-		listOfXY[#listOfXY + 1] = points[i].y
+		xy_list[#xy_list + 1] = points[i].x
+		xy_list[#xy_list + 1] = points[i].y
 
 	end
 
-	return listOfXY
+	return xy_list
 
 end
 
@@ -147,12 +147,12 @@ local function centerAnchor( object )
   if object.contentBounds then 
 
     local bounds = object.contentBounds
-    local actualCenterX = ( bounds.xMin + bounds.xMax ) * 0.5
-    local actualCenterY = ( bounds.yMin + bounds.yMax ) * 0.5
+    local actual_center_x = ( bounds.xMin + bounds.xMax ) * 0.5
+    local actual_center_y = ( bounds.yMin + bounds.yMax ) * 0.5
 
     object.anchorX, object.anchorY = 0.5, 0.5  
-    object.x, object.y = object.parent:contentToLocal( actualCenterX, 
-    												   actualCenterY)
+    object.x, object.y = object.parent:contentToLocal( actual_center_x, 
+    												   actual_center_y)
 
   end
 
@@ -202,9 +202,9 @@ local function loadTileset( tileset, dir, tileId )
 
     	local name = tileset.image
 
-	    if not imageSheets[name] then	
+	    if not image_sheets[name] then	
 
-			local tsiw,   tsih    = tileset.imagewidth, tileset.imageheight
+			local tsiw,   tsih    = tileset.image_width, tileset.image_height
 			local margin, spacing = tileset.margin,     tileset.spacing
 			local w,      h       = tileset.tilewidth,  tileset.tileheight
 
@@ -235,11 +235,11 @@ local function loadTileset( tileset, dir, tileId )
 
 			end
 
-			imageSheets[name] = graphics.newImageSheet( dir .. name, options )
+			image_sheets[name] = graphics.newImageSheet( dir .. name, options )
 
 		end	
 
-		return imageSheets[name], nil
+		return image_sheets[name], nil
 
 	else
 
@@ -252,7 +252,8 @@ local function loadTileset( tileset, dir, tileId )
 
   			if tile.id == tileId then
 
-  				return nil, dir .. tile.image, tile.imagewidth, tile.imageheight
+  				return 
+  				nil, dir .. tile.image, tile.image_width, tile.image_height
   			
   			end	
 
@@ -293,12 +294,12 @@ end
 -- Find GID for last element in tileset based on firstgids.
 --
 -- @param tileset The object which contains information about tileset.
--- @param nextTileset The object which contains information about tileset.
+-- @param next_tileset The object which contains information about tileset.
 -- @return The number.
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------    
-local function findLastGID( tileset, nextTileset )
+local function findLastGID( tileset, next_tileset )
 
     local firstgid  = tileset.firstgid 
 	local image     = tileset.image 
@@ -312,9 +313,9 @@ local function findLastGID( tileset, nextTileset )
 
 	elseif tiles then
 
-  		if nextTileset then
+  		if next_tileset then
 
-  			last = nextTileset.firstgid - 1
+  			last = next_tileset.firstgid - 1
 
   		else
 
@@ -424,8 +425,8 @@ local function retrieveShapeData( tileId, tileset )
 
 			object = objectgroup.objects[1] 
 
-			local notothershape = ( not object.ellipse and not object.polyline )
-			if object.polygon or notothershape then
+			local other_shape = ( not object.ellipse and not object.polyline )
+			if object.polygon or other_shape then
 				
 				local vertices = object.polygon or { 
 					{ x=0,            y=0 },
@@ -451,15 +452,10 @@ end
 -- @return A display group with class methods.
 --------------------------------------------------------------------------------  
 local function setupDisplayGroup( class )
+
 	local group = display.newGroup()
-
-	-- Okay so normally this process is done via a metatable BUT 
-	-- display groups already have a metatable setup when created
-	-- making it a PIA.
-
-	-- My solution is just a quick way to copy the methods from
-	-- our Map class to our map display group (aka instance) 
 	for name, method in pairs( class ) do group[name] = method end
+
 	return group 
 
 end
@@ -469,17 +465,17 @@ end
 --
 -- @param row Number of row. Can real number.
 -- @param column Number of column. Can be real number.
--- @param tileWidth Width of tile.
--- @param tileHeight Height of tile.
--- @param offesetX 
--- @param offsetY 
+-- @param tile_width Width of tile.
+-- @param tile_height Height of tile.
+-- @param offeset_x
+-- @param offset_y 
 -- @return A two coodinates x and y.
 -------------------------------------------------------------------------------- 
-local function isoToScreen( row, column, tileWidth, tileHeight, 
-							offsetX, offsetY )
+local function isoToScreen( row, column, tile_width, tile_height, 
+							offset_x, offset_y )
 
-	return (column - row) * tileWidth * 0.5 + (offsetX or 0), 
-		   (column + row) * tileHeight * 0.5 + (offsetY or 0)              
+	return (column - row) * tile_width * 0.5 + (offset_x or 0), 
+		   (column + row) * tile_height * 0.5 + (offset_y or 0)              
 
 end	
 
@@ -514,11 +510,11 @@ end
 -- Create a new map object.
 --
 -- @param filename Name of map file.
--- @param tilesetsDirectory The path to tilesets.
+-- @param tilesets_dir The path to tilesets.
 -- @return The newly created map.
 --------------------------------------------------------------------------------
 
-function Map:new( filename, tilesetsDirectory )
+function Map:new( filename, tilesets_dir )
 
 	-- Read map file
 	local path = system.pathForFile( filename, system.ResourceDirectory ) 
@@ -526,7 +522,7 @@ function Map:new( filename, tilesetsDirectory )
 
 	local map = setupDisplayGroup( self )
 
-	map.tilesetsDirectory = tilesetsDirectory and tilesetsDirectory .. '/' or ''
+	map.tilesets_dir = tilesets_dir and tilesets_dir .. '/' or ''
 	map.dim               = { width=data.width, height=data.height }
 
 
@@ -534,19 +530,22 @@ function Map:new( filename, tilesetsDirectory )
     for i, tileset in ipairs( data.tilesets ) do
 
     	-- The tilesets are sorted always in ascending order by their firstgid
-    	local nextTileset      = data.tilesets[i + 1]
-    	tileset.lastgid        = findLastGID( tileset, nextTileset ) 
-    	tileset.sequenceData   = buildSequences( tileset )
+    	local next_tileset      = data.tilesets[i + 1]
+    	tileset.lastgid        = findLastGID( tileset, next_tileset ) 
+    	tileset.sequence_data   = buildSequences( tileset )
 
     end
 
     -- Apply properties from data
-    map.tilesets     = data.tilesets
-    map.orientation  = data.orientation			
-    map.staggeraxis  = data.staggeraxis
-    map.staggerindex = data.staggerindex
-    map.tilewidth    = data.tilewidth
-    map.tileheight   = data.tileheight
+    map.tilesets      = data.tilesets
+    map.orientation   = data.orientation			
+    map.stagger_axis  = data.staggeraxis
+    map.stagger_index = data.staggerindex
+    map.tile_width    = data.tilewidth
+    map.tile_height   = data.tileheight
+
+	-- Add useful properties
+    map.default_extensions = 'berry.plugins.'
 
 	
 	for _, info in ipairs( data.layers ) do
@@ -589,26 +588,21 @@ function Map:new( filename, tilesetsDirectory )
 		map:insert( layer )
 
 	end 
-
-	-- Add useful properties
-    map.defaultExtensions = 'berry.plugins.'
-    map.tilewidth         = data.tilewidth
-    map.tileheight        = data.tileheight
  
     -- Center map
     if map.orientation == 'isometric' then
 
-    	map.designedWidth  = (data.height + data.width) * 0.5 * data.tilewidth
-    	map.designedHeight = (data.height + data.width) * 0.5 * data.tileheight
-    	map.x = display.contentCenterX - map.designedWidth * 0.5
-    	map.y = display.contentCenterY - map.designedHeight * 0.5
+    	map.designed_width  = (data.height + data.width) * 0.5 * data.tilewidth
+    	map.designed_height = (data.height + data.width) * 0.5 * data.tileheight
+    	map.x = display.contentCenterX - map.designed_width * 0.5
+    	map.y = display.contentCenterY - map.designed_height * 0.5
 
     elseif map.orientation == 'orthogonal' then
     	
-    	map.designedWidth  = data.width  * data.tilewidth
-    	map.designedHeight = data.height * data.tileheight
-    	map.x = display.contentCenterX - map.designedWidth * 0.5
-    	map.y = display.contentCenterY - map.designedHeight * 0.5
+    	map.designed_width  = data.width  * data.tilewidth
+    	map.designed_height = data.height * data.tileheight
+    	map.x = display.contentCenterX - map.designed_width * 0.5
+    	map.y = display.contentCenterY - map.designed_height * 0.5
     end	
 
 	-- Set the background color to the map background
@@ -631,8 +625,8 @@ function Map:createTile( position, gid, layer )
 		local firstgid, tileId = tileset.firstgid,  gid - tileset.firstgid
 		local width,    height = tileset.tilewidth, tileset.tileheight 
 		
-		local imageSheet, pathToImage, imagewidth, imageheight = loadTileset( 
-			tileset, self.tilesetsDirectory, tileId )
+		local imageSheet, image_path, image_width, image_height = loadTileset( 
+			tileset, self.tilesets_dir, tileId )
 
 		if imageSheet then
 
@@ -641,8 +635,8 @@ function Map:createTile( position, gid, layer )
 
 		else 
           	
-          	image = display.newImageRect( layer, pathToImage, 
-          								  imagewidth, imageheight )
+          	image = display.newImageRect( layer, image_path, 
+          								  image_width, image_height )
 
 		end	
 
@@ -660,27 +654,27 @@ function Map:createTile( position, gid, layer )
 				image.anchorX, image.anchorY = 0.5, 0
 				image.x, image.y = isoToScreen( 
 					image.row, image.column, 
-					self.tilewidth, self.tileheight, 
-					self.dim.height * self.tilewidth * 0.5 
+					self.tile_width, self.tile_height, 
+					self.dim.height * self.tile_width * 0.5 
 				)
 
 			elseif self.orientation == 'staggered' then
 
-		    	local staggered_offset_y = ( self.tileheight * 0.5 )
-		    	local staggered_offset_x = ( self.tilewidth * 0.5 )
+		    	local staggered_offset_y = ( self.tile_height * 0.5 )
+		    	local staggered_offset_x = ( self.tile_width * 0.5 )
 
-		    	if self.staggeraxis == 'y' then
+		    	if self.stagger_axis == 'y' then
 
-		    		if self.staggerindex == 'odd' then
+		    		if self.stagger_index == 'odd' then
 
 		    			if image.row % 2 == 0 then
 
-		    				image.x = ( image.column * self.tilewidth ) + 
+		    				image.x = ( image.column * self.tile_width ) + 
 		    							staggered_offset_x
 
 		    			else
 
-		    				image.x = ( image.column * self.tilewidth )
+		    				image.x = ( image.column * self.tile_width )
 
 		    			end
 
@@ -688,11 +682,11 @@ function Map:createTile( position, gid, layer )
 
 		    			if image.row % 2 == 0  then
 
-		    				image.x = ( image.column * self.tilewidth )
+		    				image.x = ( image.column * self.tile_width )
 
 						else
 
-		    				image.x = ( image.column * self.tilewidth ) + 
+		    				image.x = ( image.column * self.tile_width ) + 
 		    							staggered_offset_x
 
 						end
@@ -701,21 +695,21 @@ function Map:createTile( position, gid, layer )
 
 		    		image.y = ( 
 		    					image.row * 
-		    				    ( self.tileheight - self.tileheight * 0.5 ) 
+		    				    ( self.tile_height - self.tile_height * 0.5 ) 
 		    				  )
 
 		    	else
 
-		    		if self.staggerindex == 'odd' then
+		    		if self.stagger_index == 'odd' then
 
 		    			if image.column % 2 == 0  then
 
-		    				image.y = ( image.row * self.tileheight ) + 
+		    				image.y = ( image.row * self.tile_height ) + 
 		    							staggered_offset_y
 
 		    			else
 
-		    				image.y = ( image.row * self.tileheight )
+		    				image.y = ( image.row * self.tile_height )
 
 		    			end
 
@@ -723,11 +717,11 @@ function Map:createTile( position, gid, layer )
 
 		    			if image.column % 2 == 0  then
 
-		    				image.y = ( image.row * self.tileheight )
+		    				image.y = ( image.row * self.tile_height )
 
 						else
 
-		    				image.y = ( image.row * self.tileheight ) + 
+		    				image.y = ( image.row * self.tile_height ) + 
 		    							staggered_offset_y
 
 						end
@@ -736,7 +730,7 @@ function Map:createTile( position, gid, layer )
 
 		    		image.x = ( 
 		    					image.column * 
-		    					( self.tilewidth - self.tilewidth * 0.5 ) 
+		    					( self.tile_width - self.tile_width * 0.5 ) 
 		    				  )
 
 		    	end
@@ -744,8 +738,8 @@ function Map:createTile( position, gid, layer )
 			elseif self.orientation == 'orthogonal' then
 
 				image.anchorX, image.anchorY = 0, 1
-				image.x = image.column * self.tilewidth
-				image.y = ( image.row + 1 ) * self.tileheight
+				image.x = image.column * self.tile_width
+				image.y = ( image.row + 1 ) * self.tile_height
 
 			end
 
@@ -783,13 +777,13 @@ function Map:createObject( object, layer )
 	if object.gid then
 
 		-- Original code from https://github.com/ponywolf/ponytiled    
-	    flip.x  = hasbit( object.gid, FlippedHorizontallyFlag )
-	    flip.y  = hasbit( object.gid, FlippedVerticallyFlag )          
-	    flip.xy = hasbit( object.gid, FlippedDiagonallyFlag )
+	    flip.x  = hasBit( object.gid, FLIPPED_HORIZONTAL_FLAG )
+	    flip.y  = hasBit( object.gid, FLIPPED_VERTICAL_FLAG )          
+	    flip.xy = hasBit( object.gid, FLIPPED_DIAGONAL_FLAG )
 
-	    object.gid = clearbit( object.gid, FlippedHorizontallyFlag )
-	    object.gid = clearbit( object.gid, FlippedVerticallyFlag )
-	    object.gid = clearbit( object.gid, FlippedDiagonallyFlag )
+	    object.gid = clearBit( object.gid, FLIPPED_HORIZONTAL_FLAG )
+	    object.gid = clearBit( object.gid, FLIPPED_VERTICAL_FLAG )
+	    object.gid = clearBit( object.gid, FLIPPED_DIAGONAL_FLAG )
 
 		-- Get the correct tileset using the GID
 		tileset = getTilesetFromGID( object.gid, self.tilesets )
@@ -799,9 +793,9 @@ function Map:createObject( object, layer )
 			local firstgid      		  = tileset.firstgid
 			local tileId 				  = object.gid - tileset.firstgid
 			local width,      height      = object.width, object.height
-			local imageSheet, pathToImage = loadTileset( 
+			local imageSheet, image_path = loadTileset( 
 												tileset, 
-												self.tilesetsDirectory, 
+												self.tilesets_dir, 
 												tileId ) 
 
 			if imageSheet then
@@ -811,7 +805,7 @@ function Map:createObject( object, layer )
 
 					image = display.newSprite( layer, 
 											   imageSheet, 
-											   tileset.sequenceData )
+											   tileset.sequence_data )
 
 				else
 
@@ -822,7 +816,7 @@ function Map:createObject( object, layer )
 					
 			else 
 
-				image = display.newImageRect( layer, pathToImage, 
+				image = display.newImageRect( layer, image_path, 
 											  width, height ) 
 
 			end
@@ -832,10 +826,10 @@ function Map:createObject( object, layer )
 			-- Add collsion shape
 			if points then
 
-				local deltaX = x - image.width * 0.5 
-				local deltaY = y - image.height * 0.5 
+				local delta_x = x - image.width * 0.5 
+				local delta_y = y - image.height * 0.5 
 
-				points = unpackPoints( points, deltaX, deltaY, rotation )
+				points = unpackPoints( points, delta_x, delta_y, rotation )
 
 				-- Corona shape have limit of 8 vertex
 				if #points > 8 then
@@ -860,12 +854,12 @@ function Map:createObject( object, layer )
 	    	if self.orientation == 'isometric' then
 
 				image.x, image.y = isoToScreen( 
-					object.y / self.tileheight, 
-					object.x / self.tileheight, 
-					self.tilewidth, 
-					self.tileheight, 
-					self.dim.height * self.tilewidth * 0.5 
-				)
+					object.y / self.tile_height, 
+					object.x / self.tile_height, 
+					self.tile_width, 
+					self.tile_height, 
+					self.dim.height * self.tile_width * 0.5 
+					)
             	image.anchorX, image.anchorY = 0.5, 1   
 
 			elseif self.orientation == 'orthogonal' then 
@@ -890,10 +884,10 @@ function Map:createObject( object, layer )
 	    		for i=1, #points do
 		    
 	                points[i].x, points[i].y = isoToScreen( 
-	                	points[i].y / self.tileheight, 
-	                	points[i].x / self.tileheight, 
-	                	self.tilewidth, 
-	                	self.tileheight 
+	                	points[i].y / self.tile_height, 
+	                	points[i].x / self.tile_height, 
+	                	self.tile_width, 
+	                	self.tile_height 
 	                )
 	               
 				end	
@@ -903,11 +897,11 @@ function Map:createObject( object, layer )
 					layer, 0, 0, unpackPoints( points ) 
 				)	
 				image.x, image.y = isoToScreen( 
-					object.y / self.tileheight, 
-					object.x / self.tileheight, 
-					self.tilewidth, 
-					self.tileheight, 
-					self.dim.height * self.tilewidth * 0.5 
+					object.y / self.tile_height, 
+					object.x / self.tile_height, 
+					self.tile_width, 
+					self.tile_height, 
+					self.dim.height * self.tile_width * 0.5 
 				)
                 image:translate( centerX, centerY )
 
@@ -929,11 +923,11 @@ function Map:createObject( object, layer )
 	    		for i=1, #points do
 		    	
 			    	points[i].x, points[i].y = isoToScreen( 
-			    		points[i].y / self.tileheight, 
-			    		points[i].x / self.tileheight, 
-			    		self.tilewidth, 
-			    		self.tileheight, 
-			    		self.dim.height * self.tilewidth * 0.5 
+			    		points[i].y / self.tile_height, 
+			    		points[i].x / self.tile_height, 
+			    		self.tile_width, 
+			    		self.tile_height, 
+			    		self.dim.height * self.tile_width * 0.5 
 			    	)
 
 				end	
@@ -944,10 +938,10 @@ function Map:createObject( object, layer )
 				)
 				image.anchorSegments = true
 				image.x, image.y = isoToScreen( 
-					object.y / self.tileheight, 
-					object.x / self.tileheight, 
-					self.tilewidth, 
-					self.tileheight 
+					object.y / self.tile_height, 
+					object.x / self.tile_height, 
+					self.tile_width, 
+					self.tile_height 
 				)
 				image:translate( centerX, centerY )
 
@@ -1099,7 +1093,7 @@ function Map:extend( ... )
 
     for i = 1, #objectTypes do 
 
-    	local extension = self.extensions or self.defaultExtensions
+    	local extension = self.extensions or self.default_extensions
 
       -- Load each module based on type
 		local plugin = require ( extension .. objectTypes[i] )

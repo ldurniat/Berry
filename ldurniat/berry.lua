@@ -463,6 +463,49 @@ local function setupDisplayGroup( class )
 	return group 
 
 end
+
+--------------------------------------------------------------------------------
+-- Mapping from isometric coordinates to screen coordinates 
+--
+-- @param row Number of row. Can real number.
+-- @param column Number of column. Can be real number.
+-- @param tileWidth Width of tile.
+-- @param tileHeight Height of tile.
+-- @param offesetX 
+-- @param offsetY 
+-- @return A two coodinates x and y.
+-------------------------------------------------------------------------------- 
+local function isoToScreen( row, column, tileWidth, tileHeight, 
+							offsetX, offsetY )
+
+	return (column - row) * tileWidth * 0.5 + (offsetX or 0), 
+		   (column + row) * tileHeight * 0.5 + (offsetY or 0)              
+
+end	
+
+--------------------------------------------------------------------------------
+-- Find center of polygon or polyline
+--
+-- @param points A table with x and y coordinates/
+-- @return Two numbers.
+-------------------------------------------------------------------------------- 
+local function findCenter( points )
+
+	local xMax, xMin, yMax, yMin = -mHuge, mHuge, -mHuge, mHuge 
+
+	for i = 1, #points do
+
+		if points[i].x < xMin then xMin = points[i].x end  
+		if points[i].y < yMin then yMin = points[i].y end 
+		if points[i].x > xMax then xMax = points[i].x end   
+		if points[i].y > yMax then yMax = points[i].y end  
+
+	end
+
+	return (xMax + xMin) * 0.5, (yMax + yMin) * 0.5
+
+end
+
 -- -------------------------------------------------------------------------- --
 --                                  PUBLIC METHODS                            --	
 -- -------------------------------------------------------------------------- --
@@ -484,6 +527,8 @@ function Map:new( filename, tilesetsDirectory )
 	local map = setupDisplayGroup( self )
 
 	map.tilesetsDirectory = tilesetsDirectory and tilesetsDirectory .. '/' or ''
+	map.dim               = { width=data.width, height=data.height }
+
 
     -- Purpose of computation here is simplification of code
     for i, tileset in ipairs( data.tilesets ) do
@@ -549,12 +594,22 @@ function Map:new( filename, tilesetsDirectory )
     map.defaultExtensions = 'berry.plugins.'
     map.tilewidth         = data.tilewidth
     map.tileheight        = data.tileheight
-    map.designedWidth     = data.width  * data.tilewidth
-    map.designedHeight    = data.height * data.tileheight
-
+ 
     -- Center map
-    map.x = display.contentCenterX - map.designedWidth * 0.5
-    map.y = display.contentCenterY - map.designedHeight * 0.5
+    if map.orientation == 'isometric' then
+
+    	map.designedWidth  = (data.height + data.width) * 0.5 * data.tilewidth
+    	map.designedHeight = (data.height + data.width) * 0.5 * data.tileheight
+    	map.x = display.contentCenterX - map.designedWidth * 0.5
+    	map.y = display.contentCenterY - map.designedHeight * 0.5
+
+    elseif map.orientation == 'orthogonal' then
+    	
+    	map.designedWidth  = data.width  * data.tilewidth
+    	map.designedHeight = data.height * data.tileheight
+    	map.x = display.contentCenterX - map.designedWidth * 0.5
+    	map.y = display.contentCenterY - map.designedHeight * 0.5
+    end	
 
 	-- Set the background color to the map background
 	display.setDefault( 'background', decodeTiledColor( data.backgroundcolor ) )   
@@ -593,17 +648,21 @@ function Map:createTile( position, gid, layer )
 
 		if image then
 
-			-- The first element from layer.data start at row=1 and column=1
-			image.row    = mFloor( ( position + layer.size - 1 ) / layer.size )
-			image.column = position - ( image.row - 1 ) * layer.size
-
-			-- Apply basic properties
-			image.anchorX, image.anchorY = 0, 1
+			-- The first element from layer.data start at (0, 0) and 
+			-- goes from left to right and top to bottom			
+			image.row    = mFloor( 
+								   ( position + layer.size - 1 ) / layer.size 
+								 ) - 1
+			image.column = position - image.row * layer.size - 1
 
 			if self.orientation == 'isometric' then
 
-				image.x = ( image.column - image.row ) * self.tilewidth * 0.5
-				image.y = ( image.column + image.row ) * self.tileheight * 0.5
+				image.anchorX, image.anchorY = 0.5, 0
+				image.x, image.y = isoToScreen( 
+					image.row, image.column, 
+					self.tilewidth, self.tileheight, 
+					self.dim.height * self.tilewidth * 0.5 
+				)
 
 			elseif self.orientation == 'staggered' then
 
@@ -684,8 +743,9 @@ function Map:createTile( position, gid, layer )
 
 			elseif self.orientation == 'orthogonal' then
 
-				image.x = ( image.column - 1 ) * self.tilewidth
-				image.y = image.row * self.tileheight
+				image.anchorX, image.anchorY = 0, 1
+				image.x = image.column * self.tilewidth
+				image.y = ( image.row + 1 ) * self.tileheight
 
 			end
 
@@ -797,44 +857,107 @@ function Map:createObject( object, layer )
 
 			end	  
 
-			-- Apply base properties
-			image.anchorX, image.anchorY = 0, 1
-			image.x, image.y             = object.x, object.y
-			image.tileId                 = tileId
-			image.gid                    = object.gid
+	    	if self.orientation == 'isometric' then
+
+				image.x, image.y = isoToScreen( object.y / self.tileheight, object.x / self.tileheight, self.tilewidth, self.tileheight, self.dim.height * self.tilewidth * 0.5 )
+            	image.anchorX, image.anchorY = 0.5, 1   
+
+			elseif self.orientation == 'orthogonal' then 
+
+				image.anchorX, image.anchorY = 0, 1
+				image.x, image.y             = object.x, object.y
+
+			end			
+				
+			image.tileId = tileId
+			image.gid    = object.gid
 
 		end	
 
 	elseif object.polygon or object.polyline then 
 		local points = object.polygon or object.polyline
 
-		local xMax, xMin, yMax, yMin = -mHuge, mHuge, -mHuge, mHuge 
+		if object.polygon then 
 
-		for i = 1, #points do
+	    	if self.orientation == 'isometric' then
+	    		
+	    		for i=1, #points do
+		    
+	                points[i].x, points[i].y = isoToScreen( 
+	                	points[i].y / self.tileheight, 
+	                	points[i].x / self.tileheight, 
+	                	self.tilewidth, 
+	                	self.tileheight 
+	                )
+	               
+				end	
 
-			if points[i].x < xMin then xMin = points[i].x end  
-			if points[i].y < yMin then yMin = points[i].y end 
-			if points[i].x > xMax then xMax = points[i].x end   
-			if points[i].y > yMax then yMax = points[i].y end  
+				local centerX, centerY = findCenter( points )
+				image = display.newPolygon( 
+					layer, 0, 0, unpackPoints( points ) 
+				)	
+				image.x, image.y = isoToScreen( 
+					object.y / self.tileheight, 
+					object.x / self.tileheight, 
+					self.tilewidth, 
+					self.tileheight, 
+					self.dim.height * self.tilewidth * 0.5 
+				)
+                image:translate( centerX, centerY )
 
-    	end
+			elseif self.orientation == 'orthogonal' then
 
-		local centerX, centerY = ( xMax + xMin ) * 0.5, ( yMax + yMin ) * 0.5
+				local centerX, centerY = findCenter( points ) 
+				image = display.newPolygon( 
+					layer, 0, 0, unpackPoints( points ) 
+				)	
+				image.x, image.y = object.x, object.y
+				image:translate( centerX, centerY )
 
-	    if object.polygon then 
-			
-			image = display.newPolygon( layer, object.x, 
-										object.y, unpackPoints( points ) )	
+			end				
 
 	    else
 
-			image = display.newLine( layer, unpack( unpackPoints( points ) ) )
-			image.anchorSegments = true
-			image.x, image.y     = object.x, object.y
+	    	if self.orientation == 'isometric' then
+	    		
+	    		for i=1, #points do
+		    	
+			    	points[i].x, points[i].y = isoToScreen( 
+			    		points[i].y / self.tileheight, 
+			    		points[i].x / self.tileheight, 
+			    		self.tilewidth, 
+			    		self.tileheight, 
+			    		self.dim.height * self.tilewidth * 0.5 
+			    	)
+
+				end	
+
+				local centerX, centerY = findCenter( points ) 
+				image = display.newLine( 
+					layer, unpack( unpackPoints( points ) ) 
+				)
+				image.anchorSegments = true
+				image.x, image.y = isoToScreen( 
+					object.y / self.tileheight, 
+					object.x / self.tileheight, 
+					self.tilewidth, 
+					self.tileheight 
+				)
+				image:translate( centerX, centerY )
+
+			elseif self.orientation == 'orthogonal' then 
+
+				local centerX, centerY = findCenter( points ) 
+				image = display.newLine( 
+					layer, unpack( unpackPoints( points ) ) 
+				)
+				image.anchorSegments = true
+				image.x, image.y     = object.x, object.y
+				image:translate( centerX, centerY )
+
+			end	
 
 	    end
-
-	    image:translate( centerX, centerY )
 
 	elseif object.sprite then
 		local sheet_info = object.imageSheetInfo

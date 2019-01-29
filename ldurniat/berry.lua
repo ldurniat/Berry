@@ -859,7 +859,13 @@ function Map:createObject( object, layer )
 
 	    	if self.orientation == 'isometric' then
 
-				image.x, image.y = isoToScreen( object.y / self.tileheight, object.x / self.tileheight, self.tilewidth, self.tileheight, self.dim.height * self.tilewidth * 0.5 )
+				image.x, image.y = isoToScreen( 
+					object.y / self.tileheight, 
+					object.x / self.tileheight, 
+					self.tilewidth, 
+					self.tileheight, 
+					self.dim.height * self.tilewidth * 0.5 
+				)
             	image.anchorX, image.anchorY = 0.5, 1   
 
 			elseif self.orientation == 'orthogonal' then 

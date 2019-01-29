@@ -191,12 +191,12 @@ end
 --
 -- @param tileset The object which contains information about tileset.
 -- @param dir The directory to tileset.
--- @param tileId The id of tile.
+-- @param tile_id The id of tile.
 -- @return The newly created image sheet.
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
-local function loadTileset( tileset, dir, tileId )
+local function loadTileset( tileset, dir, tile_id )
 
     if tileset.image then
 
@@ -250,7 +250,7 @@ local function loadTileset( tileset, dir, tileId )
 
   			tile = tiles[i]
 
-  			if tile.id == tileId then
+  			if tile.id == tile_id then
 
   				return 
   				nil, dir .. tile.image, tile.image_width, tile.image_height
@@ -399,11 +399,11 @@ end
 --------------------------------------------------------------------------------
 -- Retrieve shape data from a tileset based on id.
 --
--- @param tileId The id of tile.
+-- @param tile_id The id of tile.
 -- @param tileset The object which contains information about tileset.
 -- @return Multiple values.
 --------------------------------------------------------------------------------  
-local function retrieveShapeData( tileId, tileset )
+local function retrieveShapeData( tile_id, tileset )
 
 	local tiles = tileset.tiles or {}
 	local object, tile
@@ -413,7 +413,7 @@ local function retrieveShapeData( tileId, tileset )
 
 		tile = tiles[i]
 
-		if tileId == tile.id then break end	
+		if tile_id == tile.id then break end	
 
 	end	
 
@@ -622,16 +622,16 @@ function Map:createTile( position, gid, layer )
 	if tileset then
 
 		local image 
-		local firstgid, tileId = tileset.firstgid,  gid - tileset.firstgid
-		local width,    height = tileset.tilewidth, tileset.tileheight 
+		local firstgid, tile_id = tileset.firstgid,  gid - tileset.firstgid
+		local width,    height  = tileset.tilewidth, tileset.tileheight 
 		
-		local imageSheet, image_path, image_width, image_height = loadTileset( 
-			tileset, self.tilesets_dir, tileId )
+		local image_sheet, image_path, image_width, image_height = loadTileset( 
+			tileset, self.tilesets_dir, tile_id )
 
-		if imageSheet then
+		if image_sheet then
 
-			image = display.newImageRect( layer, imageSheet, 
-										  tileId + 1, width, height )
+			image = display.newImageRect( layer, image_sheet, 
+										  tile_id + 1, width, height )
 
 		else 
           	
@@ -791,26 +791,26 @@ function Map:createObject( object, layer )
 		if tileset then
 
 			local firstgid      		  = tileset.firstgid
-			local tileId 				  = object.gid - tileset.firstgid
+			local tile_id 				  = object.gid - tileset.firstgid
 			local width,      height      = object.width, object.height
-			local imageSheet, image_path = loadTileset( 
+			local image_sheet, image_path = loadTileset( 
 												tileset, 
 												self.tilesets_dir, 
-												tileId ) 
+												tile_id ) 
 
-			if imageSheet then
+			if image_sheet then
 
 				if findProperty( layer.properties, 'isAnimated' ) or 
 				   findProperty( object.properties, 'isAnimated' ) then
 
 					image = display.newSprite( layer, 
-											   imageSheet, 
+											   image_sheet, 
 											   tileset.sequence_data )
 
 				else
 
-					image = display.newImageRect( layer, imageSheet, 
-												  tileId + 1, width, height )
+					image = display.newImageRect( layer, image_sheet, 
+												  tile_id + 1, width, height )
 
 				end
 					
@@ -821,7 +821,7 @@ function Map:createObject( object, layer )
 
 			end
 
-			local points, x, y, rotation  = retrieveShapeData( tileId, tileset )
+			local points, x, y, rotation  = retrieveShapeData( tile_id, tileset )
 
 			-- Add collsion shape
 			if points then
@@ -869,7 +869,7 @@ function Map:createObject( object, layer )
 
 			end			
 				
-			image.tileId = tileId
+			image.tile_id = tile_id
 			image.gid    = object.gid
 
 		end	
@@ -961,11 +961,11 @@ function Map:createObject( object, layer )
 
 	elseif object.sprite then
 		local sheet_info = object.imageSheetInfo
-		local imageSheet = graphics.newImageSheet( object.image, 
+		local image_sheet = graphics.newImageSheet( object.image, 
 												   sheet_info:getSheet() )
 
 		-- switch this to display.newImageRect later (see if it works?)
-		image = display.newImage( layer, imageSheet, 
+		image = display.newImage( layer, image_sheet, 
 								  sheet_info:getFrameIndex( object.name ))  
 
 		-- Apply base properties

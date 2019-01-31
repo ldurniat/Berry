@@ -245,7 +245,7 @@ end
 --
 -- @param tileset The object which contains information about tileset.
 -- @param tile_id The id of tile.
--- @return The newly created image sheet.
+-- @return The image directory, image width, and image height
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   

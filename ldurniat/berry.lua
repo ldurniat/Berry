@@ -196,7 +196,7 @@ end
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
-local function loadTileset( tileset, dir, tile_id )
+local function loadTileset( tileset, tile_id )
 
     if tileset.image then
 
@@ -235,7 +235,8 @@ local function loadTileset( tileset, dir, tile_id )
 
 			end
 
-			image_sheets[name] = graphics.newImageSheet( dir .. name, options )
+			image_sheets[name] = graphics.newImageSheet( tileset.directory .. 
+														 name, options )
 
 		end	
 
@@ -253,7 +254,8 @@ local function loadTileset( tileset, dir, tile_id )
   			if tile.id == tile_id then
 
   				return 
-  				nil, dir .. tile.image, tile.image_width, tile.image_height
+  				nil, tileset.directory .. tile.image, 
+  				tile.image_width, tile.image_height
   			
   			end	
 
@@ -521,18 +523,16 @@ function Map:new( filename, tilesets_dir )
     local data = json.decodeFile( path )
 
 	local map = setupDisplayGroup( self )
-
-	map.tilesets_dir = tilesets_dir and tilesets_dir .. '/' or ''
 	map.dim               = { width=data.width, height=data.height }
-
 
     -- Purpose of computation here is simplification of code
     for i, tileset in ipairs( data.tilesets ) do
 
     	-- The tilesets are sorted always in ascending order by their firstgid
     	local next_tileset      = data.tilesets[i + 1]
-    	tileset.lastgid        = findLastGID( tileset, next_tileset ) 
+    	tileset.lastgid         = findLastGID( tileset, next_tileset ) 
     	tileset.sequence_data   = buildSequences( tileset )
+    	tileset.directory 		= tilesets_dir and tilesets_dir .. '/' or ''
 
     end
 
@@ -626,7 +626,7 @@ function Map:createTile( position, gid, layer )
 		local width,    height  = tileset.tilewidth, tileset.tileheight 
 		
 		local image_sheet, image_path, image_width, image_height = loadTileset( 
-			tileset, self.tilesets_dir, tile_id )
+			tileset, tile_id )
 
 		if image_sheet then
 
@@ -793,10 +793,7 @@ function Map:createObject( object, layer )
 			local firstgid      		  = tileset.firstgid
 			local tile_id 				  = object.gid - tileset.firstgid
 			local width,      height      = object.width, object.height
-			local image_sheet, image_path = loadTileset( 
-												tileset, 
-												self.tilesets_dir, 
-												tile_id ) 
+			local image_sheet, image_path = loadTileset( tileset, tile_id ) 
 
 			if image_sheet then
 

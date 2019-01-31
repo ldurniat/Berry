@@ -188,6 +188,7 @@ end
 
 --------------------------------------------------------------------------------
 -- Returns an image sheet and creates one if not loaded
+-- Will return nil if image sheet could not be created or loaded
 --
 -- @param tileset The object which contains information about tileset.
 -- @return The newly created image sheet or nil.
@@ -195,6 +196,9 @@ end
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
 local function getImageSheet( tileset )
+
+	-- Make sure our tileset supports image sheets
+	if not tileset.image then return nil end
 
 	local name = tileset.image
 

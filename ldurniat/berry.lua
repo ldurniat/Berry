@@ -877,10 +877,10 @@ function Map:createObject( object, layer )
 
 		if tileset then
 
-			local firstgid      		  = tileset.firstgid
-			local tile_id 				  = object.gid - tileset.firstgid
-			local width,      height      = object.width, object.height
-			local image_sheet, image_path = loadTileset( tileset, tile_id ) 
+			local firstgid           = tileset.firstgid
+			local tile_id 		     = object.gid - tileset.firstgid
+			local width,      height = object.width, object.height
+			local image_sheet        = getImageSheet( tileset ) 
 
 			if image_sheet then
 
@@ -899,9 +899,9 @@ function Map:createObject( object, layer )
 				end
 					
 			else 
-
-				image = display.newImageRect( layer, image_path, 
-											  width, height ) 
+				
+          		local path = getTileImage( tileset, tile_id )
+				image = display.newImageRect( layer, path, width, height ) 
 
 			end
 

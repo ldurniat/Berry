@@ -711,9 +711,6 @@ function Map:createTile( position, gid, layer )
 
 		local image_sheet = getImageSheet( tileset ) 
 
-		local image_sheet, image_path, image_width, image_height = loadTileset( 
-			tileset, tile_id )
-
 		if image_sheet then
 
 			image = display.newImageRect( layer, image_sheet, 

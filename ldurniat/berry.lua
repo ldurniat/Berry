@@ -276,84 +276,6 @@ local function getTileImage( tileset, tile_id )
 end
 
 --------------------------------------------------------------------------------
--- Load tileset.
---
--- @param tileset The object which contains information about tileset.
--- @param tile_id The id of tile.
--- @return The newly created image sheet.
--- 
--- Original code from https://github.com/ponywolf/ponytiled 
---------------------------------------------------------------------------------   
-local function loadTileset( tileset, tile_id )
-
-    if tileset.image then
-
-    	local name = tileset.image
-
-	    if not image_sheets[name] then	
-
-			local tsiw,   tsih    = tileset.image_width, tileset.image_height
-			local margin, spacing = tileset.margin,     tileset.spacing
-			local w,      h       = tileset.tilewidth,  tileset.tileheight
-
-			local options = {
-				frames             = {},
-				sheetContentWidth  = tsiw,
-				sheetContentHeight = tsih,
-			}
-
-			local frames = options.frames
-			local tsh    = tileset.tilecount / tileset.columns 
-			local tsw    = tileset.columns 
-
-			for j=1, tsh do
-
-			  for i=1, tsw do
-
-			    local element = {
-					x      = ( i - 1 ) * ( w + spacing ) + margin,
-					y      = ( j - 1 ) *( h + spacing ) + margin,
-					width  = w,
-					height = h,
-			    }
-
-			    frames[#frames + 1] = element
-
-			  end
-
-			end
-
-			image_sheets[name] = graphics.newImageSheet( tileset.directory .. 
-														 name, options )
-
-		end	
-
-		return image_sheets[name], nil
-
-	else
-
-  		local tile
-  		local tiles = tileset.tiles
-
-  		for i=1, #tiles do
-
-  			tile = tiles[i]
-
-  			if tile.id == tile_id then
-
-  				return 
-  				nil, tileset.directory .. tile.image, 
-  				tile.image_width, tile.image_height
-  			
-  			end	
-
-  		end	
-
-	end	
-
-end
-
---------------------------------------------------------------------------------
 --- Gets a Tile image from a GID.
 --
 -- @param gid The gid to use.
@@ -899,7 +821,7 @@ function Map:createObject( object, layer )
 				end
 					
 			else 
-				
+
           		local path = getTileImage( tileset, tile_id )
 				image = display.newImageRect( layer, path, width, height ) 
 

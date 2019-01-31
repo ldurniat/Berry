@@ -190,7 +190,6 @@ end
 -- Load tileset.
 --
 -- @param tileset The object which contains information about tileset.
--- @param dir The directory to tileset.
 -- @param tile_id The id of tile.
 -- @return The newly created image sheet.
 -- 

@@ -190,7 +190,7 @@ end
 -- Returns an image sheet and creates one if not loaded
 --
 -- @param tileset The object which contains information about tileset.
--- @return The newly created image sheet.
+-- @return The newly created image sheet or nil.
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
@@ -241,7 +241,7 @@ local function getImageSheet( tileset )
 end
 
 --------------------------------------------------------------------------------
--- Load tileset.
+-- Returns tile values for display.newImageRect
 --
 -- @param tileset The object which contains information about tileset.
 -- @param tile_id The id of tile.
@@ -249,7 +249,7 @@ end
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
-local function getTile( tileset, tile_id )
+local function getImageTile( tileset, tile_id )
 
 	local tile
 	local tiles = tileset.tiles
@@ -708,7 +708,9 @@ function Map:createTile( position, gid, layer )
 		local image 
 		local firstgid, tile_id = tileset.firstgid,  gid - tileset.firstgid
 		local width,    height  = tileset.tilewidth, tileset.tileheight 
-		
+
+		local image_sheet = getImageSheet( tileset ) 
+
 		local image_sheet, image_path, image_width, image_height = loadTileset( 
 			tileset, tile_id )
 
@@ -719,8 +721,8 @@ function Map:createTile( position, gid, layer )
 
 		else 
           	
-          	image = display.newImageRect( layer, image_path, 
-          								  image_width, image_height )
+          	local path, image_w, image_h = getImageTile( tileset, tile_id )
+          	image = display.newImageRect( layer, path, image_w, image_h )
 
 		end	
 

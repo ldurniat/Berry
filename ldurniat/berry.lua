@@ -187,6 +187,91 @@ local function decodeTiledColor( hex )
 end
 
 --------------------------------------------------------------------------------
+-- Returns an image sheet and creates one if not loaded
+--
+-- @param tileset The object which contains information about tileset.
+-- @return The newly created image sheet.
+-- 
+-- Original code from https://github.com/ponywolf/ponytiled 
+--------------------------------------------------------------------------------   
+local function getImageSheet( tileset )
+
+	local name = tileset.image
+
+    if not image_sheets[name] then	
+
+		local tsiw,   tsih    = tileset.image_width, tileset.image_height
+		local margin, spacing = tileset.margin,     tileset.spacing
+		local w,      h       = tileset.tilewidth,  tileset.tileheight
+
+		local options = {
+			frames             = {},
+			sheetContentWidth  = tsiw,
+			sheetContentHeight = tsih,
+		}
+
+		local frames = options.frames
+		local tileset_height    = tileset.tilecount / tileset.columns 
+		local tileset_width     = tileset.columns 
+
+		for j=1, tileset_height do
+
+		  for i=1, tileset_width do
+
+		    local element = {
+				x      = ( i - 1 ) * ( w + spacing ) + margin,
+				y      = ( j - 1 ) *( h + spacing ) + margin,
+				width  = w,
+				height = h,
+		    }
+
+		    frames[#frames + 1] = element
+
+		  end
+
+		end
+
+		local directory = tileset.directory .. name 
+		image_sheets[name] = graphics.newImageSheet( directory, options )
+
+	end	
+
+	return image_sheets[name]
+
+end
+
+--------------------------------------------------------------------------------
+-- Load tileset.
+--
+-- @param tileset The object which contains information about tileset.
+-- @param tile_id The id of tile.
+-- @return The newly created image sheet.
+-- 
+-- Original code from https://github.com/ponywolf/ponytiled 
+--------------------------------------------------------------------------------   
+local function getTile( tileset, tile_id )
+
+	local tile
+	local tiles = tileset.tiles
+
+	for i=1, #tiles do
+
+		tile = tiles[i]
+
+		if tile.id == tile_id then
+
+			local image_directory = tileset.directory .. tile.image
+			local width, height = tile.image_width, tile.image_height
+
+			return image_directory, width, height
+		
+		end	
+
+	end	
+
+end
+
+--------------------------------------------------------------------------------
 -- Load tileset.
 --
 -- @param tileset The object which contains information about tileset.

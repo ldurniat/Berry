@@ -253,7 +253,7 @@ end
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
-local function getImageTile( tileset, tile_id )
+local function getTileImage( tileset, tile_id )
 
 	local tile
 	local tiles = tileset.tiles
@@ -722,7 +722,7 @@ function Map:createTile( position, gid, layer )
 
 		else 
           	
-          	local path, image_w, image_h = getImageTile( tileset, tile_id )
+          	local path, image_w, image_h = getTileImage( tileset, tile_id )
           	image = display.newImageRect( layer, path, image_w, image_h )
 
 		end	

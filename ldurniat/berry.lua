@@ -196,7 +196,7 @@ end
 --------------------------------------------------------------------------------   
 local function createImageSheet( tileset )
 
-	local options
+	local options, name
 
 	if tileset.image then -- Tiled tileset
 
@@ -204,6 +204,7 @@ local function createImageSheet( tileset )
 		local margin, spacing = tileset.margin,     tileset.spacing
 		local w,      h       = tileset.tilewidth,  tileset.tileheight
 
+		name = tileset.image
 		options = {
 			frames             = {},
 			sheetContentWidth  = tsiw,
@@ -235,6 +236,7 @@ local function createImageSheet( tileset )
 
 		options = tileset:getSheet()
 		-- possibly load every frameIndex name to a global table?
+		-- needs a path name somehow
 
 	end
 
@@ -255,7 +257,7 @@ end
 local function getImageSheet( tileset )
 
 	-- Make sure our tileset supports image sheets
-	if not tileset.image then return nil end
+	if not tileset.image or not tileset.sheet then return nil end
 
 	local name = tileset.image
 

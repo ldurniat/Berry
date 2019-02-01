@@ -261,7 +261,7 @@ local function getImageSheet( tileset )
 
 	local name = tileset.image
 
-    if not image_sheets[name] then	
+    if not image_sheets[name] then
 
 		image_sheets[name] = createImageSheet( tileset ) 
 
@@ -506,15 +506,17 @@ end
 -- @param column Number of column. Can be real number.
 -- @param tile_width Width of tile.
 -- @param tile_height Height of tile.
--- @param offeset_x
+-- @param offset_x
 -- @param offset_y 
 -- @return A two coodinates x and y.
 -------------------------------------------------------------------------------- 
 local function isoToScreen( row, column, tile_width, tile_height, 
 							offset_x, offset_y )
 
-	return (column - row) * tile_width * 0.5 + (offset_x or 0), 
-		   (column + row) * tile_height * 0.5 + (offset_y or 0)              
+	local x = (column - row) * tile_width * 0.5 + (offset_x or 0)
+	local y = (column + row) * tile_height * 0.5 + (offset_y or 0)
+
+	return x, y           
 
 end	
 

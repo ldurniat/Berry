@@ -516,7 +516,7 @@ local function isoToScreen( row, column, tile_width, tile_height,
 	local x = (column - row) * tile_width * 0.5 + (offset_x or 0)
 	local y = (column + row) * tile_height * 0.5 + (offset_y or 0)
 
-	return x, y           
+	return x, y
 
 end	
 

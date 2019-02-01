@@ -187,28 +187,24 @@ local function decodeTiledColor( hex )
 end
 
 --------------------------------------------------------------------------------
--- Returns an image sheet and creates one if not loaded
--- Will return nil if image sheet could not be created or loaded
+-- Creates an image sheet from a TexturePack/Tiled tileset and returns it
 --
 -- @param tileset The object which contains information about tileset.
--- @return The newly created image sheet or nil.
+-- @return The newly created image sheet.
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
-local function getImageSheet( tileset )
+local function createImageSheet( tileset )
 
-	-- Make sure our tileset supports image sheets
-	if not tileset.image then return nil end
+	local options
 
-	local name = tileset.image
-
-    if not image_sheets[name] then	
+	if tileset.image then -- Tiled tileset
 
 		local tsiw,   tsih    = tileset.image_width, tileset.image_height
 		local margin, spacing = tileset.margin,     tileset.spacing
 		local w,      h       = tileset.tilewidth,  tileset.tileheight
 
-		local options = {
+		options = {
 			frames             = {},
 			sheetContentWidth  = tsiw,
 			sheetContentHeight = tsih,
@@ -235,8 +231,37 @@ local function getImageSheet( tileset )
 
 		end
 
-		local directory = tileset.directory .. name 
-		image_sheets[name] = graphics.newImageSheet( directory, options )
+	elseif tileset.sheet then -- TexturePacker tileset
+
+		options = tileset:getSheet()
+		-- possibly load every frameIndex name to a global table?
+
+	end
+
+	local directory = tileset.directory .. name 
+	return graphics.newImageSheet( directory, options )
+
+end
+
+--------------------------------------------------------------------------------
+-- Returns an image sheet and creates one if not loaded
+-- Will return nil if image sheet could not be created or loaded
+--
+-- @param tileset The object which contains information about tileset.
+-- @return The newly created image sheet or nil.
+-- 
+-- Original code from https://github.com/ponywolf/ponytiled 
+--------------------------------------------------------------------------------   
+local function getImageSheet( tileset )
+
+	-- Make sure our tileset supports image sheets
+	if not tileset.image then return nil end
+
+	local name = tileset.image
+
+    if not image_sheets[name] then	
+
+		image_sheets[name] = createImageSheet( tileset ) 
 
 	end	
 

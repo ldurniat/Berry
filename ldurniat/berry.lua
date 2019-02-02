@@ -557,7 +557,7 @@ end
 -- @return The newly created map.
 --------------------------------------------------------------------------------
 
-function Map:new( filename, tilesets_dir, texturepacker_dir)
+function Map:new( filename, tilesets_dir, texturepacker_dir )
 
 	-- Read map file
 	local json_path = system.pathForFile( filename, system.ResourceDirectory ) 
@@ -577,18 +577,23 @@ function Map:new( filename, tilesets_dir, texturepacker_dir)
 
     end
 
+    -- TexturePacker directory will default to tilesets_dir if arg not present
     texturepacker_dir = texturepacker_dir or tilesets_dir
-
+    
     local texturepacker_path = system.pathForFile( texturepacker_dir, 
     											   system.ResourceDirectory ) 
 
 	for file in lfs.dir( texturepacker_path ) do
 
-		if file ~= '.' and file ~= '..' then
+		local file_extension = file:match("[^.]+$")
+
+		if file ~= '.' and file ~= '..' and file_extension == 'lua' then
+
 		    -- "file" is the current file or directory name
 		    print( "Found file: " .. file )
+
 		end
-		
+
 	end
 
     -- Apply properties from data

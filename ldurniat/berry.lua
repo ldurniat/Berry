@@ -544,6 +544,47 @@ local function findCenter( points )
 
 end
 
+--------------------------------------------------------------------------------
+-- Creates and loads Texturepacker tilesets from directory
+--
+-- @param points A table with x and y coordinates/
+-- @return Two numbers.
+-------------------------------------------------------------------------------- 
+local function createTexturepackerTilesets( directory )
+
+    local texturepacker_path = system.pathForFile( texturepacker_dir, 
+    											   system.ResourceDirectory ) 
+
+	for file in lfs.dir( texturepacker_path ) do
+
+		-- This pattern captures the name and extension of a file string
+		-- foo.lua is returned as foo and lua
+		-- myImage.png is returned as myImage and png
+		local file_name, file_extension = file:match("(.*)(%..+)$")
+
+		local is_lua_file = file ~= '.' and 
+							file ~= '..' and 
+							file_extension == 'lua'
+
+		if is_lua_file then
+
+			--local lua_file = pcall(require(texturepacker_path .. file )
+		    -- "file" is the current file or directory name
+		    print( "Found file: " .. file )
+
+		    local require_path = texturepacker_path .. '.' .. file_name
+			require_path = require_path:gsub("[/\]", ".")
+
+		   	local test = require(require_path)
+		   	print(type(test))
+		   	for k,v in pairs(test) do print(k,v) end
+
+		end
+
+	end
+
+end
+
 -- -------------------------------------------------------------------------- --
 --                                  PUBLIC METHODS                            --	
 -- -------------------------------------------------------------------------- --
@@ -577,47 +618,9 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 
     end
 
---[[
-	This code is going to be put into it's own function after I finish it
-]]--
-
     -- TexturePacker directory will default to tilesets_dir if arg not present
     texturepacker_dir = texturepacker_dir or tilesets_dir
-
-    local texturepacker_path = system.pathForFile( texturepacker_dir, 
-    											   system.ResourceDirectory ) 
-
-	for file in lfs.dir( texturepacker_path ) do
-
-		-- This pattern captures the name and extension of a file string
-		-- foo.lua is returned as foo and lua
-		-- myImage.png is returned as myImage and png
-		local file_name, file_extension = file:match("(.*)(%..+)$")
-
-		local is_lua_file = file ~= '.' and 
-							file ~= '..' and 
-							file_extension == 'lua'
-
-		if is_lua_file then
-
-			--local lua_file = pcall(require(texturepacker_path .. file )
-		    -- "file" is the current file or directory name
-		    print( "Found file: " .. file )
-
-		    local require_path = texturepacker_path .. '.' .. file_name
-			require_path = require_path:gsub("[/\]", ".")
-
-		   	local test = require(require_path)
-		   	print(type(test))
-		   	for k,v in pairs(test) do print(k,v) end
-
-		end
-
-	end
-
---[[
-	The above code is going to be put into it's own function after I finish it
-]]--
+	createTexturepackerTilesets( texturepacker_dir )
 
     -- Apply properties from data
     map.tilesets      = data.tilesets

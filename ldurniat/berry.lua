@@ -552,10 +552,9 @@ end
 -------------------------------------------------------------------------------- 
 local function createTexturepackerTilesets( directory )
 
-    local texturepacker_path = system.pathForFile( texturepacker_dir, 
-    											   system.ResourceDirectory ) 
+    local path = system.pathForFile( directory, system.ResourceDirectory ) 
 
-	for file in lfs.dir( texturepacker_path ) do
+	for file in lfs.dir( path ) do
 
 		-- This pattern captures the name and extension of a file string
 		-- foo.lua is returned as foo and lua
@@ -572,7 +571,7 @@ local function createTexturepackerTilesets( directory )
 		    -- "file" is the current file or directory name
 		    print( "Found file: " .. file )
 
-		    local require_path = texturepacker_path .. '.' .. file_name
+		    local require_path = path .. '.' .. file_name
 			require_path = require_path:gsub("[/\]", ".")
 
 		   	local test = require(require_path)

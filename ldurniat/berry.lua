@@ -257,7 +257,7 @@ end
 local function getImageSheet( tileset )
 
 	-- Make sure our tileset supports image sheets
-	if not tileset.image or not tileset.sheet then return nil end
+	if not ( tileset.image or not tileset.sheet ) then return nil end
 
 	local name = tileset.image
 

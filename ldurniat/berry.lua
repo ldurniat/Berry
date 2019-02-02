@@ -590,11 +590,11 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 	for file in lfs.dir( texturepacker_path ) do
 
 		local file_extension = file:match("[^.]+$")
-		local is_lua_file_type = file ~= '.' and 
+		local file_is_lua_type = file ~= '.' and 
 								 file ~= '..' and 
 								 file_extension == 'lua'
 
-		if is_lua_file_type then
+		if file_is_lua_type then
 
 			--local lua_file = pcall(require(texturepacker_path .. file )
 		    -- "file" is the current file or directory name

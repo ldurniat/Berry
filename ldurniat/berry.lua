@@ -589,18 +589,22 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 
 	for file in lfs.dir( texturepacker_path ) do
 
-		local file_extension = file:match("[^.]+$")
-		local file_is_lua_type = file ~= '.' and 
-								 file ~= '..' and 
-								 file_extension == 'lua'
+		-- This pattern captures the name and extension of a file string
+		-- foo.lua is returned as foo and lua
+		-- myImage.png is returned as myImage and png
+		local file_name, file_extension = file:match("(.*)(%..+)$")
 
-		if file_is_lua_type then
+		local is_lua_file = file ~= '.' and 
+							file ~= '..' and 
+							file_extension == 'lua'
+
+		if is_lua_file then
 
 			--local lua_file = pcall(require(texturepacker_path .. file )
 		    -- "file" is the current file or directory name
 		    print( "Found file: " .. file )
 
-		    local require_path = texturepacker_path .. '.' .. file 
+		    local require_path = texturepacker_path .. '.' .. file_name
 			require_path = require_path:gsub("[/\]", ".")
 
 		   	local test = require(require_path)

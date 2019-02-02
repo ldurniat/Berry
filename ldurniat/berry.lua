@@ -559,8 +559,8 @@ end
 function Map:new( filename, tilesets_dir )
 
 	-- Read map file
-	local path = system.pathForFile( filename, system.ResourceDirectory ) 
-    local data = json.decodeFile( path )
+	local json_path = system.pathForFile( filename, system.ResourceDirectory ) 
+    local data = json.decodeFile( json_path )
 
 	local map = setupDisplayGroup( self )
 	map.dim               = { width=data.width, height=data.height }

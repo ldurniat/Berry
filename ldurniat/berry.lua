@@ -558,11 +558,13 @@ local function createTexturepackerTilesets( directory )
 		-- This pattern captures the name and extension of a file string
 		-- foo.lua is returned as foo and lua
 		-- myImage.png is returned as myImage and png
-		local file_name, file_extension = file:match("(.*)(%..+)$")
+		local file_name, file_extension = file:match("(.*)%.(.+)$")
 
 		local is_lua_file = file ~= '.' and 
 							file ~= '..' and 
 							file_extension == 'lua'
+
+		print(file_name, file_extension)
 
 		if is_lua_file then
 
@@ -570,7 +572,7 @@ local function createTexturepackerTilesets( directory )
 		    -- "file" is the current file or directory name
 		    print( "Found file: " .. file )
 
-		    local require_path = path .. '.' .. file_name
+		    local require_path = directory .. '.' .. file_name
 			require_path = require_path:gsub("[/\]", ".")
 
 		   	local test = require(require_path)

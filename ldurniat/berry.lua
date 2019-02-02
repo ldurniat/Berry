@@ -10,6 +10,7 @@
 -- -------------------------------------------------------------------------- --
 
 local json = require 'json' 
+local lfs  = require 'lfs'
 
 -- -------------------------------------------------------------------------- --
 --                                  MODULE                                    --												
@@ -574,6 +575,11 @@ function Map:new( filename, tilesets_dir )
     	tileset.directory 		= tilesets_dir and tilesets_dir .. '/' or ''
 
     end
+
+	for file in lfs.dir( path ) do
+	    -- "file" is the current file or directory name
+	    print( "Found file: " .. file )
+	end
 
     -- Apply properties from data
     map.tilesets      = data.tilesets

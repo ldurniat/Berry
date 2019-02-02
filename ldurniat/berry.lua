@@ -547,8 +547,7 @@ end
 --------------------------------------------------------------------------------
 -- Creates and loads Texturepacker tilesets from directory
 --
--- @param points A table with x and y coordinates/
--- @return Two numbers.
+-- @param directory A directory to scan for texturepacker lua files
 -------------------------------------------------------------------------------- 
 local function createTexturepackerTilesets( directory )
 

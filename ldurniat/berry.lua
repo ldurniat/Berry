@@ -577,24 +577,43 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 
     end
 
+--[[
+	This code is going to be put into it's own function after I finish it
+]]--
+
     -- TexturePacker directory will default to tilesets_dir if arg not present
     texturepacker_dir = texturepacker_dir or tilesets_dir
-    
+
     local texturepacker_path = system.pathForFile( texturepacker_dir, 
     											   system.ResourceDirectory ) 
 
 	for file in lfs.dir( texturepacker_path ) do
 
 		local file_extension = file:match("[^.]+$")
+		local is_lua_file_type = file ~= '.' and 
+								 file ~= '..' and 
+								 file_extension == 'lua'
 
-		if file ~= '.' and file ~= '..' and file_extension == 'lua' then
+		if is_lua_file_type then
 
+			--local lua_file = pcall(require(texturepacker_path .. file )
 		    -- "file" is the current file or directory name
 		    print( "Found file: " .. file )
+
+		    local require_path = texturepacker_path .. '.' .. file 
+			require_path = require_path:gsub("[/\]", ".")
+
+		   	local test = require(require_path)
+		   	print(type(test))
+		   	for k,v in pairs(test) do print(k,v) end
 
 		end
 
 	end
+
+--[[
+	The above code is going to be put into it's own function after I finish it
+]]--
 
     -- Apply properties from data
     map.tilesets      = data.tilesets

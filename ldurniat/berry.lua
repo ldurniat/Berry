@@ -556,13 +556,10 @@ local function createTexturepackerTilesets( directory )
 	for file in lfs.dir( path ) do
 
 		-- This pattern captures the name and extension of a file string
-		-- foo.lua is returned as foo and lua
-		-- myImage.png is returned as myImage and png
-		local file_name, file_extension = file:match("(.*)%.(.+)$")
-
-		local is_lua_file = file ~= '.' and 
-							file ~= '..' and 
-							file_extension == 'lua'
+		-- foo.lua is returned as foo, lua
+		-- myImage.png is returned as myImage, png
+		local file_name, extension = file:match("(.*)%.(.+)$")
+		local is_lua_file = file ~= '.' and file ~= '..' and extension == 'lua'
 
 		if is_lua_file then
 

@@ -556,8 +556,6 @@ local function createTexturepackerTilesets( directory )
 	for file in lfs.dir( path ) do
 
 		-- This pattern captures the name and extension of a file string
-		-- foo.lua is returned as foo, lua
-		-- myImage.png is returned as myImage, png
 		local file_name, extension = file:match("(.*)%.(.+)$")
 		local is_lua_file = file ~= '.' and file ~= '..' and extension == 'lua'
 
@@ -565,11 +563,10 @@ local function createTexturepackerTilesets( directory )
 
 		    local require_path = directory .. '.' .. file_name
 
-		    -- Replace / and \ with the . in require path
+		    -- Replace slashes with periods in require path else file won't load
 			require_path = require_path:gsub("[/\]", ".")
 
-			-- We are using pcall here to prevent any require() lua modules
-			-- from crashing if they happen to run code or do something silly
+			-- Using pcall to prevent any require() lua modules from crashing
 			local lua_module, error_msg = pcall(require, require_path)
 			local is_module_table = lua_module and type(lua_module) == 'table'
 

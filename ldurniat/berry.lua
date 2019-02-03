@@ -235,13 +235,17 @@ local function createImageSheet( tileset )
 
 	elseif tileset.sheet then -- TexturePacker tileset
 
+		name = tileset.name
 		options = tileset:getSheet()
 		-- possibly load every frameIndex name to a global table?
 		-- needs a path name somehow
 
 	end
 
-	local directory = tileset.directory .. name 
+    --"image":"..\/ss13\/floors.png",
+    -- directory is: 'map/ss13'
+
+	local directory = tileset.directory .. ( name or '' ) 
 	return graphics.newImageSheet( directory, options )
 
 end
@@ -564,18 +568,20 @@ local function loadTexturePacker( directory )
 		    local require_path = directory .. '.' .. file_name
 
 		    -- Replace slashes with periods in require path else file won't load
-			require_path = require_path:gsub("[/\]", ".")
+			local lua_module = require_path:gsub("[/\]", ".")
 
 			-- Using pcall to prevent any require() lua modules from crashing
-			local lua_module = pcall(require, require_path)
+			local tileset = pcall(require, lua_module)
 
-			local is_texturepacker_file = lua_module and 
-										  type(lua_module) == 'table' and
-										  lua_module.sheet 
+			local is_texturepacker_file = tileset and 
+										  type(tileset) == 'table' and
+										  tileset.sheet 
 
 			if is_texturepacker_file then
 
-				createImageSheet(lua_module)
+				tileset.name = file_name
+				tileset.directory = directory
+				createImageSheet( tileset )
 
 			end
 

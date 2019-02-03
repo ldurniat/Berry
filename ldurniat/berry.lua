@@ -10,7 +10,7 @@
 -- -------------------------------------------------------------------------- --
 
 local json = require 'json' 
-local lfs  = require 'lfs'
+local lfs  = require 'lfs'  -- lfs stands for LuaFileSystem
 
 -- -------------------------------------------------------------------------- --
 --                                  MODULE                                    --												
@@ -567,7 +567,7 @@ local function createTexturepackerTilesets( directory )
 			require_path = require_path:gsub("[/\]", ".")
 
 			-- Using pcall to prevent any require() lua modules from crashing
-			local lua_module, error_msg = pcall(require, require_path)
+			local lua_module = pcall(require, require_path)
 			local is_module_table = lua_module and type(lua_module) == 'table'
 
 			if is_module_table then

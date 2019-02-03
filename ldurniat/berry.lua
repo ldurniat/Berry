@@ -569,7 +569,11 @@ local function createTexturepackerTilesets( directory )
 		    local require_path = directory .. '.' .. file_name
 			require_path = require_path:gsub("[/\]", ".")
 
-		   	local test = require(require_path)
+			local lua_module, error_msg = pcall(require, require_path)
+
+			if lua_module and type(lua_module) == 'table' then
+
+			end
 
 		end
 

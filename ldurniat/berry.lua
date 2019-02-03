@@ -549,7 +549,7 @@ end
 --
 -- @param directory A directory to scan for texturepacker lua files
 -------------------------------------------------------------------------------- 
-local function createTexturepackerTilesets( directory )
+local function loadTexturePacker( directory )
 
     local path = system.pathForFile( directory, system.ResourceDirectory ) 
 
@@ -574,7 +574,7 @@ local function createTexturepackerTilesets( directory )
 										  lua_module.sheet 
 
 			if is_texturepacker_file then
-				
+
 				createImageSheet(lua_module)
 
 			end
@@ -618,9 +618,11 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 
     end
 
+    -- loadTilesets()
+
     -- TexturePacker directory will default to tilesets_dir if arg not present
     texturepacker_dir = texturepacker_dir or tilesets_dir
-	createTexturepackerTilesets( texturepacker_dir )
+	loadTexturePacker( texturepacker_dir )
 
     -- Apply properties from data
     map.tilesets      = data.tilesets

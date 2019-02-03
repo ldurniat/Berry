@@ -564,20 +564,12 @@ local function createTexturepackerTilesets( directory )
 							file ~= '..' and 
 							file_extension == 'lua'
 
-		print(file_name, file_extension)
-
 		if is_lua_file then
-
-			--local lua_file = pcall(require(texturepacker_path .. file )
-		    -- "file" is the current file or directory name
-		    print( "Found file: " .. file )
 
 		    local require_path = directory .. '.' .. file_name
 			require_path = require_path:gsub("[/\]", ".")
 
 		   	local test = require(require_path)
-		   	print(type(test))
-		   	for k,v in pairs(test) do print(k,v) end
 
 		end
 

@@ -265,18 +265,10 @@ local function getImageSheet( tileset )
 	if not tileset.image then return nil end
 
 	local name = tileset.image
-	local sheet, frame
 
 	if image_sheets[name] then
 
-		sheet = image_sheets[name].sheet
-
-		if image_sheets[name].type == 'texturepacker' then 
-
-			frame = image_sheets[name].frame 
-
-		end
-
+		local sheet, frame = image_sheets[name].sheet, image_sheets[name].frame 
 		return sheet, frame
 
 	end
@@ -295,6 +287,16 @@ end
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
 local function getTileImage( tileset, tile_id )
+
+
+
+
+print(tileset, tile_id)
+for k,v in pairs(tileset) do print(k,v) end
+
+
+
+
 
 	local tile
 	local tiles = tileset.tiles
@@ -564,22 +566,34 @@ end
 -------------------------------------------------------------------------------- 
 local function loadTilesets( tilesets )
 
-	for _, tileset in ipairs(tilesets)
+	for _, tileset in ipairs(tilesets) do
 
 		local sheet = createImageSheet( tileset )
 		-- do we need to load tileset name into image sheet?!?
 		--image_sheets[tileset.image] = sheet
 
 		local firstgid = tileset.firstgid
-		local lastgid = tileset.firstgid + tileset.tilecount
+		local lastgid = tileset.firstgid + tileset.tilecount - 1
 
-		for gid = firstgid, lastgid do
+		if not tileset.tiles then -- embedded images don't use image sheets
 
-			image_sheets[gid] = {
-				sheet = sheet,
-				type = 'tiled',
-				frame = gid - firstgid,
-			}
+			for gid = firstgid, lastgid do
+
+	print("GID is = ", gid)
+
+				assert( not image_sheets[gid],
+					"Duplicate gid for image sheet detected.  Check to " ..
+					"make sure the same image sheet isn't being loaded twice "..
+					"or if some of the images/tilesets have matching names"
+				)
+
+				image_sheets[gid] = {
+					sheet = sheet,
+					type = 'tiled',
+					frame = gid - firstgid + 1,
+				}
+
+			end
 
 		end
 
@@ -637,10 +651,9 @@ local function loadTexturePacker( directory )
 				for sprite_name, i in pairs(tileset.frameIndex) do
 
 					assert( not image_sheets[sprite_name],
-						[[Duplicate name for image sheet detected.  Check to
-						make sure the same image sheet isn't being loaded twice
-						or if some of the images/tilesets have matching names
-						]]
+					"Duplicate names for image sheet detected.  Check to " ..
+					"make sure the same image sheet isn't being loaded twice" ..
+					" or if some of the images/tilesets have matching names"
 					)
 
 					image_sheets[sprite_name] = {

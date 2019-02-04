@@ -564,6 +564,9 @@ end
 -------------------------------------------------------------------------------- 
 local function loadTilesets( tilesets, directory )
 
+	for i, _ 
+	local sheet = createImageSheet()
+
 end
 
 --------------------------------------------------------------------------------
@@ -663,9 +666,13 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
     -- Purpose of computation here is simplification of code
     for i, tileset in ipairs( data.tilesets ) do
 
+    	--[[ remove these three lines]]--
     	-- The tilesets are sorted always in ascending order by their firstgid
     	local next_tileset      = data.tilesets[i + 1]
-    	tileset.lastgid         = findLastGID( tileset, next_tileset ) 
+    	tileset.lastgid         = findLastGID( tileset, next_tileset )
+
+
+
     	tileset.sequence_data   = buildSequences( tileset )
     	tileset.directory 		= tilesets_dir and tilesets_dir .. '/' or ''
 
@@ -685,8 +692,8 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
     -- TexturePacker directory will default to tilesets_dir if arg not present
     texturepacker_dir = texturepacker_dir or tilesets_dir
 
-    do  -- Create and cache our image sheets
-	    loadTilesets( map.tilesets, tilesets_dir )
+    do  -- Create and cache all the image sheets
+	    loadTilesets( map.tilesets )
 		loadTexturePacker( texturepacker_dir )
 	end
 	

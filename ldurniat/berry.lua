@@ -37,6 +37,7 @@ local FLIPPED_DIAGONAL_FLAG   = 0x20000000
 -- -------------------------------------------------------------------------- --
 
 local image_sheets = {}
+local gid_cache = {}
 
 -- -------------------------------------------------------------------------- --
 --									LOCAL FUNCTIONS	                          --
@@ -237,6 +238,12 @@ local function createImageSheet( tileset )
 
 		name = tileset.name
 		options = tileset:getSheet()
+
+		for sprite_name, i in pairs(tileset.frameIndex) do
+
+			gid_cache[sprite_name] = {frame=i, tileset=tileset}
+
+		end
 		-- possibly load every frameIndex name to a global table?
 		-- needs a path name somehow
 
@@ -255,24 +262,34 @@ end
 -- Will return nil if image sheet could not be created or loaded
 --
 -- @param tileset The object which contains information about tileset.
--- @return The newly created image sheet or nil.
+-- @return The image sheet or nil.
+-- @return The frame_index for image in image sheet. (Texturepacker only)
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
 local function getImageSheet( tileset )
 
 	-- Make sure our tileset supports image sheets
-	if not ( tileset.image or not tileset.sheet ) then return nil end
+	if not tileset.image then return nil end
 
 	local name = tileset.image
+	local sheet, frame
 
-    if not image_sheets[name] then
+	if image_sheets[name] then
 
-		image_sheets[name] = createImageSheet( tileset ) 
+		sheet = image_sheets[name].sheet
 
-	end	
+		if image_sheets[name].type == 'texturepacker' then 
 
-	return image_sheets[name]
+			frame = image_sheets[name].frame 
+
+		end
+
+		return sheet, frame
+
+	end
+
+	return nil
 
 end
 
@@ -332,7 +349,7 @@ local function getTilesetFromGID( gid, tilesets )
 
     return nil
 
-end	
+end
 
 --------------------------------------------------------------------------------
 -- Find GID for last element in tileset based on firstgids.
@@ -573,15 +590,46 @@ local function loadTexturePacker( directory )
 			-- Using pcall to prevent any require() lua modules from crashing
 			local tileset = pcall(require, lua_module)
 
-			local is_texturepacker_file = tileset and 
+			local is_texturepacker_data = tileset and 
 										  type(tileset) == 'table' and
 										  tileset.sheet 
 
-			if is_texturepacker_file then
+			if is_texturepacker_data then
 
+				-- these are used by the createImageSheet
 				tileset.name = file_name
 				tileset.directory = directory
-				createImageSheet( tileset )
+
+				local sheet = createImageSheet( tileset )
+
+				--[[-- we may want to get rid of this?
+				do we want to attatch file_name to sheet? Not sure...
+
+				image_sheets[file_name] = {
+					sheet = sheet,
+					type = 'texturepacker',
+				}
+
+				--]]
+
+				for sprite_name, i in pairs(tileset.frameIndex) do
+
+					image_sheets[sprite_name] = {
+						sheet = sheet,
+						type = 'texturepacker',
+						frame = i,
+					}
+
+				end
+
+--[[-- we shouldn't be creating image sheets in this method tbh
+
+    if not image_sheets[name] then
+
+		image_sheets[name] = createImageSheet( tileset ) 
+
+	end	
+--]]
 
 			end
 
@@ -1050,13 +1098,12 @@ function Map:createObject( object, layer )
 	    end
 
 	elseif object.sprite then
-		local sheet_info = object.imageSheetInfo
-		local image_sheet = graphics.newImageSheet( object.image, 
-												   sheet_info:getSheet() )
+
+		local tileset = { image = object.sprite }
+		local image_sheet, frame_index = getImageSheet( tileset )
 
 		-- switch this to display.newImageRect later (see if it works?)
-		image = display.newImage( layer, image_sheet, 
-								  sheet_info:getFrameIndex( object.name ))  
+		image = display.newImage( layer, image_sheet, frame_index )  
 
 		-- Apply base properties
 	    image.anchorX, image.anchorY = 0,        0

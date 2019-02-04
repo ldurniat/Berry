@@ -560,12 +560,30 @@ end
 --------------------------------------------------------------------------------
 -- Creates and loads tilesets from directory
 --
--- @param directory The directory the tilesets are located
+-- @param tilesets The tileset data to load
 -------------------------------------------------------------------------------- 
-local function loadTilesets( tilesets, directory )
+local function loadTilesets( tilesets )
 
-	for i, _ 
-	local sheet = createImageSheet()
+	for _, tileset in ipairs(tilesets)
+
+		local sheet = createImageSheet( tileset )
+		-- do we need to load tileset name into image sheet?!?
+		--image_sheets[tileset.image] = sheet
+
+		local firstgid = tileset.firstgid
+		local lastgid = tileset.firstgid + tileset.tilecount
+
+		for gid = firstgid, lastgid do
+
+			image_sheets[gid] = {
+				sheet = sheet,
+				type = 'tiled',
+				frame = gid - firstgid,
+			}
+
+		end
+
+	end
 
 end
 

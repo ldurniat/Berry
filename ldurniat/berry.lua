@@ -241,6 +241,7 @@ local function createImageSheet( tileset )
 
 	end
 
+	-- DELETE THIS LATER
     --"image":"..\/ss13\/floors.png",
     -- directory is: 'map/ss13'
 
@@ -593,17 +594,24 @@ local function loadTexturePacker( directory )
 
 				local sheet = createImageSheet( tileset )
 
-				--[[-- we may want to get rid of this?
-				do we want to attatch file_name to sheet? Not sure...
+--[[-- we may want to get rid of this?
+	   This would attach the image_name/lua_file_name to image_sheets
+	   but I'm pretty sure we don't need it... only the sprite_name
 
 				image_sheets[file_name] = {
 					sheet = sheet,
 					type = 'texturepacker',
 				}
-
-				--]]
+--]]
 
 				for sprite_name, i in pairs(tileset.frameIndex) do
+
+					assert( not image_sheets[sprite_name],
+						[[Duplicate name for image sheet detected.  Check to
+						make sure the same image sheet isn't being loaded twice
+						or if some of the images/tilesets have matching names
+						]]
+					)
 
 					image_sheets[sprite_name] = {
 						sheet = sheet,

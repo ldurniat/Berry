@@ -562,7 +562,7 @@ end
 --
 -- @param directory The directory the tilesets are located
 -------------------------------------------------------------------------------- 
-local function loadTilesets( directory )
+local function loadTilesets( tilesets, directory )
 
 end
 
@@ -682,11 +682,13 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 	-- Add useful properties
     map.default_extensions = 'berry.plugins.'
 
-    loadTilesets( tilesets_dir )
-
     -- TexturePacker directory will default to tilesets_dir if arg not present
     texturepacker_dir = texturepacker_dir or tilesets_dir
-	loadTexturePacker( texturepacker_dir )
+
+    do  -- Create and cache our image sheets
+	    loadTilesets( map.tilesets, tilesets_dir )
+		loadTexturePacker( texturepacker_dir )
+	end
 	
 	for _, info in ipairs( data.layers ) do
 

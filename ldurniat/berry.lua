@@ -239,14 +239,6 @@ local function createImageSheet( tileset )
 		name = tileset.name
 		options = tileset:getSheet()
 
-		for sprite_name, i in pairs(tileset.frameIndex) do
-
-			gid_cache[sprite_name] = {frame=i, tileset=tileset}
-
-		end
-		-- possibly load every frameIndex name to a global table?
-		-- needs a path name somehow
-
 	end
 
     --"image":"..\/ss13\/floors.png",
@@ -258,8 +250,7 @@ local function createImageSheet( tileset )
 end
 
 --------------------------------------------------------------------------------
--- Returns an image sheet and creates one if not loaded
--- Will return nil if image sheet could not be created or loaded
+-- Returns an image sheet or nil
 --
 -- @param tileset The object which contains information about tileset.
 -- @return The image sheet or nil.
@@ -621,15 +612,6 @@ local function loadTexturePacker( directory )
 					}
 
 				end
-
---[[-- we shouldn't be creating image sheets in this method tbh
-
-    if not image_sheets[name] then
-
-		image_sheets[name] = createImageSheet( tileset ) 
-
-	end	
---]]
 
 			end
 

@@ -558,6 +558,15 @@ local function findCenter( points )
 end
 
 --------------------------------------------------------------------------------
+-- Creates and loads tilesets from directory
+--
+-- @param directory The directory the tilesets are located
+-------------------------------------------------------------------------------- 
+local function loadTilesets( directory )
+
+end
+
+--------------------------------------------------------------------------------
 -- Creates and loads Texturepacker tilesets from directory
 --
 -- @param directory A directory to scan for texturepacker lua files
@@ -649,7 +658,7 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
     local data = json.decodeFile( json_path )
 
 	local map = setupDisplayGroup( self )
-	map.dim               = { width=data.width, height=data.height }
+	map.dim = { width=data.width, height=data.height }
 
     -- Purpose of computation here is simplification of code
     for i, tileset in ipairs( data.tilesets ) do
@@ -662,12 +671,6 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 
     end
 
-    -- loadTilesets()
-
-    -- TexturePacker directory will default to tilesets_dir if arg not present
-    texturepacker_dir = texturepacker_dir or tilesets_dir
-	loadTexturePacker( texturepacker_dir )
-
     -- Apply properties from data
     map.tilesets      = data.tilesets
     map.orientation   = data.orientation			
@@ -679,6 +682,11 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 	-- Add useful properties
     map.default_extensions = 'berry.plugins.'
 
+    loadTilesets( tilesets_dir )
+
+    -- TexturePacker directory will default to tilesets_dir if arg not present
+    texturepacker_dir = texturepacker_dir or tilesets_dir
+	loadTexturePacker( texturepacker_dir )
 	
 	for _, info in ipairs( data.layers ) do
 

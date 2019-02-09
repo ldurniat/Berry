@@ -253,23 +253,19 @@ end
 --------------------------------------------------------------------------------
 -- Returns an image sheet or nil
 --
--- @param tileset The object which contains information about tileset.
+-- @param id The GID or image_name to find the image sheet.
 -- @return The image sheet or nil.
 -- @return The frame_index for image in image sheet. (Texturepacker only)
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
-local function getImageSheet( tileset )
+local function getImageSheet( id )
 
-	-- Make sure our tileset supports image sheets
-	if not tileset.image then return nil end
+	local image_sheet = image_sheets[id]
 
-	local name = tileset.image
+	if image_sheet then
 
-
-	if image_sheets[name] then
-
-		local sheet, frame = image_sheets[name].sheet, image_sheets[name].frame 
+		local sheet, frame = image_sheet.sheet, image_sheet.frame 
 		return sheet, frame
 
 	end
@@ -800,7 +796,7 @@ function Map:createTile( position, gid, layer )
 		local firstgid, tile_id = tileset.firstgid,  gid - tileset.firstgid
 		local width,    height  = tileset.tilewidth, tileset.tileheight 
 
-		local image_sheet = getImageSheet( tileset ) 
+		local image_sheet = getImageSheet( tileset.image ) 
 
 		if image_sheet then
 

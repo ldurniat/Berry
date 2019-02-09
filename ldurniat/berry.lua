@@ -566,7 +566,7 @@ local function loadTilesets( tilesets )
 		local firstgid = tileset.firstgid
 		local lastgid = tileset.firstgid + tileset.tilecount - 1
 
-		if not tileset.tiles then -- embedded images don't use image sheets
+		if tileset.image then -- embedded images don't use image sheets
 
 			for gid = firstgid, lastgid do
 
@@ -585,6 +585,11 @@ print("GID is = ", gid)
 				}
 
 			end
+
+		else
+
+for k,v in pairs(tileset) do print(k,v) end
+error('Tileet.tiles exists and idk')
 
 		end
 
@@ -796,12 +801,12 @@ function Map:createTile( position, gid, layer )
 		local firstgid, tile_id = tileset.firstgid,  gid - tileset.firstgid
 		local width,    height  = tileset.tilewidth, tileset.tileheight 
 
-		local image_sheet = getImageSheet( tileset.image ) 
+		local image_sheet, frame = getImageSheet( gid ) 
 
 		if image_sheet then
 
 			image = display.newImageRect( layer, image_sheet, 
-										  tile_id + 1, width, height )
+										  frame, width, height )
 
 		else 
           	
@@ -963,7 +968,7 @@ function Map:createObject( object, layer )
 			local firstgid           = tileset.firstgid
 			local tile_id 		     = object.gid - tileset.firstgid
 			local width,      height = object.width, object.height
-			local image_sheet        = getImageSheet( tileset ) 
+			local image_sheet, frame = getImageSheet( object.gid ) 
 
 			if image_sheet then
 
@@ -977,7 +982,7 @@ function Map:createObject( object, layer )
 				else
 
 					image = display.newImageRect( layer, image_sheet, 
-												  tile_id + 1, width, height )
+												  frame, width, height )
 
 				end
 					
@@ -1030,6 +1035,12 @@ function Map:createObject( object, layer )
             	image.anchorX, image.anchorY = 0.5, 1   
 
 			elseif self.orientation == 'orthogonal' then 
+
+print('---------')
+print(image_sheet)
+print(object.gid)
+print(tileset)
+
 
 				image.anchorX, image.anchorY = 0, 1
 				image.x, image.y             = object.x, object.y

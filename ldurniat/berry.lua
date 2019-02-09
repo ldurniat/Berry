@@ -266,6 +266,7 @@ local function getImageSheet( tileset )
 
 	local name = tileset.image
 
+
 	if image_sheets[name] then
 
 		local sheet, frame = image_sheets[name].sheet, image_sheets[name].frame 
@@ -287,16 +288,6 @@ end
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
 local function getTileImage( tileset, tile_id )
-
-
-
-
-print(tileset, tile_id)
-for k,v in pairs(tileset) do print(k,v) end
-
-
-
-
 
 	local tile
 	local tiles = tileset.tiles
@@ -568,9 +559,13 @@ local function loadTilesets( tilesets )
 
 	for _, tileset in ipairs(tilesets) do
 
+		-- what is happening if embedded images are created as image sheet?!?
 		local sheet = createImageSheet( tileset )
-		-- do we need to load tileset name into image sheet?!?
-		--image_sheets[tileset.image] = sheet
+
+		image_sheets[tileset.image] = {
+			sheet = sheet,
+			type = 'tiled',
+		}
 
 		local firstgid = tileset.firstgid
 		local lastgid = tileset.firstgid + tileset.tilecount - 1
@@ -579,7 +574,7 @@ local function loadTilesets( tilesets )
 
 			for gid = firstgid, lastgid do
 
-	print("GID is = ", gid)
+print("GID is = ", gid)
 
 				assert( not image_sheets[gid],
 					"Duplicate gid for image sheet detected.  Check to " ..

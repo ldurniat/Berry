@@ -36,8 +36,7 @@ local FLIPPED_DIAGONAL_FLAG   = 0x20000000
 --                                  LOCAL VARIABLES                           --	
 -- -------------------------------------------------------------------------- --
 
-local image_sheets = {}
-local image_info = {}
+local image_cache = {}
 
 -- -------------------------------------------------------------------------- --
 --									LOCAL FUNCTIONS	                          --
@@ -261,7 +260,8 @@ end
 --------------------------------------------------------------------------------   
 local function getImageSheet( id )
 
-	local image_sheet = image_sheets[id]
+	local is_image_sheet = image_cache[id] and image_cache[id].sheet 
+	local image_sheet = is_image_sheet and image_cache[id]
 
 	if image_sheet then
 
@@ -285,11 +285,12 @@ end
 --------------------------------------------------------------------------------   
 local function getImageInfo( id )
 
-	local image = image_info[id]
+	local is_image = image_cache[id] and image_cache[id].path
+	local image =  is_image and image_cache[id]
 
 	if image then
 
-		return image.directory, image.width, image.height
+		return image.path, image.width, image.height
 
 	end
 
@@ -554,20 +555,20 @@ local function loadTilesets( tilesets )
 
 			local sheet = createImageSheet( tileset )
 
-			image_sheets[tileset.image] = {
+			image_cache[tileset.image] = {
 				sheet = sheet,
 				type = 'tiled',
 			}
 
 			for gid = firstgid, lastgid do
 
-				assert( not image_sheets[gid],
+				assert( not image_cache[gid],
 					"Duplicate gid for image sheet detected.  Check to " ..
 					"make sure the same image sheet isn't being loaded twice "..
 					"or if some of the images/tilesets have matching names"
 				)
 
-				image_sheets[gid] = {
+				image_cache[gid] = {
 					sheet = sheet,
 					type = 'tiled',
 					frame = gid - firstgid + 1,
@@ -633,10 +634,10 @@ local function loadTexturePacker( directory )
 				local sheet = createImageSheet( tileset )
 
 --[[-- we may want to get rid of this?
-	   This would attach the image_name/lua_file_name to image_sheets
+	   This would attach the image_name/lua_file_name to image_cache
 	   but I'm pretty sure we don't need it... only the sprite_name
 
-				image_sheets[file_name] = {
+				image_cache[file_name] = {
 					sheet = sheet,
 					type = 'texturepacker',
 				}
@@ -644,13 +645,13 @@ local function loadTexturePacker( directory )
 
 				for sprite_name, i in pairs(tileset.frameIndex) do
 
-					assert( not image_sheets[sprite_name],
+					assert( not image_cache[sprite_name],
 					"Duplicate names for image sheet detected.  Check to " ..
 					"make sure the same image sheet isn't being loaded twice" ..
 					" or if some of the images/tilesets have matching names"
 					)
 
-					image_sheets[sprite_name] = {
+					image_cache[sprite_name] = {
 						sheet = sheet,
 						type = 'texturepacker',
 						frame = i,

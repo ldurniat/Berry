@@ -745,14 +745,14 @@ end
 function Map:createTile( position, gid, layer )
 
 	-- Get the correct tileset using the GID
-	local tileset = getTileset( gid )
+	local tileset = getTileset( self.image_cache, gid )
 
 	if tileset then
 
 		local image 
 		local width, height  = tileset.tilewidth, tileset.tileheight 
 
-		local image_sheet, frame = getImageSheet( gid ) 
+		local image_sheet, frame = getImageSheet( self.image_cache, gid ) 
 
 		if image_sheet then
 
@@ -761,7 +761,7 @@ function Map:createTile( position, gid, layer )
 
 		else 
           	
-          	local path, image_w, image_h = getImageInfo( gid )
+          	local path, image_w, image_h = getImageInfo( self.image_cache, gid )
           	image = display.newImageRect( layer, path, image_w, image_h )
 
 		end	
@@ -912,14 +912,14 @@ function Map:createObject( object, layer )
 	    object.gid = clearBit( object.gid, FLIPPED_DIAGONAL_FLAG )
 
 		-- Get the correct tileset using the GID
-		tileset = getTileset( object.gid )
+		tileset = getTileset( self.image_cache, object.gid )
 
 		if tileset then
 
 			local firstgid           = tileset.firstgid
 			local tile_id 		     = object.gid - tileset.firstgid
 			local width,      height = object.width, object.height
-			local image_sheet, frame = getImageSheet( object.gid ) 
+			local image_sheet, frame = getImageSheet( self.image_cache, object.gid ) 
 
 			if image_sheet then
 
@@ -939,7 +939,7 @@ function Map:createObject( object, layer )
 					
 			else 
 
-          		local path = getImageInfo( object.gid )
+          		local path = getImageInfo( self.image_cache, object.gid )
 				image = display.newImageRect( layer, path, width, height ) 
 
 			end
@@ -1091,7 +1091,7 @@ print(tileset)
 	elseif object.sprite then
 
 		local tileset = { image = object.sprite }
-		local image_sheet, frame_index = getImageSheet( tileset )
+		local image_sheet, frame_index = getImageSheet( self.image_cache, tileset )
 
 		-- switch this to display.newImageRect later (see if it works?)
 		image = display.newImage( layer, image_sheet, frame_index )  

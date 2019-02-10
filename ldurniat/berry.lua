@@ -302,26 +302,12 @@ end
 --- Gets a Tile image from a GID.
 --
 -- @param gid The gid to use.
--- @param tilesets All tilesets.
 -- @return The tileset at the gid location.
 --------------------------------------------------------------------------------
-local function getTilesetFromGID( gid, tilesets )
+local function getTilesetFromGID( gid )
 	
-	for i = 1, #tilesets do
-
-		local tileset  = tilesets[i]
-		local firstgid = tileset.firstgid
-		local lastgid  = tileset.lastgid
-
-		if gid >= firstgid and gid <= lastgid then
-
-			return tilesets[i]
-
-		end
-
-    end  
-
-    return nil
+	local tileset = image_cache[gid] and image_cache[gid].tileset
+	return tileset
 
 end
 
@@ -797,7 +783,7 @@ end
 function Map:createTile( position, gid, layer )
 
 	-- Get the correct tileset using the GID
-	local tileset = getTilesetFromGID( gid, self.tilesets )
+	local tileset = getTilesetFromGID( gid )
 
 	if tileset then
 
@@ -965,7 +951,7 @@ function Map:createObject( object, layer )
 	    object.gid = clearBit( object.gid, FLIPPED_DIAGONAL_FLAG )
 
 		-- Get the correct tileset using the GID
-		tileset = getTilesetFromGID( object.gid, self.tilesets )
+		tileset = getTilesetFromGID( object.gid )
 
 		if tileset then
 

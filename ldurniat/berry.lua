@@ -277,8 +277,7 @@ end
 --------------------------------------------------------------------------------
 -- Returns tile values for display.newImageRect
 --
--- @param tileset The object which contains information about tileset.
--- @param tile_id The id of tile.
+-- @param id The id of tile.
 -- @return The image directory, image width, and image height
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
@@ -304,9 +303,9 @@ end
 -- @param gid The gid to use.
 -- @return The tileset at the gid location.
 --------------------------------------------------------------------------------
-local function getTileset( gid )
+local function getTileset( id )
 	
-	local tileset = image_cache[gid] and image_cache[gid].tileset
+	local tileset = image_cache[id] and image_cache[id].tileset
 	return tileset
 
 end
@@ -400,7 +399,15 @@ local function retrieveShapeData( tile_id, tileset )
 
 	end	
 
+
+
 	if tile then
+
+print('-----------------')
+print('RETREIVESHAPEDATA')
+for k,v in pairs(tileset) do print(k,v) end
+print('More shape data')
+print("tile is:", tile)
 
 		local objectgroup = tile.objectgroup
 
@@ -743,8 +750,7 @@ function Map:createTile( position, gid, layer )
 	if tileset then
 
 		local image 
-		local firstgid, tile_id = tileset.firstgid,  gid - tileset.firstgid
-		local width,    height  = tileset.tilewidth, tileset.tileheight 
+		local width, height  = tileset.tilewidth, tileset.tileheight 
 
 		local image_sheet, frame = getImageSheet( gid ) 
 

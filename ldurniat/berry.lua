@@ -1134,6 +1134,48 @@ function Map:createObject( object, layer )
 end
 
 --------------------------------------------------------------------------------
+--- Create and load texture packer image sheet
+--  
+--------------------------------------------------------------------------------
+function Map:addTexturePack( image_path, lua_path )
+
+	-- Captures directory and name from image_path
+	local image_directory, image_name = image_path:match("(.*/)(.*%..+)$")
+
+	-- Replace slashes with periods in require path else file won't load
+	local lua_module = lua_path:gsub("[/\]", ".")
+	local texture_pack = require(lua_module)
+
+	if texture_pack then
+
+		-- these are used by the createImageSheet
+		texture_pack.name = image_name
+		texture_pack.directory = image_directory
+
+		local sheet = createImageSheet( texture_pack )
+
+		for sprite_name, i in pairs(texture_pack.frameIndex) do
+
+			assert( not cache[sprite_name],
+			"Duplicate names for image sheet detected.  Check to " ..
+			"make sure the same image sheet isn't being loaded twice" ..
+			" or if some of the images/tilesets have matching names"
+			)
+
+			cache[sprite_name] = {
+			    --tileset = tileset, (we don't need this)
+				sheet = sheet,
+				type = 'texturepacker',
+				frame = i,
+			}
+
+		end
+
+	end
+
+end
+
+--------------------------------------------------------------------------------
 --- Sort objects on layers.
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 

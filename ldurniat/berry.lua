@@ -515,6 +515,12 @@ local function loadTilesets( cache, tilesets )
 
 				local gid = firstgid + ( i - 1 )
 
+				assert( not cache[gid],
+					"Duplicate gid for image sheet detected.  Check to " ..
+					"make sure the same image sheet isn't being loaded twice "..
+					"or if some of the images/tilesets have matching names"
+				)
+
 				cache[gid] = {
 					tileset = tileset,
 					path = tileset.directory .. tile.image,

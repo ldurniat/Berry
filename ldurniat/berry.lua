@@ -283,7 +283,7 @@ end
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
-local function getImageInfo( tileset, tile_id )
+local function getImageInfo( id )
 
 	local image = image_info[id]
 
@@ -809,7 +809,7 @@ function Map:createTile( position, gid, layer )
 
 		else 
           	
-          	local path, image_w, image_h = getImageInfo( tileset, tile_id )
+          	local path, image_w, image_h = getImageInfo( gid )
           	image = display.newImageRect( layer, path, image_w, image_h )
 
 		end	
@@ -987,7 +987,7 @@ function Map:createObject( object, layer )
 					
 			else 
 
-          		local path = getImageInfo( tileset, tile_id )
+          		local path = getImageInfo( object.gid )
 				image = display.newImageRect( layer, path, width, height ) 
 
 			end

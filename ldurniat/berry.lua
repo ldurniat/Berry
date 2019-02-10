@@ -1142,6 +1142,9 @@ function Map:addTexturePack( image_path, lua_path )
 	-- Captures directory and name from image_path
 	local image_directory, image_name = image_path:match("(.*/)(.*%..+)$")
 
+	-- Removes the .lua extension (if present) for lua_path
+	lua_path = lua_path:match("(.*)%..+$") or lua_path
+
 	-- Replace slashes with periods in require path else file won't load
 	local lua_module = lua_path:gsub("[/\]", ".")
 	local texture_pack = require(lua_module)

@@ -312,44 +312,6 @@ local function getTilesetFromGID( gid )
 end
 
 --------------------------------------------------------------------------------
--- Find GID for last element in tileset based on firstgids.
---
--- @param tileset The object which contains information about tileset.
--- @param next_tileset The object which contains information about tileset.
--- @return The number.
--- 
--- Original code from https://github.com/ponywolf/ponytiled 
---------------------------------------------------------------------------------    
-local function findLastGID( tileset, next_tileset )
-
-    local firstgid  = tileset.firstgid 
-	local image     = tileset.image 
-	local tiles     = tileset.tiles 
-	local tilecount = tileset.tilecount
-	local last      = firstgid
-
-	if image then
-
-  		return firstgid + tilecount - 1
-
-	elseif tiles then
-
-  		if next_tileset then
-
-  			last = next_tileset.firstgid - 1
-
-  		else
-
-  			last = mHuge
-  		end	
-
-  	return last
-
-	end  
-
-end
-
---------------------------------------------------------------------------------
 -- Find property by name.
 --
 -- @param properties The table with properties.
@@ -681,13 +643,6 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 
     -- Purpose of computation here is simplification of code
     for i, tileset in ipairs( data.tilesets ) do
-
-    	--[[ remove these three lines]]--
-    	-- The tilesets are sorted always in ascending order by their firstgid
-    	local next_tileset      = data.tilesets[i + 1]
-    	tileset.lastgid         = findLastGID( tileset, next_tileset )
-
-
 
     	tileset.sequence_data   = buildSequences( tileset )
     	tileset.directory 		= tilesets_dir and tilesets_dir .. '/' or ''

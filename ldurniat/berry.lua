@@ -304,7 +304,7 @@ end
 -- @param gid The gid to use.
 -- @return The tileset at the gid location.
 --------------------------------------------------------------------------------
-local function getTilesetFromGID( gid )
+local function getTileset( gid )
 	
 	local tileset = image_cache[gid] and image_cache[gid].tileset
 	return tileset
@@ -738,7 +738,7 @@ end
 function Map:createTile( position, gid, layer )
 
 	-- Get the correct tileset using the GID
-	local tileset = getTilesetFromGID( gid )
+	local tileset = getTileset( gid )
 
 	if tileset then
 
@@ -906,7 +906,7 @@ function Map:createObject( object, layer )
 	    object.gid = clearBit( object.gid, FLIPPED_DIAGONAL_FLAG )
 
 		-- Get the correct tileset using the GID
-		tileset = getTilesetFromGID( object.gid )
+		tileset = getTileset( object.gid )
 
 		if tileset then
 

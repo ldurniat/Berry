@@ -37,7 +37,7 @@ local FLIPPED_DIAGONAL_FLAG   = 0x20000000
 -- -------------------------------------------------------------------------- --
 
 local image_sheets = {}
-local gid_cache = {}
+local image_info = {}
 
 -- -------------------------------------------------------------------------- --
 --									LOCAL FUNCTIONS	                          --
@@ -285,23 +285,15 @@ end
 --------------------------------------------------------------------------------   
 local function getImageInfo( tileset, tile_id )
 
-	local tile
-	local tiles = tileset.tiles
+	local image = image_info[id]
 
-	for i=1, #tiles do
+	if image then
 
-		tile = tiles[i]
+		return image.directory, image.width, image.height
 
-		if tile.id == tile_id then
+	end
 
-			local image_directory = tileset.directory .. tile.image
-			local width, height = tile.image_width, tile.image_height
-
-			return image_directory, width, height
-		
-		end	
-
-	end	
+	return nil
 
 end
 
@@ -555,18 +547,17 @@ local function loadTilesets( tilesets )
 
 	for _, tileset in ipairs(tilesets) do
 
-		-- what is happening if embedded images are created as image sheet?!?
-		local sheet = createImageSheet( tileset )
-
-		image_sheets[tileset.image] = {
-			sheet = sheet,
-			type = 'tiled',
-		}
-
 		local firstgid = tileset.firstgid
 		local lastgid = tileset.firstgid + tileset.tilecount - 1
 
-		if tileset.image then -- embedded images don't use image sheets
+		if tileset.image then 
+
+			local sheet = createImageSheet( tileset )
+
+			image_sheets[tileset.image] = {
+				sheet = sheet,
+				type = 'tiled',
+			}
 
 			for gid = firstgid, lastgid do
 
@@ -584,10 +575,19 @@ local function loadTilesets( tilesets )
 
 			end
 
-		else
+		elseif tileset.tiles then -- Has embedded images (no image sheets)
 
-for k,v in pairs(tileset) do print(k,v) end
-error('Tileet.tiles exists and idk')
+			for i, tile in ipairs(tileset.tiles) do
+
+				local gid = firstgid + ( i - 1 )
+
+				image_info[gid] = {
+					directory = tileset.directory .. tile.image,
+					width = tile.image_width,
+					height = tile.image_height,
+				}
+
+			end
 
 		end
 

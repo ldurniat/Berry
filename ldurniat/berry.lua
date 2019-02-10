@@ -584,7 +584,7 @@ local function loadTilesets( tilesets )
 
 				local gid = firstgid + ( i - 1 )
 
-				image_info[gid] = {
+				image_cache[gid] = {
 					tileset = tileset,
 					path = tileset.directory .. tile.image,
 					width = tile.image_width,
@@ -655,6 +655,7 @@ local function loadTexturePacker( directory )
 					)
 
 					image_cache[sprite_name] = {
+					--  tileset = tileset,  (pretty sure we don't need this)
 						sheet = sheet,
 						type = 'texturepacker',
 						frame = i,

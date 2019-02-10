@@ -283,7 +283,7 @@ end
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
-local function getTileImage( tileset, tile_id )
+local function getImageInfo( tileset, tile_id )
 
 	local tile
 	local tiles = tileset.tiles
@@ -570,8 +570,6 @@ local function loadTilesets( tilesets )
 
 			for gid = firstgid, lastgid do
 
-print("GID is = ", gid)
-
 				assert( not image_sheets[gid],
 					"Duplicate gid for image sheet detected.  Check to " ..
 					"make sure the same image sheet isn't being loaded twice "..
@@ -779,6 +777,7 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
     	map.designed_height = data.height * data.tileheight
     	map.x = display.contentCenterX - map.designed_width * 0.5
     	map.y = display.contentCenterY - map.designed_height * 0.5
+    	
     end	
 
 	-- Set the background color to the map background
@@ -810,7 +809,7 @@ function Map:createTile( position, gid, layer )
 
 		else 
           	
-          	local path, image_w, image_h = getTileImage( tileset, tile_id )
+          	local path, image_w, image_h = getImageInfo( tileset, tile_id )
           	image = display.newImageRect( layer, path, image_w, image_h )
 
 		end	
@@ -988,7 +987,7 @@ function Map:createObject( object, layer )
 					
 			else 
 
-          		local path = getTileImage( tileset, tile_id )
+          		local path = getImageInfo( tileset, tile_id )
 				image = display.newImageRect( layer, path, width, height ) 
 
 			end

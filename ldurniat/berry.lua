@@ -1156,13 +1156,13 @@ function Map:addTexturePack( image_path, lua_path )
 
 		for sprite_name, i in pairs(texture_pack.frameIndex) do
 
-			assert( not cache[sprite_name],
+			assert( not self.image_cache[sprite_name],
 			"Duplicate names for image sheet detected.  Check to " ..
 			"make sure the same image sheet isn't being loaded twice" ..
 			" or if some of the images/tilesets have matching names"
 			)
 
-			cache[sprite_name] = {
+			self.image_cache[sprite_name] = {
 			    --tileset = tileset, (we don't need this)
 				sheet = sheet,
 				type = 'texturepacker',

@@ -593,7 +593,7 @@ local function loadTexturePacker( cache, directory )
 					)
 
 					cache[sprite_name] = {
-					--  tileset = tileset,  (pretty sure we don't need this)
+					    --tileset = tileset, (we don't need this)
 						sheet = sheet,
 						type = 'texturepacker',
 						frame = i,
@@ -971,12 +971,6 @@ function Map:createObject( object, layer )
 
 			elseif self.orientation == 'orthogonal' then 
 
-print('---------')
-print(image_sheet)
-print(object.gid)
-print(tileset)
-
-
 				image.anchorX, image.anchorY = 0, 1
 				image.x, image.y             = object.x, object.y
 
@@ -1075,10 +1069,10 @@ print(tileset)
 	elseif object.sprite then
 
 		local tileset = { image = object.sprite }
-		local image_sheet, frame_index = getImageSheet( self.image_cache, tileset )
+		local image_sheet, frame = getImageSheet( self.image_cache, tileset )
 
 		-- switch this to display.newImageRect later (see if it works?)
-		image = display.newImage( layer, image_sheet, frame_index )  
+		image = display.newImage( layer, image_sheet, frame )  
 
 		-- Apply base properties
 	    image.anchorX, image.anchorY = 0,        0

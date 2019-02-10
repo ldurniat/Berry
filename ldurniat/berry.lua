@@ -556,6 +556,7 @@ local function loadTilesets( tilesets )
 			local sheet = createImageSheet( tileset )
 
 			image_cache[tileset.image] = {
+				tileset = tileset,
 				sheet = sheet,
 				type = 'tiled',
 			}
@@ -569,6 +570,7 @@ local function loadTilesets( tilesets )
 				)
 
 				image_cache[gid] = {
+					tileset = tileset,
 					sheet = sheet,
 					type = 'tiled',
 					frame = gid - firstgid + 1,
@@ -583,7 +585,8 @@ local function loadTilesets( tilesets )
 				local gid = firstgid + ( i - 1 )
 
 				image_info[gid] = {
-					directory = tileset.directory .. tile.image,
+					tileset = tileset,
+					path = tileset.directory .. tile.image,
 					width = tile.image_width,
 					height = tile.image_height,
 				}

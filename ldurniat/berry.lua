@@ -33,12 +33,6 @@ local FLIPPED_VERTICAL_FLAG   = 0x40000000
 local FLIPPED_DIAGONAL_FLAG   = 0x20000000
 
 -- -------------------------------------------------------------------------- --
---                                  LOCAL VARIABLES                           --	
--- -------------------------------------------------------------------------- --
-
-local image_cache = {}
-
--- -------------------------------------------------------------------------- --
 --									LOCAL FUNCTIONS	                          --
 -- -------------------------------------------------------------------------- --
 
@@ -252,16 +246,17 @@ end
 --------------------------------------------------------------------------------
 -- Returns an image sheet or nil
 --
+-- @param cache A table that stores GID, image_names, tileset_names for lookup 
 -- @param id The GID or image_name to find the image sheet.
 -- @return The image sheet or nil.
 -- @return The frame_index for image in image sheet. (Texturepacker only)
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
-local function getImageSheet( id )
+local function getImageSheet( cache, id )
 
-	local is_image_sheet = image_cache[id] and image_cache[id].sheet 
-	local image_sheet = is_image_sheet and image_cache[id]
+	local is_image_sheet = cache[id] and cache[id].sheet 
+	local image_sheet = is_image_sheet and cache[id]
 
 	if image_sheet then
 
@@ -277,15 +272,16 @@ end
 --------------------------------------------------------------------------------
 -- Returns tile values for display.newImageRect
 --
+-- @param cache A table that stores GID, image_names, tileset_names for lookup 
 -- @param id The id of tile.
 -- @return The image directory, image width, and image height
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
-local function getImageInfo( id )
+local function getImageInfo( cache, id )
 
-	local is_image = image_cache[id] and image_cache[id].path
-	local image =  is_image and image_cache[id]
+	local is_image = cache[id] and cache[id].path
+	local image =  is_image and cache[id]
 
 	if image then
 
@@ -300,12 +296,13 @@ end
 --------------------------------------------------------------------------------
 --- Gets a Tile image from a GID.
 --
--- @param gid The gid to use.
+-- @param cache A table that stores GID, image_names, tileset_names for lookup 
+-- @param id The gid to use to find tileset.
 -- @return The tileset at the gid location.
 --------------------------------------------------------------------------------
-local function getTileset( id )
+local function getTileset( cache, id )
 	
-	local tileset = image_cache[id] and image_cache[id].tileset
+	local tileset = cache[id] and cache[id].tileset
 	return tileset
 
 end
@@ -497,9 +494,10 @@ end
 --------------------------------------------------------------------------------
 -- Creates and loads tilesets from directory
 --
+-- @param cache A table that stores GID, image_names, tileset_names for lookup 
 -- @param tilesets The tileset data to load
 -------------------------------------------------------------------------------- 
-local function loadTilesets( tilesets )
+local function loadTilesets( cache, tilesets )
 
 	for _, tileset in ipairs(tilesets) do
 
@@ -510,7 +508,7 @@ local function loadTilesets( tilesets )
 
 			local sheet = createImageSheet( tileset )
 
-			image_cache[tileset.image] = {
+			cache[tileset.image] = {
 				tileset = tileset,
 				sheet = sheet,
 				type = 'tiled',
@@ -518,13 +516,13 @@ local function loadTilesets( tilesets )
 
 			for gid = firstgid, lastgid do
 
-				assert( not image_cache[gid],
+				assert( not cache[gid],
 					"Duplicate gid for image sheet detected.  Check to " ..
 					"make sure the same image sheet isn't being loaded twice "..
 					"or if some of the images/tilesets have matching names"
 				)
 
-				image_cache[gid] = {
+				cache[gid] = {
 					tileset = tileset,
 					sheet = sheet,
 					type = 'tiled',
@@ -539,7 +537,7 @@ local function loadTilesets( tilesets )
 
 				local gid = firstgid + ( i - 1 )
 
-				image_cache[gid] = {
+				cache[gid] = {
 					tileset = tileset,
 					path = tileset.directory .. tile.image,
 					width = tile.image_width,
@@ -557,9 +555,10 @@ end
 --------------------------------------------------------------------------------
 -- Creates and loads Texturepacker tilesets from directory
 --
+-- @param cache A table that stores GID, image_names, tileset_names for lookup 
 -- @param directory A directory to scan for texturepacker lua files
 -------------------------------------------------------------------------------- 
-local function loadTexturePacker( directory )
+local function loadTexturePacker( cache, directory )
 
     local path = system.pathForFile( directory, system.ResourceDirectory ) 
 
@@ -592,10 +591,10 @@ local function loadTexturePacker( directory )
 				local sheet = createImageSheet( tileset )
 
 --[[-- we may want to get rid of this?
-	   This would attach the image_name/lua_file_name to image_cache
+	   This would attach the image_name/lua_file_name to cache
 	   but I'm pretty sure we don't need it... only the sprite_name
 
-				image_cache[file_name] = {
+				cache[file_name] = {
 					sheet = sheet,
 					type = 'texturepacker',
 				}
@@ -603,13 +602,13 @@ local function loadTexturePacker( directory )
 
 				for sprite_name, i in pairs(tileset.frameIndex) do
 
-					assert( not image_cache[sprite_name],
+					assert( not cache[sprite_name],
 					"Duplicate names for image sheet detected.  Check to " ..
 					"make sure the same image sheet isn't being loaded twice" ..
 					" or if some of the images/tilesets have matching names"
 					)
 
-					image_cache[sprite_name] = {
+					cache[sprite_name] = {
 					--  tileset = tileset,  (pretty sure we don't need this)
 						sheet = sheet,
 						type = 'texturepacker',
@@ -647,6 +646,7 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 
 	local map = setupDisplayGroup( self )
 	map.dim = { width=data.width, height=data.height }
+	map.image_cache = {}
 
     -- Purpose of computation here is simplification of code
     for i, tileset in ipairs( data.tilesets ) do
@@ -671,8 +671,8 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
     texturepacker_dir = texturepacker_dir or tilesets_dir
 
     do  -- Create and cache all the image sheets
-	    loadTilesets( map.tilesets )
-		loadTexturePacker( texturepacker_dir )
+	    loadTilesets( map.image_cache, map.tilesets )
+		loadTexturePacker( map.image_cache, texturepacker_dir )
 	end
 	
 	for _, info in ipairs( data.layers ) do

@@ -426,21 +426,6 @@ print("tile is:", tile)
 end	
 
 --------------------------------------------------------------------------------
--- This creates a new display group with copied methods from a class
---
--- @param class The class to copy methods from
--- @return A display group with class methods.
---------------------------------------------------------------------------------  
-local function setupDisplayGroup( class )
-
-	local group = display.newGroup()
-	for name, method in pairs( class ) do group[name] = method end
-
-	return group 
-
-end
-
---------------------------------------------------------------------------------
 -- Mapping from isometric coordinates to screen coordinates 
 --
 -- @param row Number of row. Can real number.
@@ -637,7 +622,7 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 	local json_path = system.pathForFile( filename, system.ResourceDirectory ) 
     local data = json.decodeFile( json_path )
 
-	local map = setupDisplayGroup( self )
+	local map = inherit( display.newGroup(), self )
 	map.dim = { width=data.width, height=data.height }
 	map.image_cache = {}
 

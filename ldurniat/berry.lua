@@ -871,7 +871,7 @@ function Map:createTile( position, gid, layer )
 end
 
 --------------------------------------------------------------------------------
---- Create and add object to layer
+--- Create object and add it to a layer
 --  
 --------------------------------------------------------------------------------
 function Map:createObject( object, layer )
@@ -1130,6 +1130,22 @@ function Map:createObject( object, layer )
 		inherit( image, object.properties )
 
 	end	
+
+end
+
+--------------------------------------------------------------------------------
+--- Add texturepacker sprite to a layer in the map
+--  
+--------------------------------------------------------------------------------
+function Map:addSprite( layer, image_name, x, y )
+
+	local object = {
+		sprite = image_name,
+		x = x,
+		y = y,
+	}
+
+	return self:createObject( object, layer )
 
 end
 

@@ -609,6 +609,434 @@ local function loadTexturePacker( cache, directory )
 
 end
 
+--------------------------------------------------------------------------------
+--- Create and add tile to layer
+--  
+--------------------------------------------------------------------------------
+local function createTile( map, position, gid, layer )
+
+	-- Get the correct tileset using the GID
+	local tileset = getTileset( map.image_cache, gid )
+
+	if tileset then
+
+		local image 
+		local width, height  = tileset.tilewidth, tileset.tileheight 
+
+		local image_sheet, frame = getImageSheet( map.image_cache, gid ) 
+
+		if image_sheet then
+
+			image = display.newImageRect( layer, image_sheet, 
+										  frame, width, height )
+
+		else 
+          	
+          	local path, image_w, image_h = getImageInfo( map.image_cache, gid )
+          	image = display.newImageRect( layer, path, image_w, image_h )
+
+		end	
+
+		if image then
+
+			-- The first element from layer.data start at (0, 0) and 
+			-- goes from left to right and top to bottom			
+			image.row    = mFloor( 
+								   ( position + layer.size - 1 ) / layer.size 
+								 ) - 1
+			image.column = position - image.row * layer.size - 1
+
+			if map.orientation == 'isometric' then
+
+				image.anchorX, image.anchorY = 0.5, 0
+				image.x, image.y = isoToScreen( 
+					image.row, image.column, 
+					map.tile_width, map.tile_height, 
+					map.dim.height * map.tile_width * 0.5 
+				)
+
+			elseif map.orientation == 'staggered' then
+
+		    	local staggered_offset_y = ( map.tile_height * 0.5 )
+		    	local staggered_offset_x = ( map.tile_width * 0.5 )
+
+		    	if map.stagger_axis == 'y' then
+
+		    		if map.stagger_index == 'odd' then
+
+		    			if image.row % 2 == 0 then
+
+		    				image.x = ( image.column * map.tile_width ) + 
+		    							staggered_offset_x
+
+		    			else
+
+		    				image.x = ( image.column * map.tile_width )
+
+		    			end
+
+		    		else
+
+		    			if image.row % 2 == 0  then
+
+		    				image.x = ( image.column * map.tile_width )
+
+						else
+
+		    				image.x = ( image.column * map.tile_width ) + 
+		    							staggered_offset_x
+
+						end
+
+		    		end
+
+		    		image.y = ( 
+		    					image.row * 
+		    				    ( map.tile_height - map.tile_height * 0.5 ) 
+		    				  )
+
+		    	else
+
+		    		if map.stagger_index == 'odd' then
+
+		    			if image.column % 2 == 0  then
+
+		    				image.y = ( image.row * map.tile_height ) + 
+		    							staggered_offset_y
+
+		    			else
+
+		    				image.y = ( image.row * map.tile_height )
+
+		    			end
+
+		    		else
+
+		    			if image.column % 2 == 0  then
+
+		    				image.y = ( image.row * map.tile_height )
+
+						else
+
+		    				image.y = ( image.row * map.tile_height ) + 
+		    							staggered_offset_y
+
+						end
+
+		    		end
+
+		    		image.x = ( 
+		    					image.column * 
+		    					( map.tile_width - map.tile_width * 0.5 ) 
+		    				  )
+
+		    	end
+
+			elseif map.orientation == 'orthogonal' then
+
+				image.anchorX, image.anchorY = 0, 1
+				image.x = image.column * map.tile_width
+				image.y = ( image.row + 1 ) * map.tile_height
+
+			end
+
+			-- If the map is already created these map_offsets will move your 
+			-- object to be in synch with the map at the proper position
+			local map_offset_x = map.x or 0
+			local map_offset_y = map.y or 0
+
+			image.x = image.x - map_offset_x
+			image.y = image.y - map_offset_y
+
+			centerAnchor( image )
+			inherit( image, layer.properties )
+
+		end	
+
+	end	
+
+end
+
+--------------------------------------------------------------------------------
+--- Create object and add it to a layer
+--  
+--------------------------------------------------------------------------------
+local function createObject( map, object, layer )
+    -- Store the flipped states
+    local flip = {}
+    local image
+
+	-- Make sure we have a properties table
+	object.properties = object.properties or {}
+
+	-- Image/Sprite	
+	-- GID stands for global tile ID
+	if object.gid then
+
+		-- Original code from https://github.com/ponywolf/ponytiled    
+	    flip.x  = hasBit( object.gid, FLIPPED_HORIZONTAL_FLAG )
+	    flip.y  = hasBit( object.gid, FLIPPED_VERTICAL_FLAG )          
+	    flip.xy = hasBit( object.gid, FLIPPED_DIAGONAL_FLAG )
+
+	    object.gid = clearBit( object.gid, FLIPPED_HORIZONTAL_FLAG )
+	    object.gid = clearBit( object.gid, FLIPPED_VERTICAL_FLAG )
+	    object.gid = clearBit( object.gid, FLIPPED_DIAGONAL_FLAG )
+
+		-- Get the correct tileset using the GID
+		tileset = getTileset( map.image_cache, object.gid )
+
+		if tileset then
+
+			local firstgid           = tileset.firstgid
+			local tile_id 		     = object.gid - tileset.firstgid
+			local width,      height = object.width, object.height
+			local image_sheet, frame = getImageSheet( map.image_cache, object.gid ) 
+
+			if image_sheet then
+
+				if findProperty( layer.properties, 'isAnimated' ) or 
+				   findProperty( object.properties, 'isAnimated' ) then
+
+					image = display.newSprite( layer, 
+											   image_sheet, 
+											   tileset.sequence_data )
+
+				else
+
+					image = display.newImageRect( layer, image_sheet, 
+												  frame, width, height )
+
+				end
+					
+			else 
+
+          		local path = getImageInfo( map.image_cache, object.gid )
+				image = display.newImageRect( layer, path, width, height ) 
+
+			end
+
+			local points, x, y, rotation  = retrieveShapeData( tile_id, tileset )
+
+			-- Add collsion shape
+			if points then
+
+				local delta_x = x - image.width * 0.5 
+				local delta_y = y - image.height * 0.5 
+
+				points = unpackPoints( points, delta_x, delta_y, rotation )
+
+				-- Corona shape have limit of 8 vertex
+				if #points > 8 then
+
+					-- Add two new physics properties
+					local property = { name = 'chain', value = points }
+					object.properties[#object.properties + 1] = property
+					property = { name = 'connectFirstAndLastChainVertex', 
+								 value = true }
+					object.properties[#object.properties + 1] = property
+
+				else 
+
+					-- Add new physics property
+					local property = { name = 'shape', value = points }
+					object.properties[#object.properties + 1] = property
+
+				end	
+
+			end	  
+
+	    	if map.orientation == 'isometric' then
+
+				image.x, image.y = isoToScreen( 
+					object.y / map.tile_height, 
+					object.x / map.tile_height, 
+					map.tile_width, 
+					map.tile_height, 
+					map.dim.height * map.tile_width * 0.5 
+					)
+            	image.anchorX, image.anchorY = 0.5, 1   
+
+			elseif map.orientation == 'orthogonal' then 
+
+				image.anchorX, image.anchorY = 0, 1
+				image.x, image.y             = object.x, object.y
+
+			end			
+				
+			image.tile_id = tile_id
+			image.gid    = object.gid
+
+		end	
+
+	elseif object.polygon or object.polyline then 
+		local points = object.polygon or object.polyline
+
+		if object.polygon then 
+
+	    	if map.orientation == 'isometric' then
+	    		
+	    		for i=1, #points do
+		    
+	                points[i].x, points[i].y = isoToScreen( 
+	                	points[i].y / map.tile_height, 
+	                	points[i].x / map.tile_height, 
+	                	map.tile_width, 
+	                	map.tile_height 
+	                )
+	               
+				end	
+
+				local centerX, centerY = findCenter( points )
+				image = display.newPolygon( 
+					layer, 0, 0, unpackPoints( points ) 
+				)	
+				image.x, image.y = isoToScreen( 
+					object.y / map.tile_height, 
+					object.x / map.tile_height, 
+					map.tile_width, 
+					map.tile_height, 
+					map.dim.height * map.tile_width * 0.5 
+				)
+                image:translate( centerX, centerY )
+
+			elseif map.orientation == 'orthogonal' then
+
+				local centerX, centerY = findCenter( points ) 
+				image = display.newPolygon( 
+					layer, 0, 0, unpackPoints( points ) 
+				)	
+				image.x, image.y = object.x, object.y
+				image:translate( centerX, centerY )
+
+			end				
+
+	    else
+
+	    	if map.orientation == 'isometric' then
+	    		
+	    		for i=1, #points do
+		    	
+			    	points[i].x, points[i].y = isoToScreen( 
+			    		points[i].y / map.tile_height, 
+			    		points[i].x / map.tile_height, 
+			    		map.tile_width, 
+			    		map.tile_height, 
+			    		map.dim.height * map.tile_width * 0.5 
+			    	)
+
+				end	
+
+				local centerX, centerY = findCenter( points ) 
+				image = display.newLine( 
+					layer, unpack( unpackPoints( points ) ) 
+				)
+				image.anchorSegments = true
+				image.x, image.y = isoToScreen( 
+					object.y / map.tile_height, 
+					object.x / map.tile_height, 
+					map.tile_width, 
+					map.tile_height 
+				)
+				image:translate( centerX, centerY )
+
+			elseif map.orientation == 'orthogonal' then 
+
+				local centerX, centerY = findCenter( points ) 
+				image = display.newLine( 
+					layer, unpack( unpackPoints( points ) ) 
+				)
+				image.anchorSegments = true
+				image.x, image.y     = object.x, object.y
+				image:translate( centerX, centerY )
+
+			end	
+
+	    end
+
+	elseif object.sprite then
+
+		local tileset = { image = object.sprite }
+		local image_sheet, frame = getImageSheet( map.image_cache, tileset )
+
+		-- switch this to display.newImageRect later (see if it works?)
+		image = display.newImage( layer, image_sheet, frame )  
+
+    	if map.orientation == 'isometric' then
+
+			image.x, image.y = isoToScreen( 
+				object.y / map.tile_height, 
+				object.x / map.tile_height, 
+				map.tile_width, 
+				map.tile_height, 
+				map.dim.height * map.tile_width * 0.5 
+				)
+        	image.anchorX, image.anchorY = 0.5, 1   
+
+		elseif map.orientation == 'orthogonal' then 
+
+			image.anchorX, image.anchorY = 0, 1
+			image.x, image.y             = object.x, object.y
+
+		end		
+
+	else
+
+		image = display.newRect( layer, 0, 0, object.width, object.height )
+
+		-- Apply base properties
+	    image.anchorX, image.anchorY = 0,        0
+	    image.x,       image.y       = object.x, object.y
+	
+	end
+
+	if image then
+		-- Name and type
+		image.name = object.name
+		image.type = object.type
+
+		-- Apply base properties
+		image.rotation  = object.rotation or 0
+		image.isVisible = object.visible  or true
+
+		-- If the map is already created these map_offsets will move your 
+		-- object to be in synch with the map at the proper position
+		local map_offset_x = map.x or 0
+		local map_offset_y = map.y or 0
+
+		image.x = image.x - map_offset_x
+		image.y = image.y - map_offset_y
+
+		centerAnchor( image )
+
+		-- Flip it
+		if flip.xy then
+
+			print( 'Berry: Unsupported Tiled rotation x,y in ', image.name )
+
+		else
+
+			if flip.x then image.xScale = -1 end
+			if flip.y then image.yScale = -1 end
+
+		end
+
+		if  findProperty( object.properties, 'hasBody' ) then 
+
+			local params = inherit( {}, object.properties )
+			physics.addBody( image, 'dynamic', params ) 
+
+		end	
+
+		inherit( image, layer.properties )
+		inherit( image, object.properties )
+
+	end	
+
+	return image
+
+end
+
+
 -- -------------------------------------------------------------------------- --
 --                                  PUBLIC METHODS                            --	
 -- -------------------------------------------------------------------------- --
@@ -679,7 +1107,7 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 			for _, object in ipairs( objects ) do
 
 				-- From here we start process Tiled object into display object
-				map:createObject( object, layer )
+				createObject( map, object, layer )
 
 			end
 
@@ -690,7 +1118,7 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 			-- GID stands for global tile ID
 			for position, gid in ipairs( info.data ) do
 
-				if gid > 0 then map:createTile( position, gid, layer ) end
+				if gid > 0 then createTile( map, position, gid, layer ) end
 
 			end
 
@@ -723,433 +1151,6 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 end
 
 --------------------------------------------------------------------------------
---- Create and add tile to layer
---  
---------------------------------------------------------------------------------
-function Map:createTile( position, gid, layer )
-
-	-- Get the correct tileset using the GID
-	local tileset = getTileset( self.image_cache, gid )
-
-	if tileset then
-
-		local image 
-		local width, height  = tileset.tilewidth, tileset.tileheight 
-
-		local image_sheet, frame = getImageSheet( self.image_cache, gid ) 
-
-		if image_sheet then
-
-			image = display.newImageRect( layer, image_sheet, 
-										  frame, width, height )
-
-		else 
-          	
-          	local path, image_w, image_h = getImageInfo( self.image_cache, gid )
-          	image = display.newImageRect( layer, path, image_w, image_h )
-
-		end	
-
-		if image then
-
-			-- The first element from layer.data start at (0, 0) and 
-			-- goes from left to right and top to bottom			
-			image.row    = mFloor( 
-								   ( position + layer.size - 1 ) / layer.size 
-								 ) - 1
-			image.column = position - image.row * layer.size - 1
-
-			if self.orientation == 'isometric' then
-
-				image.anchorX, image.anchorY = 0.5, 0
-				image.x, image.y = isoToScreen( 
-					image.row, image.column, 
-					self.tile_width, self.tile_height, 
-					self.dim.height * self.tile_width * 0.5 
-				)
-
-			elseif self.orientation == 'staggered' then
-
-		    	local staggered_offset_y = ( self.tile_height * 0.5 )
-		    	local staggered_offset_x = ( self.tile_width * 0.5 )
-
-		    	if self.stagger_axis == 'y' then
-
-		    		if self.stagger_index == 'odd' then
-
-		    			if image.row % 2 == 0 then
-
-		    				image.x = ( image.column * self.tile_width ) + 
-		    							staggered_offset_x
-
-		    			else
-
-		    				image.x = ( image.column * self.tile_width )
-
-		    			end
-
-		    		else
-
-		    			if image.row % 2 == 0  then
-
-		    				image.x = ( image.column * self.tile_width )
-
-						else
-
-		    				image.x = ( image.column * self.tile_width ) + 
-		    							staggered_offset_x
-
-						end
-
-		    		end
-
-		    		image.y = ( 
-		    					image.row * 
-		    				    ( self.tile_height - self.tile_height * 0.5 ) 
-		    				  )
-
-		    	else
-
-		    		if self.stagger_index == 'odd' then
-
-		    			if image.column % 2 == 0  then
-
-		    				image.y = ( image.row * self.tile_height ) + 
-		    							staggered_offset_y
-
-		    			else
-
-		    				image.y = ( image.row * self.tile_height )
-
-		    			end
-
-		    		else
-
-		    			if image.column % 2 == 0  then
-
-		    				image.y = ( image.row * self.tile_height )
-
-						else
-
-		    				image.y = ( image.row * self.tile_height ) + 
-		    							staggered_offset_y
-
-						end
-
-		    		end
-
-		    		image.x = ( 
-		    					image.column * 
-		    					( self.tile_width - self.tile_width * 0.5 ) 
-		    				  )
-
-		    	end
-
-			elseif self.orientation == 'orthogonal' then
-
-				image.anchorX, image.anchorY = 0, 1
-				image.x = image.column * self.tile_width
-				image.y = ( image.row + 1 ) * self.tile_height
-
-			end
-
-			-- If the map is already created these map_offsets will move your 
-			-- object to be in synch with the map at the proper position
-			local map_offset_x = self.x or 0
-			local map_offset_y = self.y or 0
-
-			image.x = image.x - map_offset_x
-			image.y = image.y - map_offset_y
-
-			centerAnchor( image )
-			inherit( image, layer.properties )
-
-		end	
-
-	end	
-
-end
-
---------------------------------------------------------------------------------
---- Create object and add it to a layer
---  
---------------------------------------------------------------------------------
-function Map:createObject( object, layer )
-    -- Store the flipped states
-    local flip = {}
-    local image
-
-	-- Make sure we have a properties table
-	object.properties = object.properties or {}
-
-	-- Image/Sprite	
-	-- GID stands for global tile ID
-	if object.gid then
-
-		-- Original code from https://github.com/ponywolf/ponytiled    
-	    flip.x  = hasBit( object.gid, FLIPPED_HORIZONTAL_FLAG )
-	    flip.y  = hasBit( object.gid, FLIPPED_VERTICAL_FLAG )          
-	    flip.xy = hasBit( object.gid, FLIPPED_DIAGONAL_FLAG )
-
-	    object.gid = clearBit( object.gid, FLIPPED_HORIZONTAL_FLAG )
-	    object.gid = clearBit( object.gid, FLIPPED_VERTICAL_FLAG )
-	    object.gid = clearBit( object.gid, FLIPPED_DIAGONAL_FLAG )
-
-		-- Get the correct tileset using the GID
-		tileset = getTileset( self.image_cache, object.gid )
-
-		if tileset then
-
-			local firstgid           = tileset.firstgid
-			local tile_id 		     = object.gid - tileset.firstgid
-			local width,      height = object.width, object.height
-			local image_sheet, frame = getImageSheet( self.image_cache, object.gid ) 
-
-			if image_sheet then
-
-				if findProperty( layer.properties, 'isAnimated' ) or 
-				   findProperty( object.properties, 'isAnimated' ) then
-
-					image = display.newSprite( layer, 
-											   image_sheet, 
-											   tileset.sequence_data )
-
-				else
-
-					image = display.newImageRect( layer, image_sheet, 
-												  frame, width, height )
-
-				end
-					
-			else 
-
-          		local path = getImageInfo( self.image_cache, object.gid )
-				image = display.newImageRect( layer, path, width, height ) 
-
-			end
-
-			local points, x, y, rotation  = retrieveShapeData( tile_id, tileset )
-
-			-- Add collsion shape
-			if points then
-
-				local delta_x = x - image.width * 0.5 
-				local delta_y = y - image.height * 0.5 
-
-				points = unpackPoints( points, delta_x, delta_y, rotation )
-
-				-- Corona shape have limit of 8 vertex
-				if #points > 8 then
-
-					-- Add two new physics properties
-					local property = { name = 'chain', value = points }
-					object.properties[#object.properties + 1] = property
-					property = { name = 'connectFirstAndLastChainVertex', 
-								 value = true }
-					object.properties[#object.properties + 1] = property
-
-				else 
-
-					-- Add new physics property
-					local property = { name = 'shape', value = points }
-					object.properties[#object.properties + 1] = property
-
-				end	
-
-			end	  
-
-	    	if self.orientation == 'isometric' then
-
-				image.x, image.y = isoToScreen( 
-					object.y / self.tile_height, 
-					object.x / self.tile_height, 
-					self.tile_width, 
-					self.tile_height, 
-					self.dim.height * self.tile_width * 0.5 
-					)
-            	image.anchorX, image.anchorY = 0.5, 1   
-
-			elseif self.orientation == 'orthogonal' then 
-
-				image.anchorX, image.anchorY = 0, 1
-				image.x, image.y             = object.x, object.y
-
-			end			
-				
-			image.tile_id = tile_id
-			image.gid    = object.gid
-
-		end	
-
-	elseif object.polygon or object.polyline then 
-		local points = object.polygon or object.polyline
-
-		if object.polygon then 
-
-	    	if self.orientation == 'isometric' then
-	    		
-	    		for i=1, #points do
-		    
-	                points[i].x, points[i].y = isoToScreen( 
-	                	points[i].y / self.tile_height, 
-	                	points[i].x / self.tile_height, 
-	                	self.tile_width, 
-	                	self.tile_height 
-	                )
-	               
-				end	
-
-				local centerX, centerY = findCenter( points )
-				image = display.newPolygon( 
-					layer, 0, 0, unpackPoints( points ) 
-				)	
-				image.x, image.y = isoToScreen( 
-					object.y / self.tile_height, 
-					object.x / self.tile_height, 
-					self.tile_width, 
-					self.tile_height, 
-					self.dim.height * self.tile_width * 0.5 
-				)
-                image:translate( centerX, centerY )
-
-			elseif self.orientation == 'orthogonal' then
-
-				local centerX, centerY = findCenter( points ) 
-				image = display.newPolygon( 
-					layer, 0, 0, unpackPoints( points ) 
-				)	
-				image.x, image.y = object.x, object.y
-				image:translate( centerX, centerY )
-
-			end				
-
-	    else
-
-	    	if self.orientation == 'isometric' then
-	    		
-	    		for i=1, #points do
-		    	
-			    	points[i].x, points[i].y = isoToScreen( 
-			    		points[i].y / self.tile_height, 
-			    		points[i].x / self.tile_height, 
-			    		self.tile_width, 
-			    		self.tile_height, 
-			    		self.dim.height * self.tile_width * 0.5 
-			    	)
-
-				end	
-
-				local centerX, centerY = findCenter( points ) 
-				image = display.newLine( 
-					layer, unpack( unpackPoints( points ) ) 
-				)
-				image.anchorSegments = true
-				image.x, image.y = isoToScreen( 
-					object.y / self.tile_height, 
-					object.x / self.tile_height, 
-					self.tile_width, 
-					self.tile_height 
-				)
-				image:translate( centerX, centerY )
-
-			elseif self.orientation == 'orthogonal' then 
-
-				local centerX, centerY = findCenter( points ) 
-				image = display.newLine( 
-					layer, unpack( unpackPoints( points ) ) 
-				)
-				image.anchorSegments = true
-				image.x, image.y     = object.x, object.y
-				image:translate( centerX, centerY )
-
-			end	
-
-	    end
-
-	elseif object.sprite then
-
-		local tileset = { image = object.sprite }
-		local image_sheet, frame = getImageSheet( self.image_cache, tileset )
-
-		-- switch this to display.newImageRect later (see if it works?)
-		image = display.newImage( layer, image_sheet, frame )  
-
-    	if self.orientation == 'isometric' then
-
-			image.x, image.y = isoToScreen( 
-				object.y / self.tile_height, 
-				object.x / self.tile_height, 
-				self.tile_width, 
-				self.tile_height, 
-				self.dim.height * self.tile_width * 0.5 
-				)
-        	image.anchorX, image.anchorY = 0.5, 1   
-
-		elseif self.orientation == 'orthogonal' then 
-
-			image.anchorX, image.anchorY = 0, 1
-			image.x, image.y             = object.x, object.y
-
-		end		
-
-	else
-
-		image = display.newRect( layer, 0, 0, object.width, object.height )
-
-		-- Apply base properties
-	    image.anchorX, image.anchorY = 0,        0
-	    image.x,       image.y       = object.x, object.y
-	
-	end
-
-	if image then
-		-- Name and type
-		image.name = object.name
-		image.type = object.type
-
-		-- Apply base properties
-		image.rotation  = object.rotation or 0
-		image.isVisible = object.visible  or true
-
-		-- If the map is already created these map_offsets will move your 
-		-- object to be in synch with the map at the proper position
-		local map_offset_x = self.x or 0
-		local map_offset_y = self.y or 0
-
-		image.x = image.x - map_offset_x
-		image.y = image.y - map_offset_y
-
-		centerAnchor( image )
-
-		-- Flip it
-		if flip.xy then
-
-			print( 'Berry: Unsupported Tiled rotation x,y in ', image.name )
-
-		else
-
-			if flip.x then image.xScale = -1 end
-			if flip.y then image.yScale = -1 end
-
-		end
-
-		if  findProperty( object.properties, 'hasBody' ) then 
-
-			local params = inherit( {}, object.properties )
-			physics.addBody( image, 'dynamic', params ) 
-
-		end	
-
-		inherit( image, layer.properties )
-		inherit( image, object.properties )
-
-	end	
-
-	return image
-
-end
-
---------------------------------------------------------------------------------
 --- Add texturepacker sprite to a layer in the map
 --  
 --------------------------------------------------------------------------------
@@ -1161,7 +1162,7 @@ function Map:addSprite( layer, image_name, x, y )
 		y = y,
 	}
 
-	return self:createObject( object, layer )
+	return createObject( self, object, layer )
 
 end
 

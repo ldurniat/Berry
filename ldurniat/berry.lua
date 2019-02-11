@@ -179,8 +179,6 @@ end
 --
 -- @param tileset The object which contains information about tileset.
 -- @return The newly created image sheet.
--- 
--- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
 local function createImageSheet( tileset )
 
@@ -243,8 +241,6 @@ end
 -- @param id The GID or image_name to find the image sheet.
 -- @return The image sheet or nil.
 -- @return The frame_index for image in image sheet. (Texturepacker only)
--- 
--- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
 local function getImageSheet( cache, id )
 
@@ -268,8 +264,6 @@ end
 -- @param cache A table that stores GID, image_names, tileset_names for lookup 
 -- @param id The id of tile.
 -- @return The image directory, image width, and image height
--- 
--- Original code from https://github.com/ponywolf/ponytiled 
 --------------------------------------------------------------------------------   
 local function getImageInfo( cache, id )
 
@@ -611,7 +605,10 @@ end
 
 --------------------------------------------------------------------------------
 --- Create and add tile to layer
---  
+-- @param map The map instance to add tile to
+-- @param position The map position to place tile
+-- @param gid The GID of the tile to use
+-- @param layer The map layer tile will be placed in 
 --------------------------------------------------------------------------------
 local function createTile( map, position, gid, layer )
 
@@ -759,7 +756,9 @@ end
 
 --------------------------------------------------------------------------------
 --- Create object and add it to a layer
---  
+-- @param map The map instance to add object to
+-- @param object The object that will be inserted
+-- @param layer The map layer the object will be placed in 
 --------------------------------------------------------------------------------
 local function createObject( map, object, layer )
     -- Store the flipped states
@@ -1152,7 +1151,11 @@ end
 
 --------------------------------------------------------------------------------
 --- Add texturepacker sprite to a layer in the map
---  
+-- @param layer The map layer sprite will be placed in
+-- @param image_name The name of image that will be used
+-- @param x The x position to put image at
+-- @param y The y position to put image at
+-- @return A display object created from texturepacker image
 --------------------------------------------------------------------------------
 function Map:addSprite( layer, image_name, x, y )
 
@@ -1168,7 +1171,8 @@ end
 
 --------------------------------------------------------------------------------
 --- Create and load texture packer image sheet
---  
+-- @param image_path The file path to the image
+-- @param lua_path The file path to the lua file
 --------------------------------------------------------------------------------
 function Map:addTexturePack( image_path, lua_path )
 

@@ -1074,9 +1074,23 @@ function Map:createObject( object, layer )
 		-- switch this to display.newImageRect later (see if it works?)
 		image = display.newImage( layer, image_sheet, frame )  
 
-		-- Apply base properties
-	    image.anchorX, image.anchorY = 0,        0
-	    image.x,       image.y       = object.x, object.y
+    	if self.orientation == 'isometric' then
+
+			image.x, image.y = isoToScreen( 
+				object.y / self.tile_height, 
+				object.x / self.tile_height, 
+				self.tile_width, 
+				self.tile_height, 
+				self.dim.height * self.tile_width * 0.5 
+				)
+        	image.anchorX, image.anchorY = 0.5, 1   
+
+		elseif self.orientation == 'orthogonal' then 
+
+			image.anchorX, image.anchorY = 0, 1
+			image.x, image.y             = object.x, object.y
+
+		end		
 
 	else
 
@@ -1130,6 +1144,8 @@ function Map:createObject( object, layer )
 		inherit( image, object.properties )
 
 	end	
+
+	return image
 
 end
 

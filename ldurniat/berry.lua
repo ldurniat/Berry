@@ -59,6 +59,23 @@ local function inherit( object, properties )
 end	
 
 --------------------------------------------------------------------------------
+-- Check if a file exists via the path given
+-- @param path The path of the file to check.
+-- return True if it exists or false. 
+--------------------------------------------------------------------------------
+local function fileExists( path )
+
+	path = system.pathForFile( path, system.ResourceDirectory)
+	local file = io.open( path, "r" )
+
+	if not file then return false end
+
+	io.close(file)
+	return true
+
+end
+
+--------------------------------------------------------------------------------
 -- Convert two-dimensional table to one-dimensional table and apply 
 -- traslation/rotation.
 --
@@ -1138,6 +1155,9 @@ end
 --  
 --------------------------------------------------------------------------------
 function Map:addTexturePack( image_path, lua_path )
+
+	assert( fileExists( image_path ), 
+			"Image file does not exist at ".. image_path )
 
 	-- Captures directory and name from image_path
 	local image_directory, image_name = image_path:match("(.*/)(.*%..+)$")

@@ -532,14 +532,12 @@ local function cacheTexturePack( cache, texture_pack )
 		" or if some of the images/texture_packs have matching names"
 		)
 
-		local path = texture_pack.directory .. ( texture_pack.name or '' ) 
 		local sprite = texture_pack.sheet.frames[i]
 
 		cache[sprite_name] = {
 			type = 'texturepacker',
 			sheet = sheet,
 			frame = i,						
-			path = path, -- this is needed, but not used
 			width = sprite.width,
 			height = sprite.height,
 		}
@@ -782,7 +780,8 @@ local function createObject( map, object, layer )
 			local firstgid           = tileset.firstgid
 			local tile_id 		     = object.gid - tileset.firstgid
 			local width,      height = object.width, object.height
-			local image_sheet, frame = getImageSheet( map.image_cache, object.gid ) 
+			local image_sheet, frame = getImageSheet( map.image_cache, 
+													  object.gid ) 
 
 			if image_sheet then
 

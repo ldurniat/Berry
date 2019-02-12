@@ -383,15 +383,7 @@ local function retrieveShapeData( tile_id, tileset )
 
 	end	
 
-
-
 	if tile then
-
-print('-----------------')
-print('RETREIVESHAPEDATA')
-for k,v in pairs(tileset) do print(k,v) end
-print('More shape data')
-print("tile is:", tile)
 
 		local objectgroup = tile.objectgroup
 
@@ -954,11 +946,11 @@ local function createObject( map, object, layer )
 
 	elseif object.sprite then
 
-		local tileset = { image = object.sprite }
-		local image_sheet, frame = getImageSheet( map.image_cache, tileset )
+		local image_sheet, frame = getImageSheet( map.image_cache, 
+												  object.sprite )
 
-		-- switch this to display.newImageRect later (see if it works?)
-		image = display.newImage( layer, image_sheet, frame )  
+		image = display.newImageRect( layer, image_sheet, 
+									  frame, 32, 32 )
 
     	if map.orientation == 'isometric' then
 
@@ -1164,6 +1156,8 @@ function Map:addSprite( layer, image_name, x, y )
 		x = x,
 		y = y,
 	}
+
+	layer = map:getLayer( layer )
 
 	return createObject( self, object, layer )
 

@@ -243,38 +243,33 @@ local function getImageSheet( cache, id )
 	local is_image_sheet = cache[id] and cache[id].sheet 
 	local image_sheet = is_image_sheet and cache[id]
 
-	if image_sheet then
-
-		local sheet, frame = image_sheet.sheet, image_sheet.frame 
-		return sheet, frame
-
-	end
+	if image_sheet then return image_sheet.sheet, image_sheet.frame end
 
 	return nil
 
 end
 
 --------------------------------------------------------------------------------
--- Returns tile values for display.newImageRect
+-- Returns width and height values for an image
 --
 -- @param cache A table that stores GID, image_names, tileset_names for lookup 
--- @param id The id of tile.
--- @return The image directory, image width, and image height
+-- @param id The id of the image.
+-- @return The image width and height
 --------------------------------------------------------------------------------   
-local function getImageInfo( cache, id )
+local function getImageSize( cache, id ) 
 
-	local is_image = cache[id] and cache[id].path
-	local image =  is_image and cache[id]
-
-	if image then
-
-		return image.path, image.width, image.height
-
-	end
-
-	return nil
+	if cache[id] then return cache[id].width, cache[id].height end
 
 end
+
+--------------------------------------------------------------------------------
+-- Returns directory path for an image
+--
+-- @param cache A table that stores GID, image_names, tileset_names for lookup 
+-- @param id The id of the image.
+-- @return The image directory
+--------------------------------------------------------------------------------   
+local function getImagePath( cache, id ) return cache[id] and cache[id].path end
 
 --------------------------------------------------------------------------------
 --- Gets a Tile image from a GID.
@@ -625,7 +620,9 @@ local function createTile( map, position, gid, layer )
 
 		else 
           	
-          	local path, image_w, image_h = getImageInfo( map.image_cache, gid )
+          	local image_w, image_h = getImageSize( map.image_cache, gid )
+          	local path = getImagePath( map.image_cache, gid )
+
           	image = display.newImageRect( layer, path, image_w, image_h )
 
 		end	
@@ -805,7 +802,7 @@ local function createObject( map, object, layer )
 					
 			else 
 
-          		local path = getImageInfo( map.image_cache, object.gid )
+          		local path = getImagePath( map.image_cache, object.gid )
 				image = display.newImageRect( layer, path, width, height ) 
 
 			end
@@ -953,7 +950,7 @@ local function createObject( map, object, layer )
 		local image_sheet, frame = getImageSheet( map.image_cache, 
 												  object.sprite )
 
-		local _, width, height = getImageInfo( map.image_cache, object.sprite )
+		local width, height = getImageSize( map.image_cache, object.sprite )
 
 		image = display.newImageRect( layer, image_sheet, frame, width, height )
 

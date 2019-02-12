@@ -225,10 +225,6 @@ local function createImageSheet( tileset )
 
 	end
 
-	-- DELETE THIS LATER
-    --"image":"..\/ss13\/floors.png",
-    -- directory is: 'map/ss13'
-
 	local directory = tileset.directory .. ( name or '' ) 
 	return graphics.newImageSheet( directory, options )
 
@@ -240,7 +236,7 @@ end
 -- @param cache A table that stores GID, image_names, tileset_names for lookup 
 -- @param id The GID or image_name to find the image sheet.
 -- @return The image sheet or nil.
--- @return The frame_index for image in image sheet. (Texturepacker only)
+-- @return The frame_index for image in image sheet.
 --------------------------------------------------------------------------------   
 local function getImageSheet( cache, id )
 
@@ -473,9 +469,9 @@ local function loadTilesets( cache, tilesets )
 			local sheet = createImageSheet( tileset )
 
 			cache[tileset.image] = {
+				type = 'tiled',
 				tileset = tileset,
 				sheet = sheet,
-				type = 'tiled',
 			}
 
 			for gid = firstgid, lastgid do
@@ -487,9 +483,9 @@ local function loadTilesets( cache, tilesets )
 				)
 
 				cache[gid] = {
+					type = 'tiled',				
 					tileset = tileset,
 					sheet = sheet,
-					type = 'tiled',
 					frame = gid - firstgid + 1,
 				}
 
@@ -508,6 +504,7 @@ local function loadTilesets( cache, tilesets )
 				)
 
 				cache[gid] = {
+					type = 'tiled',
 					tileset = tileset,
 					path = tileset.directory .. tile.image,
 					width = tile.image_width,
@@ -517,6 +514,40 @@ local function loadTilesets( cache, tilesets )
 			end
 
 		end
+
+	end
+
+end
+
+--------------------------------------------------------------------------------
+-- Creates image sheet and loads it into the cache
+--
+-- @param cache A table that stores GID, image_names, tileset_names for lookup 
+-- @param texture_pack The sprites from a texture_pack file.
+-------------------------------------------------------------------------------- 
+local function cacheTexturePack( cache, texture_pack )
+
+	local sheet = createImageSheet( texture_pack )
+
+	for sprite_name, i in pairs(texture_pack.frameIndex) do
+
+		assert( not cache[sprite_name],
+		"Duplicate names for image sheet detected.  Check to " ..
+		"make sure the same image sheet isn't being loaded twice" ..
+		" or if some of the images/texture_packs have matching names"
+		)
+
+		local path = texture_pack.directory .. ( file_name or '' ) 
+		local sprite = texture_pack.sheet.frames[i]
+
+		cache[sprite_name] = {
+			type = 'texturepacker',
+			sheet = sheet,
+			frame = i,						
+			path = path, -- this is needed, but not used
+			width = sprite.width,
+			height = sprite.height,
+		}
 
 	end
 
@@ -558,34 +589,7 @@ local function loadTexturePacker( cache, directory )
 				tileset.name = file_name
 				tileset.directory = directory
 
-				local sheet = createImageSheet( tileset )
-
---[[-- we may want to get rid of this?
-	   This would attach the image_name/lua_file_name to cache
-	   but I'm pretty sure we don't need it... only the sprite_name
-
-				cache[file_name] = {
-					sheet = sheet,
-					type = 'texturepacker',
-				}
---]]
-
-				for sprite_name, i in pairs(tileset.frameIndex) do
-
-					assert( not cache[sprite_name],
-					"Duplicate names for image sheet detected.  Check to " ..
-					"make sure the same image sheet isn't being loaded twice" ..
-					" or if some of the images/tilesets have matching names"
-					)
-
-					cache[sprite_name] = {
-					    --tileset = tileset, (we don't need this)
-						sheet = sheet,
-						type = 'texturepacker',
-						frame = i,
-					}
-
-				end
+				cacheTexturePack( cache, tileset )
 
 			end
 
@@ -949,8 +953,9 @@ local function createObject( map, object, layer )
 		local image_sheet, frame = getImageSheet( map.image_cache, 
 												  object.sprite )
 
-		image = display.newImageRect( layer, image_sheet, 
-									  frame, 32, 32 )
+		local _, width, height = getImageInfo( map.image_cache, object.sprite )
+
+		image = display.newImageRect( layer, image_sheet, frame, width, height )
 
     	if map.orientation == 'isometric' then
 
@@ -1191,24 +1196,7 @@ function Map:addTexturePack( image_path, lua_path )
 		texture_pack.name = image_name
 		texture_pack.directory = image_directory
 
-		local sheet = createImageSheet( texture_pack )
-
-		for sprite_name, i in pairs(texture_pack.frameIndex) do
-
-			assert( not self.image_cache[sprite_name],
-			"Duplicate names for image sheet detected.  Check to " ..
-			"make sure the same image sheet isn't being loaded twice" ..
-			" or if some of the images/tilesets have matching names"
-			)
-
-			self.image_cache[sprite_name] = {
-			    --tileset = tileset, (we don't need this)
-				sheet = sheet,
-				type = 'texturepacker',
-				frame = i,
-			}
-
-		end
+		cacheTexturePack( self.image_cache, texture_pack )
 
 	end
 

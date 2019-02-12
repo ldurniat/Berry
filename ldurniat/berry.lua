@@ -220,7 +220,6 @@ local function createImageSheet( tileset )
 
 	elseif tileset.sheet then -- TexturePacker tileset
 
-		name = tileset.name
 		options = tileset:getSheet()
 
 	end
@@ -578,10 +577,7 @@ local function loadTexturePacker( cache, directory )
 
 			if is_texturepacker_data then
 
-				-- these are used by the createImageSheet
-				texture_pack.name = file_name
-				texture_pack.directory = directory
-
+				texture_pack.directory = directory .. file_name
 				cacheTexturePack( cache, texture_pack )
 
 			end
@@ -1188,10 +1184,7 @@ function Map:addTexturePack( image_path, lua_path )
 
 	if texture_pack then
 
-		-- these are used by the createImageSheet
-		texture_pack.name = image_name
-		texture_pack.directory = image_directory
-
+		texture_pack.directory = image_directory .. image_name
 		cacheTexturePack( self.image_cache, texture_pack )
 
 	end

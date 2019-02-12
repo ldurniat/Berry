@@ -537,7 +537,7 @@ local function cacheTexturePack( cache, texture_pack )
 		" or if some of the images/texture_packs have matching names"
 		)
 
-		local path = texture_pack.directory .. ( file_name or '' ) 
+		local path = texture_pack.directory .. ( texture_pack.name or '' ) 
 		local sprite = texture_pack.sheet.frames[i]
 
 		cache[sprite_name] = {
@@ -577,19 +577,19 @@ local function loadTexturePacker( cache, directory )
 			local lua_module = require_path:gsub("[/\]", ".")
 
 			-- Using pcall to prevent any require() lua modules from crashing
-			local tileset = pcall(require, lua_module)
+			local texture_pack = pcall(require, lua_module)
 
-			local is_texturepacker_data = tileset and 
-										  type(tileset) == 'table' and
-										  tileset.sheet 
+			local is_texturepacker_data = texture_pack and 
+										  type(texture_pack) == 'table' and
+										  texture_pack.sheet 
 
 			if is_texturepacker_data then
 
 				-- these are used by the createImageSheet
-				tileset.name = file_name
-				tileset.directory = directory
+				texture_pack.name = file_name
+				texture_pack.directory = directory
 
-				cacheTexturePack( cache, tileset )
+				cacheTexturePack( cache, texture_pack )
 
 			end
 

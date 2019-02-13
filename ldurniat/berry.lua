@@ -565,7 +565,7 @@ end
 -- @param name The name of the image file to look for
 -- @return The image file name
 -------------------------------------------------------------------------------- 
-function getImageFile( directory, name )
+function getMatchingImage( directory, name )
 
 	for image in lfs.dir( directory ) do
 
@@ -609,7 +609,7 @@ local function loadTexturePacker( cache, directory )
 
 			if is_texturepacker_data then
 
-				local image_file_name = getImageFile( path, file_name )
+				local image_file_name = getMatchingImage( path, file_name )
 
 				texture_pack.directory = directory .. '/' .. image_file_name
 

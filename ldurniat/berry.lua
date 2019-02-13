@@ -566,6 +566,25 @@ local function cacheTexturePack( cache, texture_pack )
 end
 
 --------------------------------------------------------------------------------
+-- Returns the name of an image file that matches a name
+--
+-- @param directory A directory to scan for the image
+-- @param name The name of the image file to look for
+-- @return The image file name
+-------------------------------------------------------------------------------- 
+function getImageFile( directory, name )
+
+	for image in lfs.dir( directory ) do
+
+		-- Pattern captures the name and exension of a file
+		local image_name, extension = image:match("(.*)%.(.+)$")
+		if image_name == name and extension ~= 'lua' then return image end
+
+	end
+
+end
+
+--------------------------------------------------------------------------------
 -- Creates and loads Texturepacker tilesets from directory
 --
 -- @param cache A table that stores GID, image_names, tileset_names for lookup 
@@ -589,15 +608,18 @@ local function loadTexturePacker( cache, directory )
 			local lua_module = require_path:gsub("[/\]", ".")
 
 			-- Using pcall to prevent any require() lua modules from crashing
-			local texture_pack = pcall(require, lua_module)
+			local is_code_safe, texture_pack = pcall(require, lua_module)
 
-			local is_texturepacker_data = texture_pack and 
+			local is_texturepacker_data = is_code_safe and  
 										  type(texture_pack) == 'table' and
 										  texture_pack.sheet 
 
 			if is_texturepacker_data then
 
-				texture_pack.directory = directory .. file_name
+				local image_file_name = getImageFile( path, file_name )
+
+				texture_pack.directory = directory .. '/' .. image_file_name
+
 				cacheTexturePack( cache, texture_pack )
 
 			end

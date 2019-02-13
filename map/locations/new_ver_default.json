@@ -676,9 +676,24 @@
                  "id":0,
                  "properties":[
                         {
+                         "name":"loopCount",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
+                         "name":"loopDirection",
+                         "type":"string",
+                         "value":"forward"
+                        }, 
+                        {
                          "name":"name",
                          "type":"string",
                          "value":"transmitter-off"
+                        }, 
+                        {
+                         "name":"time",
+                         "type":"int",
+                         "value":1000
                         }]
                 }, 
                 {
@@ -718,9 +733,24 @@
                  "id":1,
                  "properties":[
                         {
+                         "name":"loopCount",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
+                         "name":"loopDirection",
+                         "type":"string",
+                         "value":"forward"
+                        }, 
+                        {
                          "name":"name",
                          "type":"string",
                          "value":"transmitter-on"
+                        }, 
+                        {
+                         "name":"time",
+                         "type":"int",
+                         "value":1000
                         }]
                 }, 
                 {
@@ -732,9 +762,24 @@
                  "id":9,
                  "properties":[
                         {
+                         "name":"loopCount",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
+                         "name":"loopDirection",
+                         "type":"string",
+                         "value":"forward"
+                        }, 
+                        {
                          "name":"name",
                          "type":"string",
                          "value":"generator-off"
+                        }, 
+                        {
+                         "name":"time",
+                         "type":"int",
+                         "value":1000
                         }]
                 }, 
                 {
@@ -910,9 +955,24 @@
                  "id":10,
                  "properties":[
                         {
+                         "name":"loopCount",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
+                         "name":"loopDirection",
+                         "type":"string",
+                         "value":"forward"
+                        }, 
+                        {
                          "name":"name",
                          "type":"string",
                          "value":"generator-on"
+                        }, 
+                        {
+                         "name":"time",
+                         "type":"int",
+                         "value":1000
                         }]
                 }, 
                 {
@@ -924,9 +984,24 @@
                  "id":54,
                  "properties":[
                         {
+                         "name":"loopCount",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
+                         "name":"loopDirection",
+                         "type":"string",
+                         "value":"forward"
+                        }, 
+                        {
                          "name":"name",
                          "type":"string",
                          "value":"terminal-off"
+                        }, 
+                        {
+                         "name":"time",
+                         "type":"int",
+                         "value":1000
                         }]
                 }, 
                 {
@@ -966,9 +1041,24 @@
                  "id":55,
                  "properties":[
                         {
+                         "name":"loopCount",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
+                         "name":"loopDirection",
+                         "type":"string",
+                         "value":"forward"
+                        }, 
+                        {
                          "name":"name",
                          "type":"string",
                          "value":"terminal-on"
+                        }, 
+                        {
+                         "name":"time",
+                         "type":"int",
+                         "value":1000
                         }]
                 }, 
                 {
@@ -980,9 +1070,24 @@
                  "id":63,
                  "properties":[
                         {
+                         "name":"loopCount",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
+                         "name":"loopDirection",
+                         "type":"string",
+                         "value":"forward"
+                        }, 
+                        {
                          "name":"name",
                          "type":"string",
                          "value":"apc-off"
+                        }, 
+                        {
+                         "name":"time",
+                         "type":"int",
+                         "value":1000
                         }]
                 }, 
                 {
@@ -1014,9 +1119,24 @@
                  "id":64,
                  "properties":[
                         {
+                         "name":"loopCount",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
+                         "name":"loopDirection",
+                         "type":"string",
+                         "value":"forward"
+                        }, 
+                        {
                          "name":"name",
                          "type":"string",
                          "value":"apc-on"
+                        }, 
+                        {
+                         "name":"time",
+                         "type":"int",
+                         "value":1000
                         }]
                 }, 
                 {
@@ -1116,7 +1236,28 @@
                          "duration":1000,
                          "tileid":57
                         }],
-                 "id":403
+                 "id":403,
+                 "properties":[
+                        {
+                         "name":"loopCount",
+                         "type":"int",
+                         "value":0
+                        }, 
+                        {
+                         "name":"loopDirection",
+                         "type":"string",
+                         "value":"forward"
+                        }, 
+                        {
+                         "name":"name",
+                         "type":"string",
+                         "value":"barricade"
+                        }, 
+                        {
+                         "name":"time",
+                         "type":"int",
+                         "value":7000
+                        }]
                 }],
          "tilewidth":32
         }, 

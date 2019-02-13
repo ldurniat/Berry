@@ -310,38 +310,59 @@ local function findProperty( properties, name )
 end	
 
 --------------------------------------------------------------------------------
+-- Returns the animation sequence name using a gid in the map cache
+--
+-- @param cache The map image cache to store animation GIDs
+-- @param gid The GID of the animation object/tile
+-- @return The name of the animation sequence
+--------------------------------------------------------------------------------  
+local function getAnimationSequence( cache, gid ) 
+
+	return cache._animations[gid] 
+
+end
+
+--------------------------------------------------------------------------------
 -- Collect all sequences data from a tileset.
 --
+-- @param cache The map image cache to store animation GIDs
 -- @param tileset The tileset object.
 -- @return The table.
 --------------------------------------------------------------------------------  
-local function buildSequences( tileset )
+local function buildSequences( cache, tileset )
 
 	local sequences       = {}
 	local tiles 		  = tileset.tiles or {}
-	local animation, frames, tile 
 
 	for _, tile in ipairs(tiles) do
 
-		animation  = tile.animation
+		local animation  = tile.animation
 
 		if animation then 
 
-			frames = {}
+			local frames = {}
 
 			-- The property tileid starts from 0 (in JSON format) 
 			-- but frames count from 1
-			for i=1, #animation do 
-				frames[#frames + 1] = animation[i].tileid + 1 
+			for _, frame in ipairs(animation) do
+
+				frames[#frames + 1] = frame.tileid + 1 
+
 			end
+
+			local name = findProperty( tile.properties, 'name' )
 
 			sequences[#sequences + 1] = {
 				frames        = frames,
+	            name          = name,
 	            time          = findProperty( tile.properties, 'time' ),
-	            name          = findProperty( tile.properties, 'sequenceName' ),
 	            loopCount     = findProperty( tile.properties, 'loopCount' ),
 	            loopDirection = findProperty( tile.properties, 'loopDirection' )
 	        }
+
+	        -- attach gid to sequence name in the animation cache
+	        local gid = tileset.firstgid + tile.id
+	        if name then cache._animations[gid] = name end
 	        
 	    end 
 
@@ -787,6 +808,11 @@ local function createObject( map, object, layer )
 											   image_sheet, 
 											   tileset.sequence_data )
 
+					local name = getAnimationSequence( map.image_cache, 
+										  			   object.gid )
+					image:setSequence( name )
+					image:play()
+
 				else
 
 					image = display.newImageRect( layer, image_sheet, 
@@ -1046,11 +1072,12 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 	local map = inherit( display.newGroup(), self )
 	map.dim = { width=data.width, height=data.height }
 	map.image_cache = {}
+	map.image_cache._animations = {}
 
     -- Purpose of computation here is simplification of code
     for i, tileset in ipairs( data.tilesets ) do
 
-    	tileset.sequence_data   = buildSequences( tileset )
+    	tileset.sequence_data   = buildSequences( map.image_cache, tileset )
     	tileset.directory 		= tilesets_dir and tilesets_dir .. '/' or ''
 
     end

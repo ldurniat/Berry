@@ -244,8 +244,6 @@ local function getImageSheet( cache, id )
 
 	if image_sheet then return image_sheet.sheet, image_sheet.frame end
 
-	return nil
-
 end
 
 --------------------------------------------------------------------------------
@@ -277,12 +275,7 @@ local function getImagePath( cache, id ) return cache[id] and cache[id].path end
 -- @param id The gid to use to find tileset.
 -- @return The tileset at the gid location.
 --------------------------------------------------------------------------------
-local function getTileset( cache, id )
-	
-	local tileset = cache[id] and cache[id].tileset
-	return tileset
-
-end
+local function getTileset( cache, id) return cache[id] and cache[id].tileset end
 
 --------------------------------------------------------------------------------
 -- Find property by name.

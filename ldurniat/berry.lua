@@ -810,8 +810,13 @@ local function createObject( map, object, layer )
 
 					local name = getAnimationSequence( map.image_cache, 
 										  			   object.gid )
-					image:setSequence( name )
-					image:play()
+
+					if name then
+
+						image:setSequence( name )
+						image:play()
+						
+					end
 
 				else
 

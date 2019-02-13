@@ -1,5 +1,5 @@
-# berry
-*berry* is a simple Tiled Map Loader for Corona SDK.
+# Berry
+*Berry* is a simple Tiled Map Loader for Corona SDK.  Berry is also able to load and use TexturePacker sprites inside a Tiled map.
 
 ![Screenshot of berry in action](https://i.imgur.com/DbHD6EL.png)
 
@@ -17,13 +17,16 @@ Tested with Tiled v1.2.0
 - [x] Supports object animations using Tile Animation Editor
 - [x] Rectangle shape with fillColor and strokeColor support
 - [x] Supports custom collision shapes. Only rectangles and polygons for now
-- [x] Supports Text object via plugins
+- [x] Supports text object via plugins
+- [x] Supports layer horziontal and vertical offsets
+- [x] Supports staggered and regular isometric maps
+- [x] Supports TexturePacker sprites
 
 ### Quick Start Guide
 
 ```lua
 local berry = require( 'pl.ldurniat.berry' )
-local map   = berry.new( filename, tilesetsDirectory )
+local map   = berry:new( filename, tilesetsDirectory, texturePackerDirectory )
 -- If you use composer you will need it as well
 scene.view:insert( map ) 
 ```
@@ -36,11 +39,23 @@ The filename specify path to file with map.
 
 #### tilesetsDirectory
 
-Most of the time you will store you maps and images/tilesets in a directory. The tileSetsDirectory parameter overides where **berry** looks for images.
+Most of the time you will store your maps and images/tilesets in a directory. The tileSetsDirectory parameter overides where **berry** looks for images.
 
 ```lua
 local map = berry.new( 'scene/game/map/level1.json', 'scene/game/map' ) -- look for images in /scene/game/map/
 ```
+
+#### texturePackerDirectory
+
+If you wish to use TexturePacker with Berry you can load the sprites several ways.
+
+1.  Place the TexturePacker images and lua files inside the same directory as `tilesetsDirectory` and it will load them automatically 
+2.  Use the `texturePackerDirectory` to select the directory the TexturePacker images and files are located.
+3.  Use `map:addTexturePack( image_path, lua_path )` to load each texture pack individually.
+
+Method 1 and 2 assume by default that the image file and the lua file have the same name.  (ex.  items.png and items.lua)  If the files are named differently from one another, then the sprites will need to be loaded via method 3.  (ex.  items.png and weapons.lua) 
+
+To insert a loaded texture pack sprite into the map use `map:addSprite( layer, image_name, x, y )`
 
 #### map
 
@@ -80,7 +95,6 @@ See [Sticker-Knight-Platformer-for-Berry](https://github.com/ldurniat/Sticker-Kn
 
 ### What's next
 
-- [ ] Support for isometric maps
 - [ ] Support for hex maps
 - [ ] Collision filter
 - [ ] Parallax effect

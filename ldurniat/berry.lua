@@ -321,9 +321,8 @@ local function buildSequences( tileset )
 	local tiles 		  = tileset.tiles or {}
 	local animation, frames, tile 
 
-	for i=1, #tiles do
+	for _, tile in ipairs(tiles) do
 
-		tile       = tiles[i]
 		animation  = tile.animation
 
 		if animation then 

@@ -495,6 +495,8 @@
          "id":16,
          "name":"Mob",
          "objects":[],
+         "offsetx":100,
+         "offsety":100,
          "opacity":1,
          "type":"objectgroup",
          "visible":true,

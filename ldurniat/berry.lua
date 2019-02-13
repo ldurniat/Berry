@@ -661,8 +661,8 @@ local function createTile( map, position, gid, layer )
 
 			elseif map.orientation == 'staggered' then
 
-		    	local staggered_offset_y = ( map.tile_height * 0.5 )
-		    	local staggered_offset_x = ( map.tile_width * 0.5 )
+		    	local stagger_offset_y = ( map.tile_height * 0.5 )
+		    	local stagger_offset_x = ( map.tile_width * 0.5 )
 
 		    	if map.stagger_axis == 'y' then
 
@@ -671,7 +671,7 @@ local function createTile( map, position, gid, layer )
 		    			if image.row % 2 == 0 then
 
 		    				image.x = ( image.column * map.tile_width ) + 
-		    							staggered_offset_x
+		    							stagger_offset_x
 
 		    			else
 
@@ -688,7 +688,7 @@ local function createTile( map, position, gid, layer )
 						else
 
 		    				image.x = ( image.column * map.tile_width ) + 
-		    							staggered_offset_x
+		    							stagger_offset_x
 
 						end
 
@@ -706,7 +706,7 @@ local function createTile( map, position, gid, layer )
 		    			if image.column % 2 == 0  then
 
 		    				image.y = ( image.row * map.tile_height ) + 
-		    							staggered_offset_y
+		    							stagger_offset_y
 
 		    			else
 
@@ -723,7 +723,7 @@ local function createTile( map, position, gid, layer )
 						else
 
 		    				image.y = ( image.row * map.tile_height ) + 
-		    							staggered_offset_y
+		    							stagger_offset_y
 
 						end
 
@@ -815,7 +815,7 @@ local function createObject( map, object, layer )
 
 						image:setSequence( name )
 						image:play()
-						
+
 					end
 
 				else
@@ -1181,8 +1181,8 @@ function Map:addSprite( layer, image_name, x, y )
 
 	local object = {
 		sprite = image_name,
-		x = x,
-		y = y,
+		x = self.x + x,
+		y = self.y + y,
 	}
 
 	layer = map:getLayer( layer )

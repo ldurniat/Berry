@@ -514,8 +514,8 @@ local function loadTilesets( cache, tilesets )
 					type = 'tiled',
 					tileset = tileset,
 					path = tileset.directory .. tile.image,
-					width = tile.image_width,
-					height = tile.image_height,
+					width = tile.imagewidth,
+					height = tile.imageheight,
 				}
 
 			end

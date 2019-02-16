@@ -993,24 +993,7 @@ local function createObject( map, object, layer )
 		local width, height = getImageSize( map.image_cache, object.sprite )
 
 		image = display.newImageRect( layer, image_sheet, frame, width, height )
-
-    	if map.orientation == 'isometric' then
-
-			image.x, image.y = isoToScreen( 
-				object.y / map.tile_height, 
-				object.x / map.tile_height, 
-				map.tile_width, 
-				map.tile_height, 
-				map.dim.height * map.tile_width * 0.5 
-				)
-        	image.anchorX, image.anchorY = 0.5, 1   
-
-		elseif map.orientation == 'orthogonal' then 
-
-			image.anchorX, image.anchorY = 0, 1
-			image.x, image.y             = object.x, object.y
-
-		end		
+		image.x, image.y = object.x, object.y
 
 	else
 
@@ -1030,14 +1013,6 @@ local function createObject( map, object, layer )
 		-- Apply base properties
 		image.rotation  = object.rotation or 0
 		image.isVisible = object.visible  or true
-
-		-- If the map is already created these map_offsets will move your 
-		-- object to be in synch with the map at the proper position
-		local map_offset_x = map.x or 0
-		local map_offset_y = map.y or 0
-
-		image.x = image.x - map_offset_x
-		image.y = image.y - map_offset_y
 
 		centerAnchor( image )
 
@@ -1194,13 +1169,13 @@ end
 --------------------------------------------------------------------------------
 function Map:addSprite( layer, image_name, x, y )
 
+	layer = map:getLayer( layer )
+
 	local object = {
 		sprite = image_name,
-		x = self.x + x,
-		y = self.y + y,
+		x = x - self.x - layer.x,
+		y = y - self.y - layer.y,
 	}
-
-	layer = map:getLayer( layer )
 
 	return createObject( self, object, layer )
 

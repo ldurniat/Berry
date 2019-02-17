@@ -679,7 +679,7 @@ local function createTile( map, position, gid, layer )
 
 		    		if map.stagger_index == 'odd' then
 
-		    			if image.row % 2 == 0 then
+		    			if image.row % 2 == 1 then
 
 		    				image.x = ( image.column * map.tile_width ) + 
 		    							stagger_offset_x
@@ -692,7 +692,7 @@ local function createTile( map, position, gid, layer )
 
 		    		else
 
-		    			if image.row % 2 == 0  then
+		    			if image.row % 2 == 1  then
 
 		    				image.x = ( image.column * map.tile_width )
 
@@ -714,7 +714,7 @@ local function createTile( map, position, gid, layer )
 
 		    		if map.stagger_index == 'odd' then
 
-		    			if image.column % 2 == 0  then
+		    			if image.column % 2 == 1  then
 
 		    				image.y = ( image.row * map.tile_height ) + 
 		    							stagger_offset_y
@@ -727,7 +727,7 @@ local function createTile( map, position, gid, layer )
 
 		    		else
 
-		    			if image.column % 2 == 0  then
+		    			if image.column % 2 == 1  then
 
 		    				image.y = ( image.row * map.tile_height )
 

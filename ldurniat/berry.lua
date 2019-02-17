@@ -607,17 +607,14 @@ end
 --
 -- @param row Number of row. Can real number.
 -- @param column Number of column. Can be real number.
--- @param tile_width Width of tile.
--- @param tile_height Height of tile.
--- @param offset_x
--- @param offset_y 
+-- @param map The map object being used
+-- @param origin The origin for the x value
 -- @return A two coodinates x and y.
 -------------------------------------------------------------------------------- 
-local function isoToScreen( row, column, tile_width, tile_height, 
-							offset_x, offset_y )
+local function isoToScreen( row, column, map, origin)
 
-	local x = (column - row) * tile_width * 0.5 + (offset_x or 0)
-	local y = (column + row) * tile_height * 0.5 + (offset_y or 0)
+	local x = (column - row) * map.tile_width * 0.5 + ( origin or 0 )
+	local y = (column + row) * map.tile_height * 0.5 
 
 	return x, y
 
@@ -669,12 +666,9 @@ local function createTile( map, position, gid, layer )
 
 				image.anchorX, image.anchorY = 0.5, 0
 				image.x, image.y = isoToScreen( 
-					image.row, image.column, 
-					map.tile_width, map.tile_height, 
+					image.row, image.column, map,
 					map.dim.height * map.tile_width * 0.5 
 				)
-
-print(image.row, image.column, '('..image.x..', '..image.y..')')
 
 			elseif map.orientation == 'staggered' then
 
@@ -752,8 +746,6 @@ print(image.row, image.column, '('..image.x..', '..image.y..')')
 		    				  )
 
 		    	end
-
-print(image.row, image.column, '('..image.x..', '..image.y..')')
 
 			elseif map.orientation == 'orthogonal' then
 
@@ -886,8 +878,7 @@ local function createObject( map, object, layer )
 				image.x, image.y = isoToScreen( 
 					object.y / map.tile_height, 
 					object.x / map.tile_height, 
-					map.tile_width, 
-					map.tile_height, 
+					map,
 					map.dim.height * map.tile_width * 0.5 
 					)
             	image.anchorX, image.anchorY = 0.5, 1   
@@ -916,8 +907,7 @@ local function createObject( map, object, layer )
 	                points[i].x, points[i].y = isoToScreen( 
 	                	points[i].y / map.tile_height, 
 	                	points[i].x / map.tile_height, 
-	                	map.tile_width, 
-	                	map.tile_height 
+	                	map
 	                )
 	               
 				end	
@@ -929,8 +919,7 @@ local function createObject( map, object, layer )
 				image.x, image.y = isoToScreen( 
 					object.y / map.tile_height, 
 					object.x / map.tile_height, 
-					map.tile_width, 
-					map.tile_height, 
+					map,
 					map.dim.height * map.tile_width * 0.5 
 				)
                 image:translate( centerX, centerY )
@@ -955,8 +944,7 @@ local function createObject( map, object, layer )
 			    	points[i].x, points[i].y = isoToScreen( 
 			    		points[i].y / map.tile_height, 
 			    		points[i].x / map.tile_height, 
-			    		map.tile_width, 
-			    		map.tile_height, 
+			    		map,
 			    		map.dim.height * map.tile_width * 0.5 
 			    	)
 
@@ -970,8 +958,7 @@ local function createObject( map, object, layer )
 				image.x, image.y = isoToScreen( 
 					object.y / map.tile_height, 
 					object.x / map.tile_height, 
-					map.tile_width, 
-					map.tile_height 
+					map
 				)
 				image:translate( centerX, centerY )
 

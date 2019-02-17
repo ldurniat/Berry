@@ -755,14 +755,6 @@ local function createTile( map, position, gid, layer )
 
 			end
 
-			-- If the map is already created these map_offsets will move your 
-			-- object to be in synch with the map at the proper position
-			local map_offset_x = map.x or 0
-			local map_offset_y = map.y or 0
-
-			image.x = image.x - map_offset_x
-			image.y = image.y - map_offset_y
-
 			centerAnchor( image )
 			inherit( image, layer.properties )
 
@@ -1168,8 +1160,8 @@ function Map:addSprite( layer, image_name, x, y )
 
 	local object = {
 		sprite = image_name,
-		x = x - self.x - layer.x,
-		y = y - self.y - layer.y,
+		x = x,
+		y = y 
 	}
 
 	return createObject( self, object, layer )

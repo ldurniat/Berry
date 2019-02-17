@@ -1,5 +1,5 @@
 # Berry
-*Berry* is a simple Tiled Map Loader for Corona SDK.  Berry is also able to load and use TexturePacker sprites inside a Tiled map.
+*Berry* is a simple [Tiled Map](www.mapeditor.org) loader for Corona SDK.  Berry is also able to load and use TexturePacker sprites inside a Tiled map.
 
 ![Screenshot of berry in action](https://i.imgur.com/DbHD6EL.png)
 
@@ -7,20 +7,19 @@
 
 Tested with Tiled v1.2.0
 
-### List of features: 
+### List of supporting features for Tiled: 
 
-- [x] Loads .JSON export from www.mapeditor.org
-- [x] Adds basic properties from Tiled including physics
-- [x] Supports object layers and tile layers
-- [x] Supports collections of images and tileset images
-- [x] Supports object x/y flipping and re-centering of anchorX/anchorY for Corona
-- [x] Supports object animations using Tile Animation Editor
-- [x] Rectangle shape with fillColor and strokeColor support
-- [x] Supports custom collision shapes. Only rectangles and polygons for now
-- [x] Supports text object via plugins
-- [x] Supports layer horziontal and vertical offsets
-- [x] Supports staggered and regular isometric maps
-- [x] Supports TexturePacker sprites
+- [x] **File Exensions -** *only JSON map files*
+- [x] **Map Types -** *Orthogonal, Isometric, and Isometric Staggered*
+- [x] **Tilesets -** *Collections of images and Tileset images*
+- [x] **TexturePacker Tilesets -** *Images and lua files created from TexturePacker*
+- [x] **Layers -** *Object and Tile layer types, horziontal and vertical offsets*
+- [x] **Object -** *x/y flipping and re-centering of anchorX/anchorY for Corona*
+- [x] **Shapes -** *Rectangle and polygon shapes with fillColor and strokeColor*
+- [x] **Text -** *Text object support via plugins*
+- [x] **Physics -** *Rectangle and polygon shapes and objects*
+- [x] **Animation -** *Tile Animation Editor support for objects*
+- [x] **Properties -** *Basic property copying for objects and layers*
 
 ### Quick Start Guide
 

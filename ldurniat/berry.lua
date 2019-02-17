@@ -415,27 +415,6 @@ local function retrieveShapeData( tile_id, tileset )
 end	
 
 --------------------------------------------------------------------------------
--- Mapping from isometric coordinates to screen coordinates 
---
--- @param row Number of row. Can real number.
--- @param column Number of column. Can be real number.
--- @param tile_width Width of tile.
--- @param tile_height Height of tile.
--- @param offset_x
--- @param offset_y 
--- @return A two coodinates x and y.
--------------------------------------------------------------------------------- 
-local function isoToScreen( row, column, tile_width, tile_height, 
-							offset_x, offset_y )
-
-	local x = (column - row) * tile_width * 0.5 + (offset_x or 0)
-	local y = (column + row) * tile_height * 0.5 + (offset_y or 0)
-
-	return x, y
-
-end	
-
---------------------------------------------------------------------------------
 -- Find center of polygon or polyline
 --
 -- @param points A table with x and y coordinates/
@@ -624,6 +603,27 @@ local function loadTexturePacker( cache, directory )
 end
 
 --------------------------------------------------------------------------------
+-- Mapping from isometric coordinates to screen coordinates 
+--
+-- @param row Number of row. Can real number.
+-- @param column Number of column. Can be real number.
+-- @param tile_width Width of tile.
+-- @param tile_height Height of tile.
+-- @param offset_x
+-- @param offset_y 
+-- @return A two coodinates x and y.
+-------------------------------------------------------------------------------- 
+local function isoToScreen( row, column, tile_width, tile_height, 
+							offset_x, offset_y )
+
+	local x = (column - row) * tile_width * 0.5 + (offset_x or 0)
+	local y = (column + row) * tile_height * 0.5 + (offset_y or 0)
+
+	return x, y
+
+end	
+
+--------------------------------------------------------------------------------
 --- Create and add tile to layer
 -- @param map The map instance to add tile to
 -- @param position The map position to place tile
@@ -673,6 +673,8 @@ local function createTile( map, position, gid, layer )
 					map.tile_width, map.tile_height, 
 					map.dim.height * map.tile_width * 0.5 
 				)
+
+print(image.row, image.column, '('..image.x..', '..image.y..')')
 
 			elseif map.orientation == 'staggered' then
 
@@ -750,6 +752,8 @@ local function createTile( map, position, gid, layer )
 		    				  )
 
 		    	end
+
+print(image.row, image.column, '('..image.x..', '..image.y..')')
 
 			elseif map.orientation == 'orthogonal' then
 
@@ -1142,17 +1146,21 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 
     	map.designed_width  = (data.height + data.width) * 0.5 * data.tilewidth
     	map.designed_height = (data.height + data.width) * 0.5 * data.tileheight
-    	map.x = display.contentCenterX - map.designed_width * 0.5
-    	map.y = display.contentCenterY - map.designed_height * 0.5
+
+    elseif map.orientation == 'staggered' then
+
+     	map.designed_width  = data.width * data.tilewidth
+    	map.designed_height = data.height * 0.5 * data.tileheight  	
 
     elseif map.orientation == 'orthogonal' then
     	
     	map.designed_width  = data.width  * data.tilewidth
     	map.designed_height = data.height * data.tileheight
-    	map.x = display.contentCenterX - map.designed_width * 0.5
-    	map.y = display.contentCenterY - map.designed_height * 0.5
     	
     end	
+
+	map.x = display.contentCenterX - map.designed_width * 0.5
+	map.y = display.contentCenterY - map.designed_height * 0.5
 
 	-- Set the background color to the map background
 	display.setDefault( 'background', decodeTiledColor( data.backgroundcolor ) )   

@@ -11,10 +11,7 @@ function scene:create( event )
 	local sceneGroup = self.view  -- Add scene display objects to this group
 
 	-- Load our map
-	map = berry:new( 'map/isometric/world.json', 'map/isometric' )
-	map.x, map.y = 500, 100
-
-	map:addSprite('TEST', 'barricade', 15*32, 15*8)
+	map = berry:new( 'map/level.json', 'map' )
 	scene.view:insert( map )
 
 end

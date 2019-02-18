@@ -417,7 +417,7 @@ end
 --------------------------------------------------------------------------------
 -- Find center of polygon or polyline
 --
--- @param points A table with x and y coordinates/
+-- @param points A table with x and y coordinates
 -- @return Two numbers.
 -------------------------------------------------------------------------------- 
 local function findCenter( points )

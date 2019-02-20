@@ -1271,7 +1271,7 @@ function Map:extend( ... )
 		local plugin = require ( extension .. objectTypes[i] )
 
 		-- Find each type of tiled object
-		local images = self:getObjects( { type=objectTypes[i] } )
+		local images = { self:getObjects( { type=objectTypes[i] } ) }
 
 		if images then 
 

@@ -52,7 +52,11 @@ local function inherit( object, properties )
 
 	properties = properties or {}
 
-	for key, value in pairs(properties) do object[key] = value end
+	for _, property in ipairs(properties) do
+
+		object[property.name] = property.value
+
+	end	
 
 	return object
 

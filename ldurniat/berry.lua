@@ -479,9 +479,9 @@ local function loadTilesets( cache, tilesets )
 
 		elseif tileset.tiles then -- Has embedded images (no image sheets)
 
-			for i, tile in ipairs(tileset.tiles) do
+			for _, tile in ipairs(tileset.tiles) do
 
-				local gid = firstgid + ( i - 1 )
+				local gid = firstgid + tile.id
 
 				assert( not cache[gid],
 					"Duplicate gid for image sheet detected.  Check to " ..

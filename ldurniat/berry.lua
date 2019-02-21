@@ -1051,7 +1051,10 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 	local json_path = system.pathForFile( filename, system.ResourceDirectory ) 
     local data = json.decodeFile( json_path )
 
-	local map = inherit( display.newGroup(), self )
+	local map = display.newGroup()
+	
+	for key, value in pairs(self) do map[key] = value end
+
 	map.dim = { width=data.width, height=data.height }
 	map.image_cache = {}
 	map.image_cache._animations = {}

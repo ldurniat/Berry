@@ -347,7 +347,7 @@ local function buildSequences( cache, tileset )
 
 			end
 
-			local name = findProperty( tile.properties, 'name' )
+			local name = findProperty( tile.properties, 'sequenceName' )
 
 			sequences[#sequences + 1] = {
 				frames        = frames,

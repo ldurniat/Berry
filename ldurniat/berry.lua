@@ -1272,7 +1272,7 @@ function Map:extend( ... )
 
     for i = 1, #objectTypes do 
 
-    	local extension = self.extensions or self.default_extensions
+    	local extension = self.default_extensions
 
       -- Load each module based on type
 		local plugin = require ( extension .. objectTypes[i] )

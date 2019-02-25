@@ -1004,7 +1004,7 @@ local function createObject( map, object, layer )
 			parent   = layer,
 			x        = object.x, 
 			y        = object.y,
-			width    = object.width,
+			width    = object.text.wrap and object.width,
 			text     = text, 
 			font     = font, 
 			fontSize = size,

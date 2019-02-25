@@ -982,6 +982,29 @@ local function createObject( map, object, layer )
 		image = display.newImageRect( layer, image_sheet, frame, width, height )
 		image.x, image.y = object.x, object.y
 
+	elseif object.text then
+
+		-- set defaults
+		local text        = object.text.text
+		local font        = string.lower(object.text.fontfamily) or native.systemFont
+		local size        = object.text.pixelsize
+		local align       = object.text.halign or 'left'
+		local color       = object.text.color or 'FFFFFFFF'
+
+		local params      = { 
+			parent   = layer,
+			x        = object.x, 
+			y        = object.y,
+			width    = object.width,
+			text     = text, 
+			font     = font, 
+			fontSize = size,
+			align    = align
+		} 
+	    
+		image = display.newText( params )
+		image:setTextColor( decodeTiledColor( color ) )
+
 	else
 
 		image = display.newRect( layer, 0, 0, object.width, object.height )

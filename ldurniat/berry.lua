@@ -1268,9 +1268,9 @@ end
 --------------------------------------------------------------------------------
 function Map:extend( ... )
 	
-    local object_types_list = arg or {}
+    local list_of_types = arg or {}
 
-    for _, object_type in ipairs( object_types_list ) do 
+    for _, object_type in ipairs( list_of_types ) do 
 
     	local extension = self.default_extensions
 
@@ -1278,19 +1278,14 @@ function Map:extend( ... )
 		local plugin = require ( extension .. object_type )
 
 		-- Find each type of tiled object
-		local images = { self:getObjects( { type=object_type } ) }
+		local display_objects = { self:getObjects( { type=object_type } ) }
 
-		if images then 
+		for _, object in ipairs( display_objects ) do 
 
-			-- Do we have at least one?
-			for i = 1, #images do
-				
-				-- Extend the object with its own custom code
-				images[i] = plugin( images[i] )
+			-- Extend the object with its own custom code
+			object = plugin( object ) 
 
-			end
-
-		end  
+		end
 
     end
 

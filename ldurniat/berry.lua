@@ -1076,7 +1076,7 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
     map.tile_height   = data.tileheight
 
 	-- Add useful properties
-    map.default_extensions = 'berry.plugins.'
+    map.default_extensions = 'ldurniat.plugins.'
 
     -- TexturePacker directory will default to tilesets_dir if arg not present
     texturepacker_dir = texturepacker_dir or tilesets_dir
@@ -1268,17 +1268,17 @@ end
 --------------------------------------------------------------------------------
 function Map:extend( ... )
 	
-    local objectTypes = arg or {}
+    local object_types_list = arg or {}
 
-    for i = 1, #objectTypes do 
+    for _, object_type in ipairs( object_types_list ) do 
 
     	local extension = self.default_extensions
 
-      -- Load each module based on type
-		local plugin = require ( extension .. objectTypes[i] )
+		-- Load each module based on type
+		local plugin = require ( extension .. object_type )
 
 		-- Find each type of tiled object
-		local images = { self:getObjects( { type=objectTypes[i] } ) }
+		local images = { self:getObjects( { type=object_type } ) }
 
 		if images then 
 

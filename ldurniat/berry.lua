@@ -988,8 +988,17 @@ local function createObject( map, object, layer )
 		local text        = object.text.text
 		local font        = string.lower(object.text.fontfamily) or native.systemFont
 		local size        = object.text.pixelsize
-		local align       = object.text.halign or 'left'
 		local color       = object.text.color or 'FFFFFFFF'
+
+		local align
+
+		-- because coronaSDK doesn't support "justify" as text alignment it will
+		-- default to center.  Also if the text object for Tiled is set to left
+		-- align, then it will not output a halign value.
+		if object.text.halign == 'justify' then align = 'center'
+		elseif not object.text.halign then 		align = 'left'
+		else 									align = object.text.halign
+		end
 
 		local params      = { 
 			parent   = layer,

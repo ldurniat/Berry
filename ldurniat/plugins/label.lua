@@ -4,8 +4,6 @@
 
 -- Use this as a template to extend a tiled object with functionality
 
-local M = {}
-
 ------------------------------------------------------------------------------------------------
 -- Decoding color in hex format to ARGB.
 --
@@ -31,7 +29,7 @@ local function decodeTiledColor( hex )
 
 end
 
-function M.new( instance )
+function Plugin( instance )
 
   if not instance then error('ERROR: Expected display object') end  
   
@@ -87,4 +85,4 @@ function M.new( instance )
     
 end
 
-return M
+return Plugin

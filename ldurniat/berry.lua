@@ -1286,7 +1286,7 @@ function Map:extend( ... )
 			for i = 1, #images do
 				
 				-- Extend the object with its own custom code
-				images[i] = plugin.new( images[i] )
+				images[i] = plugin( images[i] )
 
 			end
 

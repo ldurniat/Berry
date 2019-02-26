@@ -984,24 +984,24 @@ local function createObject( map, object, layer )
 
 	elseif object.text then
 
+		-- CoronaSDK has no support for the following text options in Tiled:
+		-- vertical text alignment
+		-- italics, bold, underline, and strikeout  
+
 		-- set defaults
 		local text        = object.text.text
-		local font        = string.lower(object.text.fontfamily) or native.systemFont
+		local font        = object.text.fontfamily or native.systemFont
 		local size        = object.text.pixelsize
 		local color       = object.text.color or 'FFFFFFFF'
-
 		local align
 
-		-- because coronaSDK doesn't support "justify" as text alignment it will
+		-- no support for "justify" as horizontal text alignment it will instead
 		-- default to center.  Also if the text object for Tiled is set to left
 		-- align, then it will not output a halign value.
 		if object.text.halign == 'justify' then align = 'center'
 		elseif not object.text.halign then 		align = 'left'
 		else 									align = object.text.halign
 		end
-
-		-- coronaSDK has no support for vertical align, thus unable to support
-		-- halign feature from Tiled for text objects.
 
 		local params      = { 
 			parent   = layer,

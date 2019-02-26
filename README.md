@@ -16,7 +16,7 @@ Tested with Tiled v1.2.0
 - [x] **Layers -** *Object and Tile layer types, horziontal and vertical offsets*
 - [x] **Object -** *x/y flipping and re-centering of anchorX/anchorY for Corona*
 - [x] **Shapes -** *Rectangle and polygon shapes with fillColor and strokeColor*
-- [x] **Text -** *Text object support via plugins*
+- [x] **Text -** *Text objects, horziontal alignment, word wrap, fonts, and colors*
 - [x] **Physics -** *Rectangle and polygon shapes and objects*
 - [x] **Animation -** *Tile Animation Editor support for objects*
 - [x] **Properties -** *Basic property copying for objects and layers*

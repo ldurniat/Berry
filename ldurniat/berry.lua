@@ -1000,19 +1000,24 @@ local function createObject( map, object, layer )
 		else 									align = object.text.halign
 		end
 
+		-- coronaSDK has no support for vertical align, thus unable to support
+		-- halign feature from Tiled for text objects.
+
 		local params      = { 
 			parent   = layer,
-			x        = object.x, 
-			y        = object.y,
 			width    = object.text.wrap and object.width,
+			height   = object.height,
 			text     = text, 
 			font     = font, 
 			fontSize = size,
 			align    = align
 		} 
-	    
+
 		image = display.newText( params )
 		image:setTextColor( decodeTiledColor( color ) )
+
+		image.anchorX, image.anchorY = 0, 0
+		image.x, image.y             = object.x, object.y
 
 	else
 

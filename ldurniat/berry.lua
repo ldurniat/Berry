@@ -650,8 +650,8 @@ local function createTile( map, position, gid, layer )
 
 		else 
           	
-          	local image_w, image_h = getImageSize( map.cache, gid )
-          	local path = getImagePath( map.cache, gid )
+          	local image_w, image_h = getImageSize( map.cache.images, gid )
+          	local path = getImagePath( map.cache.images, gid )
 
           	image = display.newImageRect( layer, path, image_w, image_h )
 
@@ -834,7 +834,7 @@ local function createObject( map, object, layer )
 					
 			else 
 
-          		local path = getImagePath( map.cache, object.gid )
+          		local path = getImagePath( map.cache.images, object.gid )
 				image = display.newImageRect( layer, path, width, height ) 
 
 			end
@@ -977,7 +977,7 @@ local function createObject( map, object, layer )
 		local image_sheet, frame = getImageSheet( map.cache.texture_packs, 
 												  object.sprite )
 
-		local width, height = getImageSize( map.cache, object.sprite )
+		local width, height = getImageSize( map.cache.images, object.sprite )
 
 		image = display.newImageRect( layer, image_sheet, frame, width, height )
 		image.x, image.y = object.x, object.y

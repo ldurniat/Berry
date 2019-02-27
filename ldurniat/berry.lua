@@ -241,9 +241,9 @@ end
 -- @return The image sheet or nil.
 -- @return The frame_index for image in image sheet.
 --------------------------------------------------------------------------------   
-local function getImageSheet( cache, id )
+local function getImageSheet( image_sheets, id )
  
-	local image_sheet = cache[id]
+	local image_sheet = image_sheets[id]
 	if image_sheet then return image_sheet.sheet, image_sheet.frame end
 
 end
@@ -255,9 +255,9 @@ end
 -- @param id The id of the image.
 -- @return The image width and height
 --------------------------------------------------------------------------------   
-local function getImageSize( cache, id ) 
+local function getImageSize( images, id ) 
 
-	local image = cache[id]
+	local image = images[id]
 	if image then return image.width, image.height end
 
 end
@@ -269,9 +269,9 @@ end
 -- @param id The id of the image.
 -- @return The image directory
 --------------------------------------------------------------------------------   
-local function getImagePath( cache, id ) 
+local function getImagePath( images, id ) 
 
-	local image = cache[id]
+	local image = images[id]
 	if image then return image.path end
 
 end
@@ -283,12 +283,7 @@ end
 -- @param id The gid to use to find tileset.
 -- @return The tileset at the gid location.
 --------------------------------------------------------------------------------
-local function getTileset( cache, id) 
-
-	local tileset = cache[id]
-	return tileset
-	 
-end
+local function getTileset( tilesets, id ) return tilesets[id] end
 
 --------------------------------------------------------------------------------
 -- Find property by name.
@@ -319,14 +314,10 @@ end
 -- Returns the animation sequence name using a gid in the map cache
 --
 -- @param cache The map image cache to store animation GIDs
--- @param gid The GID of the animation object/tile
+-- @param id The GID of the animation object/tile
 -- @return The name of the animation sequence
 --------------------------------------------------------------------------------  
-local function getAnimationSequence( cache, gid ) 
-
-	return cache.animations[gid] 
-
-end
+local function getAnimationSequence( animations, id ) return animations[id] end
 
 --------------------------------------------------------------------------------
 -- Collect all sequences data from a tileset.
@@ -335,7 +326,7 @@ end
 -- @param tileset The tileset object.
 -- @return The table.
 --------------------------------------------------------------------------------  
-local function buildSequences( cache, tileset )
+local function buildSequences( animations, tileset )
 
 	local sequences       = {}
 	local tiles 		  = tileset.tiles or {}
@@ -368,7 +359,7 @@ local function buildSequences( cache, tileset )
 
 	        -- attach gid to sequence name in the animation cache
 	        local gid = tileset.firstgid + tile.id
-	        if name then cache.animations[gid] = name end
+	        if name then animations[gid] = name end
 	        
 	    end 
 

@@ -1069,8 +1069,8 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
     -- Purpose of computation here is simplification of code
     for i, tileset in ipairs( data.tilesets ) do
 
-    	tileset.sequence_data   = buildSequences( map.cache, tileset )
-    	tileset.directory 		= tilesets_dir and tilesets_dir .. '/' or ''
+    	tileset.sequence_data = buildSequences( map.cache.animations, tileset )
+    	tileset.directory 	  = tilesets_dir and tilesets_dir .. '/' or ''
 
     end
 

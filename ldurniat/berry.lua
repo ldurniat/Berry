@@ -1200,7 +1200,7 @@ function Map:addTexturePack( image_path, lua_path )
 	if texture_pack then
 
 		texture_pack.directory = image_directory .. image_name
-		cacheTexturePack( self.image_cache, texture_pack )
+		cacheTexturePack( self.cache, texture_pack )
 
 	end
 

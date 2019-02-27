@@ -634,7 +634,7 @@ end
 local function createTile( map, position, gid, layer )
 
 	-- Get the correct tileset using the GID
-	local tileset = getTileset( map.cache, gid )
+	local tileset = getTileset( map.cache.tilesets, gid )
 
 	if tileset then
 
@@ -796,7 +796,7 @@ local function createObject( map, object, layer )
 	    object.gid = clearBit( object.gid, FLIPPED_DIAGONAL_FLAG )
 
 		-- Get the correct tileset using the GID
-		tileset = getTileset( map.cache, object.gid )
+		tileset = getTileset( map.cache.tilesets, object.gid )
 
 		if tileset then
 

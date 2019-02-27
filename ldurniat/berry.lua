@@ -269,7 +269,12 @@ end
 -- @param id The id of the image.
 -- @return The image directory
 --------------------------------------------------------------------------------   
-local function getImagePath( cache, id ) return cache.gid[id] and cache.gid[id].path end
+local function getImagePath( cache, id ) 
+
+	local image = cache[id]
+	if image then return image.path end
+	
+end
 
 --------------------------------------------------------------------------------
 --- Gets a Tile image from a GID.

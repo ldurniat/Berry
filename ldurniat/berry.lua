@@ -273,7 +273,7 @@ local function getImagePath( cache, id )
 
 	local image = cache[id]
 	if image then return image.path end
-	
+
 end
 
 --------------------------------------------------------------------------------
@@ -283,7 +283,12 @@ end
 -- @param id The gid to use to find tileset.
 -- @return The tileset at the gid location.
 --------------------------------------------------------------------------------
-local function getTileset( cache, id) return cache.gid[id] and cache.gid[id].tileset end
+local function getTileset( cache, id) 
+
+	local tileset = cache[id]
+	return tileset
+	 
+end
 
 --------------------------------------------------------------------------------
 -- Find property by name.

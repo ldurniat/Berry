@@ -1056,8 +1056,12 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 	for key, value in pairs(self) do map[key] = value end
 
 	map.dim = { width=data.width, height=data.height }
-	map.cache = {}
-	map.cache._animations = {}
+	map.cache = {
+		animations = {},
+		gid = {},
+		texturepack = {},
+		tilesets = {},
+	}
 
     -- Purpose of computation here is simplification of code
     for i, tileset in ipairs( data.tilesets ) do

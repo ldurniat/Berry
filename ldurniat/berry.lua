@@ -458,26 +458,27 @@ local function loadTilesets( cache, tilesets )
 
 			local sheet = createImageSheet( tileset )
 
-			cache[tileset.image] = {
+--[[  Delete this later, pretty sure it's not used anywhere
+
+			cache.tilesets[tileset.image] = {
 				type = 'tiled',
 				tileset = tileset,
 				sheet = sheet,
 			}
+--]]
 
 			for gid = firstgid, lastgid do
 
-				assert( not cache[gid],
-					"Duplicate gid for image sheet detected.  Check to " ..
-					"make sure the same image sheet isn't being loaded twice "..
-					"or if some of the images/tilesets have matching names"
+				assert( not cache.image_sheets[gid] or not cache.tilesets[gid], 
+					"Duplicate key in cache detected" 
 				)
 
-				cache[gid] = {
-					type = 'tiled',				
-					tileset = tileset,
+				cache.image_sheets[gid] = {
 					sheet = sheet,
 					frame = gid - firstgid + 1,
 				}
+
+				cache.tilesets[gid] = tileset
 
 			end
 
@@ -487,19 +488,17 @@ local function loadTilesets( cache, tilesets )
 
 				local gid = firstgid + tile.id
 
-				assert( not cache[gid],
-					"Duplicate gid for image sheet detected.  Check to " ..
-					"make sure the same image sheet isn't being loaded twice "..
-					"or if some of the images/tilesets have matching names"
+				assert( not cache.images[gid] or not cache.tilesets[gid],
+					"Duplicate key in cache detected" 
 				)
 
-				cache[gid] = {
-					type = 'tiled',
-					tileset = tileset,
+				cache.images[gid] = {
 					path = tileset.directory .. tile.image,
 					width = tile.imagewidth,
 					height = tile.imageheight,
 				}
+
+				cache.tilesets[gid] = tileset 
 
 			end
 
@@ -519,22 +518,19 @@ local function cacheTexturePack( cache, texture_pack )
 
 	local sheet = createImageSheet( texture_pack )
 
-	for sprite_name, i in pairs(texture_pack.frameIndex) do
+	for image_name, i in pairs(texture_pack.frameIndex) do
 
-		assert( not cache[sprite_name],
-		"Duplicate names for image sheet detected.  Check to " ..
-		"make sure the same image sheet isn't being loaded twice" ..
-		" or if some of the images/texture_packs have matching names"
+		assert( not cache.texture_packs[texture_name],
+				"Duplicate key in cache detected" 
 		)
 
-		local sprite = texture_pack.sheet.frames[i]
+		local image = texture_pack.sheet.frames[i]
 
-		cache[sprite_name] = {
-			type = 'texturepacker',
+		cache.texture_packs[image_name] = {
 			sheet = sheet,
-			frame = i,						
-			width = sprite.width,
-			height = sprite.height,
+			frame = i,
+			width = image.width,
+			height = image.height,
 		}
 
 	end
@@ -977,7 +973,8 @@ local function createObject( map, object, layer )
 		local image_sheet, frame = getImageSheet( map.cache.texture_packs, 
 												  object.sprite )
 
-		local width, height = getImageSize( map.cache.images, object.sprite )
+		local width, height = getImageSize( map.cache.texture_packs, 
+											object.sprite )
 
 		image = display.newImageRect( layer, image_sheet, frame, width, height )
 		image.x, image.y = object.x, object.y

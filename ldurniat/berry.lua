@@ -244,7 +244,6 @@ end
 local function getImageSheet( cache, id )
  
 	local image_sheet = cache[id]
-
 	if image_sheet then return image_sheet.sheet, image_sheet.frame end
 
 end
@@ -258,7 +257,8 @@ end
 --------------------------------------------------------------------------------   
 local function getImageSize( cache, id ) 
 
-	if cache.gid[id] then return cache.gid[id].width, cache.gid[id].height end
+	local image = cache[id]
+	if image then return image.width, image.height end
 
 end
 

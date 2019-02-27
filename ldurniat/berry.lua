@@ -315,7 +315,7 @@ end
 --------------------------------------------------------------------------------  
 local function getAnimationSequence( cache, gid ) 
 
-	return cache._animations[gid] 
+	return cache.animations[gid] 
 
 end
 
@@ -359,7 +359,7 @@ local function buildSequences( cache, tileset )
 
 	        -- attach gid to sequence name in the animation cache
 	        local gid = tileset.firstgid + tile.id
-	        if name then cache._animations[gid] = name end
+	        if name then cache.animations[gid] = name end
 	        
 	    end 
 

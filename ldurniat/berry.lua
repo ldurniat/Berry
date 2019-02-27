@@ -634,14 +634,14 @@ end
 local function createTile( map, position, gid, layer )
 
 	-- Get the correct tileset using the GID
-	local tileset = getTileset( map.image_cache, gid )
+	local tileset = getTileset( map.cache, gid )
 
 	if tileset then
 
 		local image 
 		local width, height  = tileset.tilewidth, tileset.tileheight 
 
-		local image_sheet, frame = getImageSheet( map.image_cache, gid ) 
+		local image_sheet, frame = getImageSheet( map.cache, gid ) 
 
 		if image_sheet then
 
@@ -650,8 +650,8 @@ local function createTile( map, position, gid, layer )
 
 		else 
           	
-          	local image_w, image_h = getImageSize( map.image_cache, gid )
-          	local path = getImagePath( map.image_cache, gid )
+          	local image_w, image_h = getImageSize( map.cache, gid )
+          	local path = getImagePath( map.cache, gid )
 
           	image = display.newImageRect( layer, path, image_w, image_h )
 
@@ -796,14 +796,14 @@ local function createObject( map, object, layer )
 	    object.gid = clearBit( object.gid, FLIPPED_DIAGONAL_FLAG )
 
 		-- Get the correct tileset using the GID
-		tileset = getTileset( map.image_cache, object.gid )
+		tileset = getTileset( map.cache, object.gid )
 
 		if tileset then
 
 			local firstgid           = tileset.firstgid
 			local tile_id 		     = object.gid - tileset.firstgid
 			local width,      height = object.width, object.height
-			local image_sheet, frame = getImageSheet( map.image_cache, 
+			local image_sheet, frame = getImageSheet( map.cache, 
 													  object.gid ) 
 
 			if image_sheet then
@@ -815,7 +815,7 @@ local function createObject( map, object, layer )
 											   image_sheet, 
 											   tileset.sequence_data )
 
-					local name = getAnimationSequence( map.image_cache, 
+					local name = getAnimationSequence( map.cache, 
 										  			   object.gid )
 
 					if name then
@@ -834,7 +834,7 @@ local function createObject( map, object, layer )
 					
 			else 
 
-          		local path = getImagePath( map.image_cache, object.gid )
+          		local path = getImagePath( map.cache, object.gid )
 				image = display.newImageRect( layer, path, width, height ) 
 
 			end
@@ -974,10 +974,10 @@ local function createObject( map, object, layer )
 
 	elseif object.sprite then
 
-		local image_sheet, frame = getImageSheet( map.image_cache, 
+		local image_sheet, frame = getImageSheet( map.cache, 
 												  object.sprite )
 
-		local width, height = getImageSize( map.image_cache, object.sprite )
+		local width, height = getImageSize( map.cache, object.sprite )
 
 		image = display.newImageRect( layer, image_sheet, frame, width, height )
 		image.x, image.y = object.x, object.y
@@ -1056,13 +1056,13 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 	for key, value in pairs(self) do map[key] = value end
 
 	map.dim = { width=data.width, height=data.height }
-	map.image_cache = {}
-	map.image_cache._animations = {}
+	map.cache = {}
+	map.cache._animations = {}
 
     -- Purpose of computation here is simplification of code
     for i, tileset in ipairs( data.tilesets ) do
 
-    	tileset.sequence_data   = buildSequences( map.image_cache, tileset )
+    	tileset.sequence_data   = buildSequences( map.cache, tileset )
     	tileset.directory 		= tilesets_dir and tilesets_dir .. '/' or ''
 
     end
@@ -1082,8 +1082,8 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
     texturepacker_dir = texturepacker_dir or tilesets_dir
 
     do  -- Create and cache all the image sheets
-	    loadTilesets( map.image_cache, map.tilesets )
-		loadTexturePacker( map.image_cache, texturepacker_dir )
+	    loadTilesets( map.cache, map.tilesets )
+		loadTexturePacker( map.cache, texturepacker_dir )
 	end
 	
 	for _, info in ipairs( data.layers ) do

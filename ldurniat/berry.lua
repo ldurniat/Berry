@@ -802,7 +802,7 @@ local function createObject( map, object, layer )
 			local firstgid           = tileset.firstgid
 			local tile_id 		     = object.gid - tileset.firstgid
 			local width,      height = object.width, object.height
-			local image_sheet, frame = getImageSheet( map.cache, 
+			local image_sheet, frame = getImageSheet( map.cache.image_sheets, 
 													  object.gid ) 
 
 			if image_sheet then
@@ -973,7 +973,7 @@ local function createObject( map, object, layer )
 
 	elseif object.sprite then
 
-		local image_sheet, frame = getImageSheet( map.cache, 
+		local image_sheet, frame = getImageSheet( map.cache.texture_packs, 
 												  object.sprite )
 
 		local width, height = getImageSize( map.cache, object.sprite )

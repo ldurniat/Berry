@@ -242,9 +242,8 @@ end
 -- @return The frame_index for image in image sheet.
 --------------------------------------------------------------------------------   
 local function getImageSheet( cache, id )
-
-	local is_image_sheet = cache[id] and cache[id].sheet 
-	local image_sheet = is_image_sheet and cache[id]
+ 
+	local image_sheet = cache[id]
 
 	if image_sheet then return image_sheet.sheet, image_sheet.frame end
 
@@ -259,7 +258,7 @@ end
 --------------------------------------------------------------------------------   
 local function getImageSize( cache, id ) 
 
-	if cache[id] then return cache[id].width, cache[id].height end
+	if cache.gid[id] then return cache.gid[id].width, cache.gid[id].height end
 
 end
 
@@ -270,7 +269,7 @@ end
 -- @param id The id of the image.
 -- @return The image directory
 --------------------------------------------------------------------------------   
-local function getImagePath( cache, id ) return cache[id] and cache[id].path end
+local function getImagePath( cache, id ) return cache.gid[id] and cache.gid[id].path end
 
 --------------------------------------------------------------------------------
 --- Gets a Tile image from a GID.
@@ -279,7 +278,7 @@ local function getImagePath( cache, id ) return cache[id] and cache[id].path end
 -- @param id The gid to use to find tileset.
 -- @return The tileset at the gid location.
 --------------------------------------------------------------------------------
-local function getTileset( cache, id) return cache[id] and cache[id].tileset end
+local function getTileset( cache, id) return cache.gid[id] and cache.gid[id].tileset end
 
 --------------------------------------------------------------------------------
 -- Find property by name.
@@ -641,7 +640,7 @@ local function createTile( map, position, gid, layer )
 		local image 
 		local width, height  = tileset.tilewidth, tileset.tileheight 
 
-		local image_sheet, frame = getImageSheet( map.cache, gid ) 
+		local image_sheet, frame = getImageSheet( map.cache.image_sheets, gid ) 
 
 		if image_sheet then
 
@@ -1056,11 +1055,14 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 	for key, value in pairs(self) do map[key] = value end
 
 	map.dim = { width=data.width, height=data.height }
+
+	-- The cache stores the id 
 	map.cache = {
-		animations = {},
-		gid = {},
-		texturepack = {},
-		tilesets = {},
+		animations    = {},
+		texture_packs = {},
+		tilesets      = {},
+		image_sheets  = {},
+		images        = {},
 	}
 
     -- Purpose of computation here is simplification of code

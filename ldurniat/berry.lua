@@ -815,7 +815,7 @@ local function createObject( map, object, layer )
 											   image_sheet, 
 											   tileset.sequence_data )
 
-					local name = getAnimationSequence( map.cache, 
+					local name = getAnimationSequence( map.cache.animations, 
 										  			   object.gid )
 
 					if name then

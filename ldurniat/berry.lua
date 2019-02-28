@@ -639,6 +639,8 @@ end
 --------------------------------------------------------------------------------
 local function sortAnimatedPriority( map, layer, object )
 
+	local object = object or {}  -- createTile method doesn't use objects
+
 	if     ( object.isAnimated ~= nil ) then return object.isAnimated
 	elseif (  layer.isAnimated ~= nil ) then return layer.isAnimated
 	elseif (    map.isAnimated ~= nil ) then return map.isAnimated
@@ -668,8 +670,24 @@ local function createTile( map, position, gid, layer )
 
 		if image_sheet then
 
-			image = display.newImageRect( layer, image_sheet, 
-										  frame, width, height )
+			local animation = getAnimationSequence( map.cache.animations, gid )
+
+			if animation then
+
+				image = display.newSprite( layer, 
+										   image_sheet, 
+										   tileset.sequence_data )
+
+				image:setSequence( animation )
+				local isAnimated = sortAnimatedPriority( map, layer )
+				if isAnimated then image:play() end
+
+			else
+
+				image = display.newImageRect( layer, image_sheet, 
+											  frame, width, height )
+
+			end
 
 		else 
           	

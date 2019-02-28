@@ -355,13 +355,16 @@ local function buildSequences( animations, tileset )
 
 			local name = findProperty( tile.properties, 'name' )
 			local time = findProperty( tile.properties, 'time' ) or duration
+			local loopCount = findProperty( tile.properties, 'loopCount' )
+			local loopDirection = findProperty( tile.properties, 
+												'loopDirection' )
 
 			sequences[#sequences + 1] = {
 				frames        = frames,
 	            name          = name,
 	            time          = time,
-	            loopCount     = findProperty( tile.properties, 'loopCount' ),
-	            loopDirection = findProperty( tile.properties, 'loopDirection' )
+	            loopCount     = loopCount,
+	            loopDirection = loopDirection
 	        }
 
 	        -- attach gid to sequence name in the animation cache
@@ -373,6 +376,51 @@ local function buildSequences( animations, tileset )
 	end		
 
 	return sequences
+
+end	
+
+--------------------------------------------------------------------------------
+-- Loads tile properties in a properties cache
+--
+-- @param cache The map properties cache to store properties for GID
+-- @param tileset The tileset object
+--------------------------------------------------------------------------------  
+local function loadProperties( cache, tileset )
+
+	local tiles = tileset.tiles or {}
+
+	-- these properties are only for animation stuff and shouldn't be copied
+	local restricted_properties = {
+		name=true, 
+		time=true, 
+		loopCount=true, 
+		loopDirection=true
+	}
+
+	for _, tile in ipairs(tiles) do
+
+		local properties = tile.properties
+
+		if properties then
+
+			local properties_copy = {}
+
+			for _, property in ipairs(properties) do
+
+				if not restricted_properties[property.name] then
+
+					properties_copy[property.name] = property.value
+
+				end
+
+			end
+
+	        local gid = tileset.firstgid + tile.id
+	        cache[gid] = properties_copy
+	        
+	    end 
+
+	end		
 
 end	
 

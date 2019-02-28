@@ -839,9 +839,29 @@ print(name)
 											   image_sheet, 
 											   tileset.sequence_data )
 
+					local isAnimated
 
+					-- isAnimated var assignment priority: object > layer > map
+					-- objects are assigned 1st, layers are 2nd, and map is last
+					-- if none of these exists the default is false
 
+					if ( object.isAnimated ~= nil ) then 
 
+						isAnimated = object.isAnimated
+
+					elseif ( layer.isAnimated ~= nil ) then
+
+						isAnimated = layer.isAnimated
+
+					elseif ( map.isAnimated ~= nil ) then
+
+						isAnimated = map.isAnimated
+
+					else
+
+						isAnimated = false 
+
+					end
 
 				else
 

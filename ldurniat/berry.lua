@@ -54,7 +54,11 @@ local function inherit( object, properties )
 
 	for _, property in ipairs(properties) do
 
-		object[property.name] = property.value
+		if not object[property.name] then 
+
+			object[property.name] = property.value
+
+		end
 
 	end	
 

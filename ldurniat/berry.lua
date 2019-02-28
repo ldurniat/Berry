@@ -366,10 +366,6 @@ local function buildSequences( animations, tileset )
 
 	        -- attach gid to sequence name in the animation cache
 	        local gid = tileset.firstgid + tile.id
-
-print('BUILD SEQUENCE ACTIVATED', gid, name)
-for i,v in pairs(tile.properties or {} ) do print(k,v) end
-
 	        if name then animations[gid] = name end
 	        
 	    end 
@@ -642,10 +638,6 @@ end
 -- @return A boolean value for isAnimated
 --------------------------------------------------------------------------------
 local function sortAnimatedPriority( map, layer, object )
-
-print('SORTING HAPPENING?!? ARRGGG', map, layer, object) 
-print(map.isAnimated, layer.isAnimated, object.isAnimated)
-for k,v in pairs(map) do print(k,v) end
 
 	if     ( object.isAnimated ~= nil ) then return object.isAnimated
 	elseif (  layer.isAnimated ~= nil ) then return layer.isAnimated

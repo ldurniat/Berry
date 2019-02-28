@@ -1050,8 +1050,8 @@ local function createObject( map, object, layer )
 
 		end	
 
-		inherit( image, layer.properties )
 		inherit( image, object.properties )
+		inherit( image, layer.properties )
 
 	end	
 

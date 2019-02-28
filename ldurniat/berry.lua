@@ -639,6 +639,10 @@ end
 --------------------------------------------------------------------------------
 local function sortAnimatedPriority( map, layer, object )
 
+print('SORTING HAPPENING?!? ARRGGG', map, layer, object) 
+print(map.isAnimated, layer.isAnimated, object.isAnimated)
+for k,v in pairs(map) do print(k,v) end
+
 	if     ( object.isAnimated ~= nil ) then return object.isAnimated
 	elseif (  layer.isAnimated ~= nil ) then return layer.isAnimated
 	elseif (    map.isAnimated ~= nil ) then return map.isAnimated
@@ -1073,7 +1077,9 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 
 	local map = display.newGroup()
 	
+	-- inherit map methods and properties
 	for key, value in pairs(self) do map[key] = value end
+	inherit( map, data.properties )
 
 	map.dim = { width=data.width, height=data.height }
 
@@ -1124,7 +1130,9 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 	    layer.isVisible  = info.visible
 		layer.x          = info.offsetx or 0
 		layer.y          = info.offsety or 0
-		layer.properties = info.properties or {}
+
+		-- Inherit properties
+		inherit( layer, info.properties )
 		
 		if layer.type == 'objectgroup' then
 

@@ -811,18 +811,10 @@ local function createObject( map, object, layer )
 
 			if image_sheet then
 
-print('map.isAnimated = ', map.isAnimated) 
-
 				local animation = getAnimationSequence( map.cache.animations, 
 														object.gid )
 
 				if animation then
---[[
-				if findProperty( layer.properties, 'isAnimated' ) or 
-				   findProperty( object.properties, 'isAnimated' ) then
-
-print('OBJECT IS ANIMATED! REEEE')
---]]
 
 					image = display.newSprite( layer, 
 											   image_sheet, 

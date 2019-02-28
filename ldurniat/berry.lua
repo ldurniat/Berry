@@ -338,27 +338,34 @@ local function buildSequences( animations, tileset )
 		if animation then 
 
 			local frames = {}
+			local duration = 0
 
-			-- The property tileid starts from 0 (in JSON format) 
+			-- The property tileid starts from 0 (in JSON format)
 			-- but frames count from 1
 			for _, frame in ipairs(animation) do
 
 				frames[#frames + 1] = frame.tileid + 1 
+				duration = duration + frame.duration
 
 			end
 
-			local name = findProperty( tile.properties, 'sequenceName' )
+			local name = findProperty( tile.properties, 'name' )
+			local time = findProperty( tile.properties, 'time' ) or duration
 
 			sequences[#sequences + 1] = {
 				frames        = frames,
 	            name          = name,
-	            time          = findProperty( tile.properties, 'time' ),
+	            time          = time,
 	            loopCount     = findProperty( tile.properties, 'loopCount' ),
 	            loopDirection = findProperty( tile.properties, 'loopDirection' )
 	        }
 
 	        -- attach gid to sequence name in the animation cache
 	        local gid = tileset.firstgid + tile.id
+
+print('BUILD SEQUENCE ACTIVATED', gid, name)
+for i,v in pairs(tile.properties or {} ) do print(k,v) end
+
 	        if name then animations[gid] = name end
 	        
 	    end 
@@ -804,22 +811,37 @@ local function createObject( map, object, layer )
 
 			if image_sheet then
 
+print('map.isAnimated = ', map.isAnimated) 
+
+				local animation = getAnimationSequence( map.cache.animations, 
+														object.gid )
+
+				if animation then
+--[[
 				if findProperty( layer.properties, 'isAnimated' ) or 
 				   findProperty( object.properties, 'isAnimated' ) then
 
-					image = display.newSprite( layer, 
-											   image_sheet, 
-											   tileset.sequence_data )
+print('OBJECT IS ANIMATED! REEEE')
 
 					local name = getAnimationSequence( map.cache.animations, 
 										  			   object.gid )
-
+print(name) 
 					if name then
 
 						image:setSequence( name )
 						image:play()
 
 					end
+
+--]]
+
+					image = display.newSprite( layer, 
+											   image_sheet, 
+											   tileset.sequence_data )
+
+
+
+
 
 				else
 

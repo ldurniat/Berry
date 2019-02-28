@@ -822,17 +822,6 @@ print('map.isAnimated = ', map.isAnimated)
 				   findProperty( object.properties, 'isAnimated' ) then
 
 print('OBJECT IS ANIMATED! REEEE')
-
-					local name = getAnimationSequence( map.cache.animations, 
-										  			   object.gid )
-print(name) 
-					if name then
-
-						image:setSequence( name )
-						image:play()
-
-					end
-
 --]]
 
 					image = display.newSprite( layer, 
@@ -862,6 +851,9 @@ print(name)
 						isAnimated = false 
 
 					end
+
+					image:setSequence( animation )
+					if isAnimated then image:play() end
 
 				else
 

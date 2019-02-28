@@ -618,7 +618,7 @@ end
 -- @param origin The origin for the x value
 -- @return A two coodinates x and y.
 -------------------------------------------------------------------------------- 
-local function isoToScreen( row, column, map, origin)
+local function isoToScreen( row, column, map, origin )
 
 	local x = (column - row) * map.tile_width * 0.5 + ( origin or 0 )
 	local y = (column + row) * map.tile_height * 0.5 
@@ -626,6 +626,26 @@ local function isoToScreen( row, column, map, origin)
 	return x, y
 
 end	
+
+--------------------------------------------------------------------------------
+--- Sorts through isAnimated properties and returns a boolean based on priority
+-- isAnimated var assignment priority:  object > layer > map
+-- objects are assigned 1st, layers are 2nd, and map is last
+--
+-- @param map The map
+-- @param layer The layer 
+-- @param object The object
+-- @return A boolean value for isAnimated
+--------------------------------------------------------------------------------
+local function sortAnimatedPriority( map, layer, object )
+
+	if     ( object.isAnimated ~= nil ) then return object.isAnimated
+	elseif (  layer.isAnimated ~= nil ) then return layer.isAnimated
+	elseif (    map.isAnimated ~= nil ) then return map.isAnimated
+	else                                     return false 
+	end
+
+end
 
 --------------------------------------------------------------------------------
 --- Create and add tile to layer
@@ -820,31 +840,8 @@ local function createObject( map, object, layer )
 											   image_sheet, 
 											   tileset.sequence_data )
 
-					local isAnimated
-
-					-- isAnimated var assignment priority: object > layer > map
-					-- objects are assigned 1st, layers are 2nd, and map is last
-					-- if none of these exists the default is false
-
-					if ( object.isAnimated ~= nil ) then 
-
-						isAnimated = object.isAnimated
-
-					elseif ( layer.isAnimated ~= nil ) then
-
-						isAnimated = layer.isAnimated
-
-					elseif ( map.isAnimated ~= nil ) then
-
-						isAnimated = map.isAnimated
-
-					else
-
-						isAnimated = false 
-
-					end
-
 					image:setSequence( animation )
+					local isAnimated = sortAnimatedPriority( map, layer, object)
 					if isAnimated then image:play() end
 
 				else

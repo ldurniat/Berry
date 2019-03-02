@@ -317,7 +317,7 @@ end
 --------------------------------------------------------------------------------
 -- Returns the animation sequence name using a gid in the map cache
 --
--- @param cache The map image cache to store animation GIDs
+-- @param animations The map image cache to store animation GIDs
 -- @param id The GID of the animation object/tile
 -- @return The name of the animation sequence
 --------------------------------------------------------------------------------  
@@ -378,6 +378,16 @@ local function buildSequences( animations, tileset )
 	return sequences
 
 end	
+
+--------------------------------------------------------------------------------
+-- Returns the properties table for a tile's gid if it exists
+--
+-- @param cache The map image cache to store animation GIDs
+-- @param id The GID of the tile to look for
+-- @return The properties table or nil
+--------------------------------------------------------------------------------  
+local function getProperties( properties, id ) return properties[id] end
+
 
 --------------------------------------------------------------------------------
 -- Collects all tile properties from a tileset and stores them in 

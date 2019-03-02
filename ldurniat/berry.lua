@@ -514,15 +514,6 @@ local function loadTilesets( cache, tilesets )
 
 			local sheet = createImageSheet( tileset )
 
---[[  Delete this later, pretty sure it's not used anywhere
-
-			cache.tilesets[tileset.image] = {
-				type = 'tiled',
-				tileset = tileset,
-				sheet = sheet,
-			}
---]]
-
 			for gid = firstgid, lastgid do
 
 				assert( not cache.image_sheets[gid] or not cache.tilesets[gid], 

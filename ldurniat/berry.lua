@@ -353,11 +353,12 @@ local function buildSequences( animations, tileset )
 
 			end
 
-			local name = findProperty( tile.properties, 'name' )
-			local time = findProperty( tile.properties, 'time' ) or duration
-			local loopCount = findProperty( tile.properties, 'loopCount' )
-			local loopDirection = findProperty( tile.properties, 
-												'loopDirection' )
+			local properties = inherit( {}, tile.properties )
+
+			local name          = properties.name
+			local time          = properties.time or duration
+			local loopCount     = properties.loopCount
+			local loopDirection = properties.loopDirection
 
 			sequences[#sequences + 1] = {
 				frames        = frames,

@@ -1109,15 +1109,18 @@ local function createObject( map, object, layer )
 
 		end
 
-		if  findProperty( object.properties, 'hasBody' ) then 
+		local tile_properties = getProperties( map.cache.properties, 
+											   object.gid )
+		inherit( image, object.properties )
+		inherit( image, tile_properties )
+		inherit( image, layer.properties )
+
+		if image.hasBody then 
 
 			local params = inherit( {}, object.properties )
 			physics.addBody( image, 'dynamic', params ) 
 
 		end	
-
-		inherit( image, object.properties )
-		inherit( image, layer.properties )
 
 	end	
 

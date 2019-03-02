@@ -380,12 +380,13 @@ local function buildSequences( animations, tileset )
 end	
 
 --------------------------------------------------------------------------------
--- Loads tile properties in a properties cache
+-- Collects all tile properties from a tileset and stores them in 
+-- a properties cache
 --
 -- @param cache The map properties cache to store properties for GID
 -- @param tileset The tileset object
 --------------------------------------------------------------------------------  
-local function loadProperties( cache, tileset )
+local function buildProperties( cache, tileset )
 
 	local tiles = tileset.tiles or {}
 

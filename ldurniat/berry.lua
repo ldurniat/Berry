@@ -668,7 +668,7 @@ local function sortAnimatedPriority( map, layer, tile, object )
 	local object = object or {}  -- createTile method doesn't use objects
 
 	if     ( object.isAnimated ~= nil ) then return object.isAnimated
-	elseif (   tile.isAnimated ~= nil ) then return object.isAnimated
+	elseif (   tile.isAnimated ~= nil ) then return tile.isAnimated
 	elseif (  layer.isAnimated ~= nil ) then return layer.isAnimated
 	elseif (    map.isAnimated ~= nil ) then return map.isAnimated
 	else                                     return false 

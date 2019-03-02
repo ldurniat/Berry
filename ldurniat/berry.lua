@@ -1146,13 +1146,14 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 
 	map.dim = { width=data.width, height=data.height }
 
-	-- The cache stores the id 
+	-- The cache provides easy lookup for data
 	map.cache = {
 		animations    = {},
 		texture_packs = {},
 		tilesets      = {},
 		image_sheets  = {},
 		images        = {},
+		properties    = {},
 	}
 
     -- Purpose of computation here is simplification of code

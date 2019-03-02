@@ -679,19 +679,20 @@ end
 
 --------------------------------------------------------------------------------
 --- Sorts through isAnimated properties and returns a boolean based on priority
--- isAnimated var assignment priority:  object > layer > map
--- objects are assigned 1st, layers are 2nd, and map is last
+-- isAnimated var assignment priority:  object > tile > layer > map
+-- objects are assigned 1st, tiles are 2nd, layer is 3rd, and map is last
 --
 -- @param map The map
 -- @param layer The layer 
 -- @param object The object
 -- @return A boolean value for isAnimated
 --------------------------------------------------------------------------------
-local function sortAnimatedPriority( map, layer, object )
+local function sortAnimatedPriority( map, layer, tile, object )
 
 	local object = object or {}  -- createTile method doesn't use objects
 
 	if     ( object.isAnimated ~= nil ) then return object.isAnimated
+	elseif (   tile.isAnimated ~= nil ) then return object.isAnimated
 	elseif (  layer.isAnimated ~= nil ) then return layer.isAnimated
 	elseif (    map.isAnimated ~= nil ) then return map.isAnimated
 	else                                     return false 
@@ -729,7 +730,8 @@ local function createTile( map, position, gid, layer )
 										   tileset.sequence_data )
 
 				image:setSequence( animation )
-				local isAnimated = sortAnimatedPriority( map, layer )
+				local tile = getProperties( map.cache.properties, gid )
+				local isAnimated = sortAnimatedPriority( map, layer, tile )
 				if isAnimated then image:play() end
 
 			else
@@ -909,7 +911,10 @@ local function createObject( map, object, layer )
 											   tileset.sequence_data )
 
 					image:setSequence( animation )
-					local isAnimated = sortAnimatedPriority( map, layer, object)
+					local tile = getProperties( map.cache.properties, 
+												object.gid )
+					local isAnimated = sortAnimatedPriority( map, layer, tile, 
+															 object )
 					if isAnimated then image:play() end
 
 				else

@@ -1152,6 +1152,7 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 
     	tileset.sequence_data = buildSequences( map.cache.animations, tileset )
     	tileset.directory 	  = tilesets_dir and tilesets_dir .. '/' or ''
+    	buildProperties( map.cache.properties, tileset )
 
     end
 

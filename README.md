@@ -19,7 +19,7 @@ Tested with Tiled v1.2.0
 - [x] **Text -** *Text object support via plugins*
 - [x] **Physics -** *Rectangle and polygon shapes and objects*
 - [x] **Animation -** *Tile Animation Editor support for objects*
-- [x] **Properties -** *Basic property copying for objects and layers*
+- [x] **Properties -** *Property copying for objects, tiles, layers, and maps*
 
 ### Quick Start Guide
 
@@ -72,19 +72,88 @@ The *extend()* function attaches a lua code module to a *image object*. You can 
 
 ### Custom Properties
 
-The most exciting part of working in Tiled & Corona is the idea of custom properites. You can select any *image object* on any *object layer* in Tiled and add any number of custom properties. **berry** will apply those properties to the image object as it loads. This allows you to put physics properties, custom draw modes, user data, etc. on an in-game item via the editor.
+The most exciting part of working in Tiled & Corona is the idea of custom properites. You can select any *image object* on any *object layer* in Tiled and add any number of custom properties. **berry** will apply those properties to the image object as it loads. This allows you to put physics properties, custom draw modes, user data, etc. on an in-game item via the editor. 
 
 ![Custom Properties](https://i.imgur.com/bY9vfxC.png)
 
-#### hasBody
+#### Properties inheritance
+
+**Berry** also applies the tile properties and layer properties and add these to the *image object*. Properties are assigned in prioirty:  
+
+1. Object
+2. Tile
+3. Layer
+
+If the same property amongst these is present when inheriting, the property with the highest priority gets assigned.
+
+```lua
+  -- Object inherits from tile and layer
+  Object.foo = 31
+  Tile.foo = 'Huzah'
+  Layer.foo = true
+  print(Object.foo) -- 31
+
+  -- Pretend Object didn't have a foo property
+  Object.foo = nil
+  Tile.foo = 'Huzah'
+  Layer.foo = true
+  print(Object.foo) -- Huzah
+
+  etc.
+```
+
+#### Physics
 
 One special custom property is *hasBody*. This triggers **berry** to add a physics body to an object/tile and pass the rest of the custom properties as physics options. Rectangle bodies are currently supported by default, adding a **radius** property will give you a round body. More complicated shape you can obtain by using the Collision Editor. No all shapes are supported.
 
 ![Setting a hasBody property](https://i.imgur.com/EoyRHK9.png)
 
-#### isAnimated
+#### Animation
 
-One more special property you may want to use is *isAnimated*. This triggers **berry** to replace simple image object with animation created in Tiled. 
+Tiled has an animation editor to bring images to life. *Berry* has several features to take advantage of this. By adding certain properties to a tile in the editor the animation can be configured. These properties are the same as they are to [configure CoronaSDK sprites](https://docs.coronalabs.com/api/library/display/newSprite.html#sequencedata):
+
+- name (name of the animation)
+- time (time of the animation, 1000 = 1 second)
+- loopCount (optional) (number of times to loop the animation, defaults is 0 for infinite)
+- loopDirection (optional) (how to play the animation, default is forward)
+
+**Note - CoronaSDK does not support *individual* frame durations for animations.**
+
+Instead *Berry* calculates the sum of all the frame durations for an animation and uses it for the time variable. Every frame will play at the same average duration.  If a `time` custom property is given, it will use this to calculate animation time instead.
+
+Another special property is *isAnimated*. Without it, none of the animations will play by default. `isAnimated` can be set to true or false for the map, layer, object, or tile. Inheritance rules applies to this property in order of prioirty:
+
+1. Object
+2. Tile
+3. Layer
+4. Map
+
+Some examples of this behavior:
+
+```lua
+  -- Example 1 --> only the map is set to true
+  Map.isAnimated = true  
+  -- Result = all animations will play
+
+  -- Example 2 --> map is set to false and objects set to true
+  Map.isAnimated = false
+  Object1 -- no isAnimated property set
+  Object2.isAnimated = true
+  -- Result = Object 2 animation plays, Object 1 does not 
+
+  -- Example 3 -->
+  Map -- not set
+  Layer1.isAnimated = true 
+    Object1 -- not set
+    Object2.isAnimated = false
+  Layer2.isAnimated = false
+    Object3 -- not set
+    Object4.isAnimated = true
+  Layer3 -- not set
+    Object5
+  -- Result = Object 1 and 4 animations plays, Object 2, 3, and 5 does not
+
+```
 
 ![Setting a isAnimated property](https://i.imgur.com/7GrkP6t.png)  
 
@@ -99,7 +168,6 @@ See [Sticker-Knight-Platformer-for-Berry](https://github.com/ldurniat/Sticker-Kn
 - [ ] Parallax effect
 - [ ] Camera effect
 - [ ] Support for external tilesets
-- [ ] Support for custom object types
 - [ ] Support for multi-element bodies
 
 ### Images

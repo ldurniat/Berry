@@ -829,6 +829,10 @@ local function createTile( map, position, gid, layer )
 			end
 
 			centerAnchor( image )
+
+			local tile_properties = getTileProperties( map.cache.properties, 
+													   gid )
+			inherit( image, tile_properties )
 			inherit( image, layer.properties )
 
 		end	

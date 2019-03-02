@@ -362,7 +362,7 @@ end
 -- @param id The GID of the tile to look for
 -- @return The properties table or nil
 --------------------------------------------------------------------------------  
-local function getProperties( properties, id ) return properties[id] end
+local function getTileProperties( properties, id ) return properties[id] end
 
 
 --------------------------------------------------------------------------------
@@ -706,7 +706,7 @@ local function createTile( map, position, gid, layer )
 										   tileset.sequence_data )
 
 				image:setSequence( animation )
-				local tile = getProperties( map.cache.properties, gid )
+				local tile = getTileProperties( map.cache.properties, gid )
 				local isAnimated = sortAnimatedPriority( map, layer, tile )
 				if isAnimated then image:play() end
 
@@ -887,8 +887,8 @@ local function createObject( map, object, layer )
 											   tileset.sequence_data )
 
 					image:setSequence( animation )
-					local tile = getProperties( map.cache.properties, 
-												object.gid )
+					local tile = getTileProperties( map.cache.properties, 
+												    object.gid )
 					local isAnimated = sortAnimatedPriority( map, layer, tile, 
 															 object )
 					if isAnimated then image:play() end
@@ -1084,8 +1084,8 @@ local function createObject( map, object, layer )
 
 		end
 
-		local tile_properties = getProperties( map.cache.properties, 
-											   object.gid )
+		local tile_properties = getTileProperties( map.cache.properties, 
+											       object.gid )
 		inherit( image, object.properties )
 		inherit( image, tile_properties )
 		inherit( image, layer.properties )

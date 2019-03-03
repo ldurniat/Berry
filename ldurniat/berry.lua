@@ -347,7 +347,7 @@ local function buildSequences( cache, tileset )
 
 			end
 
-			local name = findProperty( tile.properties, 'sequenceName' )
+			local name = findProperty( tile.properties, 'name' )
 
 			sequences[#sequences + 1] = {
 				frames        = frames,
@@ -1113,7 +1113,7 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
     map.tile_height   = data.tileheight
 
 	-- Add useful properties
-    map.default_extensions = 'berry.plugins.'
+    map.default_extensions = 'ldurniat.plugins.'
 
     -- TexturePacker directory will default to tilesets_dir if arg not present
     texturepacker_dir = texturepacker_dir or tilesets_dir
@@ -1305,29 +1305,24 @@ end
 --------------------------------------------------------------------------------
 function Map:extend( ... )
 	
-    local objectTypes = arg or {}
+    local list_of_types = arg or {}
 
-    for i = 1, #objectTypes do 
+    for _, object_type in ipairs( list_of_types ) do 
 
-    	local extension = self.extensions or self.default_extensions
+    	local extension = self.default_extensions
 
-      -- Load each module based on type
-		local plugin = require ( extension .. objectTypes[i] )
+		-- Load each module based on type
+		local plugin = require ( extension .. object_type )
 
 		-- Find each type of tiled object
-		local images = { self:getObjects( { type=objectTypes[i] } ) }
+		local display_objects = { self:getObjects( { type=object_type } ) }
 
-		if images then 
+		for _, object in ipairs( display_objects ) do 
 
-			-- Do we have at least one?
-			for i = 1, #images do
-				
-				-- Extend the object with its own custom code
-				images[i] = plugin.new( images[i] )
+			-- Extend the object with its own custom code
+			object = plugin( object ) 
 
-			end
-
-		end  
+		end
 
     end
 

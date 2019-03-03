@@ -11,6 +11,7 @@
 
 local json = require 'json' 
 local lfs  = require 'lfs'  -- lfs stands for LuaFileSystem
+local physics = require 'physics'
 
 -- -------------------------------------------------------------------------- --
 --                                  MODULE                                    --												
@@ -1184,10 +1185,11 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 	    layer.isVisible  = info.visible
 		layer.x          = info.offsetx or 0
 		layer.y          = info.offsety or 0
+		layer.properties = info.properties
 
-		-- Inherit properties
-		inherit( layer, info.properties )
-		
+		-- Inherit properties for layer table
+		if info.properties then inherit( layer, info.properties ) end
+
 		if layer.type == 'objectgroup' then
 
 			local objects = info.objects or {}

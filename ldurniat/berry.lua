@@ -982,6 +982,43 @@ local function createObject( map, object, layer )
 		image = display.newImageRect( layer, image_sheet, frame, width, height )
 		image.x, image.y = object.x, object.y
 
+	elseif object.text then
+
+		-- CoronaSDK has no support for the following text options in Tiled:
+		-- vertical text alignment
+		-- italics, bold, underline, and strikeout  
+
+		-- set defaults
+		local text        = object.text.text
+		local font        = object.text.fontfamily or native.systemFont
+		local size        = object.text.pixelsize
+		local color       = object.text.color or 'FFFFFFFF'
+		local align
+
+		-- no support for "justify" as horizontal text alignment it will instead
+		-- default to center.  Also if the text object for Tiled is set to left
+		-- align, then it will not output a halign value.
+		if object.text.halign == 'justify' then align = 'center'
+		elseif not object.text.halign then 		align = 'left'
+		else 									align = object.text.halign
+		end
+
+		local params      = { 
+			parent   = layer,
+			width    = object.text.wrap and object.width,
+			height   = object.height,
+			text     = text, 
+			font     = font, 
+			fontSize = size,
+			align    = align
+		} 
+
+		image = display.newText( params )
+		image:setTextColor( decodeTiledColor( color ) )
+
+		image.anchorX, image.anchorY = 0, 0
+		image.x, image.y             = object.x, object.y
+
 	else
 
 		image = display.newRect( layer, 0, 0, object.width, object.height )

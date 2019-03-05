@@ -1095,10 +1095,11 @@ local function createObject( map, object, layer )
 		inherit( image, tile_properties )
 		inherit( image, layer.properties )
 
+
 		if image.hasBody then 
 
-			local params = inherit( {}, object.properties )
-			physics.addBody( image, 'dynamic', params ) 
+			local bodyType = image.bodyType or 'dynamic'
+			physics.addBody( image, bodyType, image ) 
 
 		end	
 

@@ -108,6 +108,8 @@ One special custom property is *hasBody*. This triggers **berry** to add a physi
 
 ![Setting a hasBody property](https://i.imgur.com/EoyRHK9.png)
 
+There is full support for every type of [Corona Physic Properties](https://docs.coronalabs.com/guide/physics/physicsBodies/index.html#properties). This also includes [Collision Filters](https://docs.coronalabs.com/guide/physics/collisionDetection/index.html#filtering) as well.  To enable a filter just set the custom property for `maskBits`, `categoryBits`, or `groupIndex` and it will be applied directly to a physics object. 
+
 #### Animation
 
 Tiled has an animation editor to bring images to life. *Berry* has several features to take advantage of this. By adding certain properties to a tile in the editor the animation can be configured. These properties are the same as they are to [configure CoronaSDK sprites](https://docs.coronalabs.com/api/library/display/newSprite.html#sequencedata):
@@ -126,7 +128,7 @@ Another special property is *isAnimated*. Without it, none of the animations wil
 1. Object
 2. Tile
 3. Layer
-4. Map
+4. Map (*note - only isAnimated property is checked and inherited for map)
 
 Some examples of this behavior:
 

@@ -1138,6 +1138,18 @@ local function createObject( map, object, layer )
 		if image.hasBody then 
 
 			local bodyType = image.bodyType or 'dynamic'
+
+			-- Apply collision filter
+			if image.groupIndex or (image.categoryBits and image.maskBits) then 
+
+				image.filter = {
+					  groupIndex = image.groupIndex,
+					categoryBits = image.categoryBits,
+					    maskBits = image.maskBits
+				}
+				
+			end
+
 			physics.addBody( image, bodyType, image ) 
 			-- So apparently CoronaSDK doesn't apply properties for physics
 			-- objects until after they have been created, which means we need

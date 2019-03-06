@@ -108,6 +108,8 @@ One special custom property is *hasBody*. This triggers **berry** to add a physi
 
 ![Setting a hasBody property](https://i.imgur.com/EoyRHK9.png)
 
+An object's [bodyType property](https://docs.coronalabs.com/guide/physics/physicsBodies/index.html#body-type) may be set as `dynamic`, `static`, or `kinematic`.  If it is not set, it will default to `dynamic`.
+
 There is full support for every type of [Corona Physic Properties](https://docs.coronalabs.com/guide/physics/physicsBodies/index.html#properties). This also includes [Collision Filters](https://docs.coronalabs.com/guide/physics/collisionDetection/index.html#filtering) as well.  To enable a filter just set the custom property for `maskBits`, `categoryBits`, or `groupIndex` and it will be applied directly to a physics object. 
 
 #### Animation

@@ -11,6 +11,7 @@
 
 local json = require 'json' 
 local lfs  = require 'lfs'  -- lfs stands for LuaFileSystem
+local physics = require 'physics'
 
 -- -------------------------------------------------------------------------- --
 --                                  MODULE                                    --												
@@ -54,7 +55,11 @@ local function inherit( object, properties )
 
 	for _, property in ipairs(properties) do
 
-		object[property.name] = property.value
+		if not object[property.name] then 
+
+			object[property.name] = property.value
+
+		end
 
 	end	
 
@@ -241,11 +246,9 @@ end
 -- @return The image sheet or nil.
 -- @return The frame_index for image in image sheet.
 --------------------------------------------------------------------------------   
-local function getImageSheet( cache, id )
-
-	local is_image_sheet = cache[id] and cache[id].sheet 
-	local image_sheet = is_image_sheet and cache[id]
-
+local function getImageSheet( image_sheets, id )
+ 
+	local image_sheet = image_sheets[id]
 	if image_sheet then return image_sheet.sheet, image_sheet.frame end
 
 end
@@ -257,9 +260,10 @@ end
 -- @param id The id of the image.
 -- @return The image width and height
 --------------------------------------------------------------------------------   
-local function getImageSize( cache, id ) 
+local function getImageSize( images, id ) 
 
-	if cache[id] then return cache[id].width, cache[id].height end
+	local image = images[id]
+	if image then return image.width, image.height end
 
 end
 
@@ -270,7 +274,12 @@ end
 -- @param id The id of the image.
 -- @return The image directory
 --------------------------------------------------------------------------------   
-local function getImagePath( cache, id ) return cache[id] and cache[id].path end
+local function getImagePath( images, id ) 
+
+	local image = images[id]
+	if image then return image.path end
+
+end
 
 --------------------------------------------------------------------------------
 --- Gets a Tile image from a GID.
@@ -279,45 +288,16 @@ local function getImagePath( cache, id ) return cache[id] and cache[id].path end
 -- @param id The gid to use to find tileset.
 -- @return The tileset at the gid location.
 --------------------------------------------------------------------------------
-local function getTileset( cache, id) return cache[id] and cache[id].tileset end
-
---------------------------------------------------------------------------------
--- Find property by name.
---
--- @param properties The table with properties.
--- @param name The name of property to find.
--- @return The value of found property.
---------------------------------------------------------------------------------   
-local function findProperty( properties, name )
-
-	properties = properties or {}
-
-	for i=1, #properties do
-
-		property = properties[i]
-
-		if property.name == name then
-
-			return property.value
-
-		end	
-
-	end	
-
-end	
+local function getTileset( tilesets, id ) return tilesets[id] end
 
 --------------------------------------------------------------------------------
 -- Returns the animation sequence name using a gid in the map cache
 --
--- @param cache The map image cache to store animation GIDs
--- @param gid The GID of the animation object/tile
+-- @param animations The map image cache to store animation GIDs
+-- @param id The GID of the animation object/tile
 -- @return The name of the animation sequence
 --------------------------------------------------------------------------------  
-local function getAnimationSequence( cache, gid ) 
-
-	return cache._animations[gid] 
-
-end
+local function getAnimationSequence( animations, id ) return animations[id] end
 
 --------------------------------------------------------------------------------
 -- Collect all sequences data from a tileset.
@@ -326,7 +306,7 @@ end
 -- @param tileset The tileset object.
 -- @return The table.
 --------------------------------------------------------------------------------  
-local function buildSequences( cache, tileset )
+local function buildSequences( animations, tileset )
 
 	local sequences       = {}
 	local tiles 		  = tileset.tiles or {}
@@ -338,34 +318,97 @@ local function buildSequences( cache, tileset )
 		if animation then 
 
 			local frames = {}
+			local duration = 0
 
-			-- The property tileid starts from 0 (in JSON format) 
+			-- The property tileid starts from 0 (in JSON format)
 			-- but frames count from 1
 			for _, frame in ipairs(animation) do
 
 				frames[#frames + 1] = frame.tileid + 1 
+				duration = duration + frame.duration
 
 			end
 
-			local name = findProperty( tile.properties, 'name' )
+			local properties = inherit( {}, tile.properties )
+
+			local name          = properties.name
+			local time          = properties.time or duration
+			local loopCount     = properties.loopCount
+			local loopDirection = properties.loopDirection
 
 			sequences[#sequences + 1] = {
 				frames        = frames,
 	            name          = name,
-	            time          = findProperty( tile.properties, 'time' ),
-	            loopCount     = findProperty( tile.properties, 'loopCount' ),
-	            loopDirection = findProperty( tile.properties, 'loopDirection' )
+	            time          = time,
+	            loopCount     = loopCount,
+	            loopDirection = loopDirection
 	        }
 
 	        -- attach gid to sequence name in the animation cache
 	        local gid = tileset.firstgid + tile.id
-	        if name then cache._animations[gid] = name end
+	        if name then animations[gid] = name end
 	        
 	    end 
 
 	end		
 
 	return sequences
+
+end	
+
+--------------------------------------------------------------------------------
+-- Returns the properties table for a tile's gid if it exists
+--
+-- @param cache The map image cache to store animation GIDs
+-- @param id The GID of the tile to look for
+-- @return The properties table or nil
+--------------------------------------------------------------------------------  
+local function getTileProperties( properties, id ) return properties[id] end
+
+
+--------------------------------------------------------------------------------
+-- Collects all tile properties from a tileset and stores them in 
+-- a properties cache
+--
+-- @param cache The map properties cache to store properties for GID
+-- @param tileset The tileset object
+--------------------------------------------------------------------------------  
+local function buildProperties( cache, tileset )
+
+	local tiles = tileset.tiles or {}
+
+	-- these properties are only for animation stuff and shouldn't be copied
+	local restricted_properties = {
+		name=true, 
+		time=true, 
+		loopCount=true, 
+		loopDirection=true
+	}
+
+	for _, tile in ipairs(tiles) do
+
+		local properties = tile.properties
+
+		if properties then
+
+			local properties_copy = {}
+
+			for _, property in ipairs(properties) do
+
+				if not restricted_properties[property.name] then
+
+					properties_copy[property.name] = property.value
+
+				end
+
+			end
+
+	        local gid = tileset.firstgid + tile.id
+	        cache[gid] = properties_copy
+	        
+	    end 
+
+	end		
 
 end	
 
@@ -458,26 +501,18 @@ local function loadTilesets( cache, tilesets )
 
 			local sheet = createImageSheet( tileset )
 
-			cache[tileset.image] = {
-				type = 'tiled',
-				tileset = tileset,
-				sheet = sheet,
-			}
-
 			for gid = firstgid, lastgid do
 
-				assert( not cache[gid],
-					"Duplicate gid for image sheet detected.  Check to " ..
-					"make sure the same image sheet isn't being loaded twice "..
-					"or if some of the images/tilesets have matching names"
+				assert( not cache.image_sheets[gid] or not cache.tilesets[gid], 
+					"Duplicate key in cache detected" 
 				)
 
-				cache[gid] = {
-					type = 'tiled',				
-					tileset = tileset,
+				cache.image_sheets[gid] = {
 					sheet = sheet,
 					frame = gid - firstgid + 1,
 				}
+
+				cache.tilesets[gid] = tileset
 
 			end
 
@@ -487,19 +522,17 @@ local function loadTilesets( cache, tilesets )
 
 				local gid = firstgid + tile.id
 
-				assert( not cache[gid],
-					"Duplicate gid for image sheet detected.  Check to " ..
-					"make sure the same image sheet isn't being loaded twice "..
-					"or if some of the images/tilesets have matching names"
+				assert( not cache.images[gid] or not cache.tilesets[gid],
+					"Duplicate key in cache detected" 
 				)
 
-				cache[gid] = {
-					type = 'tiled',
-					tileset = tileset,
+				cache.images[gid] = {
 					path = tileset.directory .. tile.image,
 					width = tile.imagewidth,
 					height = tile.imageheight,
 				}
+
+				cache.tilesets[gid] = tileset 
 
 			end
 
@@ -519,22 +552,19 @@ local function cacheTexturePack( cache, texture_pack )
 
 	local sheet = createImageSheet( texture_pack )
 
-	for sprite_name, i in pairs(texture_pack.frameIndex) do
+	for image_name, i in pairs(texture_pack.frameIndex) do
 
-		assert( not cache[sprite_name],
-		"Duplicate names for image sheet detected.  Check to " ..
-		"make sure the same image sheet isn't being loaded twice" ..
-		" or if some of the images/texture_packs have matching names"
+		assert( not cache.texture_packs[texture_name],
+				"Duplicate key in cache detected" 
 		)
 
-		local sprite = texture_pack.sheet.frames[i]
+		local image = texture_pack.sheet.frames[i]
 
-		cache[sprite_name] = {
-			type = 'texturepacker',
+		cache.texture_packs[image_name] = {
 			sheet = sheet,
-			frame = i,						
-			width = sprite.width,
-			height = sprite.height,
+			frame = i,
+			width = image.width,
+			height = image.height,
 		}
 
 	end
@@ -615,7 +645,7 @@ end
 -- @param origin The origin for the x value
 -- @return A two coodinates x and y.
 -------------------------------------------------------------------------------- 
-local function isoToScreen( row, column, map, origin)
+local function isoToScreen( row, column, map, origin )
 
 	local x = (column - row) * map.tile_width * 0.5 + ( origin or 0 )
 	local y = (column + row) * map.tile_height * 0.5 
@@ -623,6 +653,29 @@ local function isoToScreen( row, column, map, origin)
 	return x, y
 
 end	
+
+--------------------------------------------------------------------------------
+--- Sorts through isAnimated properties and returns a boolean based on priority
+-- isAnimated var assignment priority:  object > tile > layer > map
+-- objects are assigned 1st, tiles are 2nd, layer is 3rd, and map is last
+--
+-- @param map The map
+-- @param layer The layer 
+-- @param object The object
+-- @return A boolean value for isAnimated
+--------------------------------------------------------------------------------
+local function sortAnimatedPriority( map, layer, tile, object )
+
+	local object = object or {}  -- createTile method doesn't use objects
+
+	if     ( object.isAnimated ~= nil ) then return object.isAnimated
+	elseif (   tile.isAnimated ~= nil ) then return tile.isAnimated
+	elseif (  layer.isAnimated ~= nil ) then return layer.isAnimated
+	elseif (    map.isAnimated ~= nil ) then return map.isAnimated
+	else                                     return false 
+	end
+
+end
 
 --------------------------------------------------------------------------------
 --- Create and add tile to layer
@@ -634,24 +687,41 @@ end
 local function createTile( map, position, gid, layer )
 
 	-- Get the correct tileset using the GID
-	local tileset = getTileset( map.image_cache, gid )
+	local tileset = getTileset( map.cache.tilesets, gid )
 
 	if tileset then
 
 		local image 
 		local width, height  = tileset.tilewidth, tileset.tileheight 
 
-		local image_sheet, frame = getImageSheet( map.image_cache, gid ) 
+		local image_sheet, frame = getImageSheet( map.cache.image_sheets, gid ) 
 
 		if image_sheet then
 
-			image = display.newImageRect( layer, image_sheet, 
-										  frame, width, height )
+			local animation = getAnimationSequence( map.cache.animations, gid )
+
+			if animation then
+
+				image = display.newSprite( layer, 
+										   image_sheet, 
+										   tileset.sequence_data )
+
+				image:setSequence( animation )
+				local tile = getTileProperties( map.cache.properties, gid )
+				local isAnimated = sortAnimatedPriority( map, layer, tile )
+				if isAnimated then image:play() end
+
+			else
+
+				image = display.newImageRect( layer, image_sheet, 
+											  frame, width, height )
+
+			end
 
 		else 
           	
-          	local image_w, image_h = getImageSize( map.image_cache, gid )
-          	local path = getImagePath( map.image_cache, gid )
+          	local image_w, image_h = getImageSize( map.cache.images, gid )
+          	local path = getImagePath( map.cache.images, gid )
 
           	image = display.newImageRect( layer, path, image_w, image_h )
 
@@ -760,6 +830,10 @@ local function createTile( map, position, gid, layer )
 			end
 
 			centerAnchor( image )
+
+			local tile_properties = getTileProperties( map.cache.properties, 
+													   gid )
+			inherit( image, tile_properties )
 			inherit( image, layer.properties )
 
 		end	
@@ -796,34 +870,33 @@ local function createObject( map, object, layer )
 	    object.gid = clearBit( object.gid, FLIPPED_DIAGONAL_FLAG )
 
 		-- Get the correct tileset using the GID
-		tileset = getTileset( map.image_cache, object.gid )
+		tileset = getTileset( map.cache.tilesets, object.gid )
 
 		if tileset then
 
 			local firstgid           = tileset.firstgid
 			local tile_id 		     = object.gid - tileset.firstgid
 			local width,      height = object.width, object.height
-			local image_sheet, frame = getImageSheet( map.image_cache, 
+			local image_sheet, frame = getImageSheet( map.cache.image_sheets, 
 													  object.gid ) 
 
 			if image_sheet then
 
-				if findProperty( layer.properties, 'isAnimated' ) or 
-				   findProperty( object.properties, 'isAnimated' ) then
+				local animation = getAnimationSequence( map.cache.animations, 
+														object.gid )
+
+				if animation then
 
 					image = display.newSprite( layer, 
 											   image_sheet, 
 											   tileset.sequence_data )
 
-					local name = getAnimationSequence( map.image_cache, 
-										  			   object.gid )
-
-					if name then
-
-						image:setSequence( name )
-						image:play()
-
-					end
+					image:setSequence( animation )
+					local tile = getTileProperties( map.cache.properties, 
+												    object.gid )
+					local isAnimated = sortAnimatedPriority( map, layer, tile, 
+															 object )
+					if isAnimated then image:play() end
 
 				else
 
@@ -834,7 +907,7 @@ local function createObject( map, object, layer )
 					
 			else 
 
-          		local path = getImagePath( map.image_cache, object.gid )
+          		local path = getImagePath( map.cache.images, object.gid )
 				image = display.newImageRect( layer, path, width, height ) 
 
 			end
@@ -972,12 +1045,13 @@ local function createObject( map, object, layer )
 
 	    end
 
-	elseif object.sprite then
+	elseif object.texture then
 
-		local image_sheet, frame = getImageSheet( map.image_cache, 
-												  object.sprite )
+		local image_sheet, frame = getImageSheet( map.cache.texture_packs, 
+												  object.texture )
 
-		local width, height = getImageSize( map.image_cache, object.sprite )
+		local width, height = getImageSize( map.cache.texture_packs, 
+											object.texture )
 
 		image = display.newImageRect( layer, image_sheet, frame, width, height )
 		image.x, image.y = object.x, object.y
@@ -1052,15 +1126,18 @@ local function createObject( map, object, layer )
 
 		end
 
-		if  findProperty( object.properties, 'hasBody' ) then 
+		local tile_properties = getTileProperties( map.cache.properties, 
+											       object.gid )
+		inherit( image, object.properties )
+		inherit( image, tile_properties )
+		inherit( image, layer.properties )
+
+		if image.hasBody then 
 
 			local params = inherit( {}, object.properties )
 			physics.addBody( image, 'dynamic', params ) 
 
 		end	
-
-		inherit( image, layer.properties )
-		inherit( image, object.properties )
 
 	end	
 
@@ -1090,17 +1167,28 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 
 	local map = display.newGroup()
 	
+	-- inherit map methods and properties
 	for key, value in pairs(self) do map[key] = value end
+	inherit( map, data.properties )
 
 	map.dim = { width=data.width, height=data.height }
-	map.image_cache = {}
-	map.image_cache._animations = {}
+
+	-- The cache provides easy lookup for data
+	map.cache = {
+		animations    = {},
+		texture_packs = {},
+		tilesets      = {},
+		image_sheets  = {},
+		images        = {},
+		properties    = {},
+	}
 
     -- Purpose of computation here is simplification of code
     for i, tileset in ipairs( data.tilesets ) do
 
-    	tileset.sequence_data   = buildSequences( map.image_cache, tileset )
-    	tileset.directory 		= tilesets_dir and tilesets_dir .. '/' or ''
+    	tileset.sequence_data = buildSequences( map.cache.animations, tileset )
+    	tileset.directory 	  = tilesets_dir and tilesets_dir .. '/' or ''
+    	buildProperties( map.cache.properties, tileset )
 
     end
 
@@ -1119,8 +1207,8 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
     texturepacker_dir = texturepacker_dir or tilesets_dir
 
     do  -- Create and cache all the image sheets
-	    loadTilesets( map.image_cache, map.tilesets )
-		loadTexturePacker( map.image_cache, texturepacker_dir )
+	    loadTilesets( map.cache, map.tilesets )
+		loadTexturePacker( map.cache, texturepacker_dir )
 	end
 	
 	for _, info in ipairs( data.layers ) do
@@ -1134,8 +1222,11 @@ function Map:new( filename, tilesets_dir, texturepacker_dir )
 	    layer.isVisible  = info.visible
 		layer.x          = info.offsetx or 0
 		layer.y          = info.offsety or 0
-		layer.properties = info.properties or {}
-		
+		layer.properties = info.properties
+
+		-- Inherit properties for layer table
+		if info.properties then inherit( layer, info.properties ) end
+
 		if layer.type == 'objectgroup' then
 
 			local objects = info.objects or {}
@@ -1203,7 +1294,7 @@ function Map:addSprite( layer, image_name, x, y )
 	layer = map:getLayer( layer )
 
 	local object = {
-		sprite = image_name,
+		texture = image_name,
 		x = x,
 		y = y 
 	}
@@ -1237,7 +1328,7 @@ function Map:addTexturePack( image_path, lua_path )
 	if texture_pack then
 
 		texture_pack.directory = image_directory .. image_name
-		cacheTexturePack( self.image_cache, texture_pack )
+		cacheTexturePack( self.cache, texture_pack )
 
 	end
 

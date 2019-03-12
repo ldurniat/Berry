@@ -1,3 +1,10 @@
+[![GitHub contributors](https://img.shields.io/github/contributors/ldurniat/berry.svg)](https://github.com/ldurniat/Berry/graphs/contributors)
+[![GitHub last commit](https://img.shields.io/github/last-commit/ldurniat/berry.svg)](https://github.com/ldurniat/Berry/commits/master)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/ldurniat/berry.svg)](https://github.com/ldurniat/Berry/pulls)
+[![GitHub issues](https://img.shields.io/github/issues/ldurniat/berry.svg)](https://github.com/ldurniat/Berry/issues)
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/ldurniat/berry.svg)](http://isitmaintained.com/project/ldurniat/berry "Average time to resolve an issue")
+[![GitHub](https://img.shields.io/github/license/ldurniat/berry.svg)](https://choosealicense.com/licenses/mit/)
+
 # Berry
 *Berry* is a simple [Tiled Map](www.mapeditor.org) loader for Corona SDK.  Berry is also able to load and use TexturePacker sprites inside a Tiled map.
 

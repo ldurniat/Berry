@@ -678,6 +678,45 @@ local function sortAnimatedPriority( map, layer, tile, object )
 end
 
 --------------------------------------------------------------------------------
+--- Resets the physics properties for an image and then adds them again
+--
+-- @param image The image to reset
+--------------------------------------------------------------------------------
+local function redoPhysicsProperties( image )
+
+	-- need to temporary save these variables
+	local isAwake           = image.isAwake
+	local isSleepingAllowed = image.isSleepingAllowed
+	local isBodyActive      = image.isBodyActive
+	local isSensor          = image.isSensor
+	local isFixedRotation   = image.isFixedRotation
+	local gravityScale      = image.gravityScale
+	local angularVelocity   = image.angularVelocity
+	local angularDamping    = image.angularDamping
+	local linearDamping     = image.linearDamping
+	local isBullet          = image.isBullet
+
+	-- set them all to nil
+	image.isAwake, image.isSleepingAllowed, image.isBodyActive = nil, nil, nil
+	image.isSensor, image.isFixedRotation, image.gravityScale  = nil, nil, nil
+	image.angularVelocity, image.angularDamping                = nil, nil
+	image.linearDamping, image.isBullet                        = nil, nil
+
+	-- and add them back
+	image.isAwake           = isAwake
+	image.isSleepingAllowed = isSleepingAllowed
+	image.isBodyActive      = isBodyActive
+	image.isSensor          = isSensor
+	image.isFixedRotation   = isFixedRotation
+	image.gravityScale      = gravityScale
+	image.angularVelocity   = angularVelocity
+	image.angularDamping    = angularDamping
+	image.linearDamping     = linearDamping
+	image.isBullet          = isBullet
+
+end
+
+--------------------------------------------------------------------------------
 --- Create and add tile to layer
 -- @param map The map instance to add tile to
 -- @param position The map position to place tile
@@ -1132,10 +1171,27 @@ local function createObject( map, object, layer )
 		inherit( image, tile_properties )
 		inherit( image, layer.properties )
 
+
 		if image.hasBody then 
 
-			local params = inherit( {}, object.properties )
-			physics.addBody( image, 'dynamic', params ) 
+			local bodyType = image.bodyType or 'dynamic'
+
+			-- Apply collision filter
+			if image.groupIndex or (image.categoryBits and image.maskBits) then 
+
+				image.filter = {
+					  groupIndex = image.groupIndex,
+					categoryBits = image.categoryBits,
+					    maskBits = image.maskBits
+				}
+				
+			end
+
+			physics.addBody( image, bodyType, image ) 
+			-- So apparently CoronaSDK doesn't apply properties for physics
+			-- objects until after they have been created, which means we need
+			-- to reset all these properties and add them again... bleh
+			redoPhysicsProperties(image)
 
 		end	
 

@@ -8,10 +8,7 @@
 -- such as sprites (if animated), shapes, etc. 
 --------------------------------------------------------------------------------
 
-function Plugin( displayObject )
-
-  if not displayObject then error('ERROR: Expected display object') end  
-
+function Plugin( displayObject ) 
 -- -----------------------------------
 -- SETUP NEW VARIABLES IF NEEDED
 -- -----------------------------------
@@ -31,13 +28,12 @@ function Plugin( displayObject )
 -- ADD NEW METHODS IF NEEDED
 -- -----------------------------------
 -- function displayObject:show()
---   displayObject.alpha = 1
+--   displayObject.isVisible = true
 -- end
 --
 -- function displayObject:hide()
---   displayObject.alpha = 0
+--   displayObject.isVisible = false
 -- end
-
 
   return displayObject
     

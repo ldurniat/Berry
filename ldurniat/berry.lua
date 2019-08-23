@@ -1347,7 +1347,7 @@ end
 --------------------------------------------------------------------------------
 function Map:addSprite( layer, image_name, x, y )
 
-	layer = map:getLayer( layer )
+	layer = self:getLayer( layer )
 
 	local object = {
 		texture = image_name,

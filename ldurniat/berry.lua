@@ -1456,7 +1456,7 @@ function Map:extend( ... )
 
     for _, object_type in ipairs( list_of_types ) do 
 
-    	local extension = self.default_extensions
+    	local extension = self.extensions or self.default_extensions
 
 		-- Load each module based on type
 		local plugin = require ( extension .. object_type )

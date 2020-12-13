@@ -1,7 +1,7 @@
 ![Tiled Image](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwQuIoJbpLomvzgVmEvoXyQ5B7kPrZmtT1WuEs6xX-NxBxcGL3KQ)
 ![Texturepacker Image](https://www.codeandweb.com/o/img/texturepacker512-512.png)
 
-[![Tiled version](https://img.shields.io/badge/Tiled-v1.2.0-blue.svg)](https://www.mapeditor.org/)
+[![Tiled version](https://img.shields.io/badge/Tiled-v1.4.3-blue.svg)](https://www.mapeditor.org/)
 [![Texturepacker version](https://img.shields.io/badge/TexturePacker-v3.4.0-blue.svg)](https://www.codeandweb.com/texturepacker)
 [![Corona version](https://img.shields.io/badge/Corona-v2018.3326-blue.svg)](https://coronalabs.com/)
 [![GitHub contributors](https://img.shields.io/github/contributors/ldurniat/berry.svg)](https://github.com/ldurniat/Berry/graphs/contributors)

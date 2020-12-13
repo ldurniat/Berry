@@ -3,7 +3,7 @@
 
 [![Tiled version](https://img.shields.io/badge/Tiled-v1.4.3-blue.svg)](https://www.mapeditor.org/)
 [![Texturepacker version](https://img.shields.io/badge/TexturePacker-v3.4.0-blue.svg)](https://www.codeandweb.com/texturepacker)
-[![Corona version](https://img.shields.io/badge/Corona-v2018.3326-blue.svg)](https://coronalabs.com/)
+[![Solar2D version](https://img.shields.io/badge/Corona-v2020.3316-blue.svg)](https://coronalabs.com/)
 [![GitHub contributors](https://img.shields.io/github/contributors/ldurniat/berry.svg)](https://github.com/ldurniat/Berry/graphs/contributors)
 [![GitHub last commit](https://img.shields.io/github/last-commit/ldurniat/berry.svg)](https://github.com/ldurniat/Berry/commits/master)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/ldurniat/berry.svg)](https://github.com/ldurniat/Berry/pulls)

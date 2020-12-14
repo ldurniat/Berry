@@ -1531,7 +1531,8 @@ end
 --------------------------------------------------------------------------------
 --- Find the objects by name and type.
 --
--- @param options The table which contains two fields name and type.
+-- @param options The table which contains three fields name, property_name
+-- property_value and type.
 -- @return The table with found objects.
 -- 
 -- Original code from https://github.com/ponywolf/ponytiled 
@@ -1540,8 +1541,10 @@ function Map:getObjects( options )
 
 	options = options or {}
 
-	local name    = options.name
-	local objType = options.type
+	local name    		 = options.name
+	local objType 		 = options.type
+	local property_name  = options.property_name
+	local property_value = options.property_value
 
 	local objects, object, layer = {}
 
@@ -1553,10 +1556,20 @@ function Map:getObjects( options )
 
 			object = layer[j]
 
-			local has_name_match = ( name and object.name == name )
-			local has_type_match = ( objType and object.type == objType)
+			local has_name_match 	 = ( name and object.name == name )
+			local has_type_match 	 = ( objType and object.type == objType )
+			local has_property_match = ( property_name and property_value and
+				object[property_name] == property_value )
 
-			if name and objType then -- must match both
+			if name and objType and property_name and property_value then -- must match all three
+
+				if has_name_match and has_type_match and has_property_match then
+
+					objects[#objects + 1] = object
+
+				end
+
+			elseif	if name and objType then -- must match both
 
 				if has_name_match and has_type_match then
 
@@ -1564,9 +1577,25 @@ function Map:getObjects( options )
 
 				end
 
+			elseif	if name and property_name and property_value then 
+
+				if has_name_match and has_property_match then
+
+					objects[#objects + 1] = object
+
+				end	
+
+			elseif	if objType and property_name and property_value then
+
+				if has_type_match and has_property_match then
+
+					objects[#objects + 1] = object
+
+				end		
+
 			else  -- must match one
 
-				if has_name_match or has_type_match then
+				if has_name_match or has_type_match or has_property_match then
 
 					objects[#objects + 1] = object
 

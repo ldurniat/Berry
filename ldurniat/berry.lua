@@ -1569,7 +1569,7 @@ function Map:getObjects( options )
 
 				end
 
-			elseif	if name and objType then -- must match both
+			elseif name and objType then -- must match both
 
 				if has_name_match and has_type_match then
 
@@ -1577,7 +1577,7 @@ function Map:getObjects( options )
 
 				end
 
-			elseif	if name and property_name and property_value then 
+			elseif name and property_name and property_value then 
 
 				if has_name_match and has_property_match then
 
@@ -1585,7 +1585,7 @@ function Map:getObjects( options )
 
 				end	
 
-			elseif	if objType and property_name and property_value then
+			elseif objType and property_name and property_value then
 
 				if has_type_match and has_property_match then
 

@@ -10,7 +10,7 @@
 
 local Plugin = {}
 
-function Plugin.new( displa_object ) 
+function Plugin.new( displa_object, map ) 
 -- -----------------------------------
 -- SETUP NEW VARIABLES IF NEEDED
 -- -----------------------------------

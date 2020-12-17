@@ -3,39 +3,41 @@
 --
 -- Plugins allow a way to extend the functionality and properties of objects. 
 --
--- All Tiled objects are Corona displayObjects and inherit their default methods
+-- All Tiled objects are Corona displa_objects and inherit their default methods
 -- and variables.  There are also Tiled objects that inherit from other groups 
 -- such as sprites (if animated), shapes, etc. 
 --------------------------------------------------------------------------------
 
-function Plugin( displayObject ) 
+local Plugin = {}
+
+function Plugin.new( displa_object ) 
 -- -----------------------------------
 -- SETUP NEW VARIABLES IF NEEDED
 -- -----------------------------------
--- displayObject.foo = some_value
--- displayObject.bar = other_value
+-- displa_object.foo = some_value
+-- displa_object.bar = other_value
 
 
 -- -----------------------------------
 -- CHANGE EXISTING VARIABLES IF NEEDED
 -- -----------------------------------
--- displayObject.alpha = 1
--- displayObject:scale(this_amount)
--- displayObject:rotate(other_amount)
+-- displa_object.alpha = 1
+-- displa_object:scale(this_amount)
+-- displa_object:rotate(other_amount)
 
 
 -- -----------------------------------
 -- ADD NEW METHODS IF NEEDED
 -- -----------------------------------
--- function displayObject:show()
---   displayObject.isVisible = true
+-- function displa_object:show()
+--   displa_object.isVisible = true
 -- end
 --
--- function displayObject:hide()
---   displayObject.isVisible = false
+-- function displa_object:hide()
+--   displa_object.isVisible = false
 -- end
 
-  return displayObject
+  return displa_object
     
 end
 

@@ -1456,15 +1456,15 @@ function Map:extend( ... )
 
     for _, object_type in ipairs( list_of_types ) do 
 
-    	local extension = self.extensions or self.default_extensions
-
-		-- Load each module based on type
-		local plugin = require ( extension .. object_type )
-
 		-- Find each type of tiled object
 		local display_objects = { self:getObjects( { type=object_type } ) }
 
 		for _, object in ipairs( display_objects ) do 
+
+			local extension = object.extensions or self.extensions or self.default_extensions
+
+			-- Load each module based on type
+			local plugin = require ( extension .. object_type )
 
 			-- Extend the object with its own custom code
 			object = plugin.new( object, self ) 

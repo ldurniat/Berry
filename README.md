@@ -33,6 +33,7 @@ Tested with Tiled v1.2.0
 - [x] **Physics -** *Rectangle and polygon shapes and objects*
 - [x] **Animation -** *Tile Animation Editor support for objects*
 - [x] **Properties -** *Property copying for objects, tiles, layers, and maps*
+- [x] **Pivot Joints -** Support by plugin**
 
 ### Quick Start Guide
 

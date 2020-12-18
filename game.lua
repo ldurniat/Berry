@@ -1,6 +1,7 @@
 -- Include modules/libraries
 local composer = require( 'composer' )
 local berry = require( 'ldurniat.berry' )
+local physics = require( "physics" )
 
 -- Create a new Composer scene
 local scene = composer.newScene()
@@ -10,8 +11,13 @@ function scene:create( event )
 
 	local sceneGroup = self.view  -- Add scene display objects to this group
 
+	physics.start( )
+	physics.setDrawMode( 'hybrid' )
+
 	-- Load our map
-	map = berry:new( 'map/level.json', 'map' )
+	map = berry:new( 'examples/pivot_joints/map/map.json', 'examples/pivot_joints/map' )
+	map:extend( 'pivot_joint' )
+
 	scene.view:insert( map )
 
 end

@@ -27,6 +27,10 @@ function M.new( display_object, map )
 					joint.maxMotorTorque = display_object.maxMotorTorque
 					joint.motorTorque    = display_object.motorTorque
 
+					-- Add joint reference for futher manipulation
+					bodyA.joint = joint
+					bodyB.joint = joint
+
 					display.remove( display_object )
 
 				else

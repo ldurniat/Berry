@@ -15,8 +15,11 @@ function scene:create( event )
 	physics.setDrawMode( 'hybrid' )
 
 	-- Load our map
+	-- 1. Use of pivot joint plugin
 	map = berry:new( 'examples/pivot_joints/map/map.json', 'examples/pivot_joints/map' )
 	map:extend( 'pivot_joint' )
+	-- 2. Load images and tileset
+	-- map = berry:new( 'examples/images_and_tileset/map/level.json', 'examples/images_and_tileset/map' )
 
 	scene.view:insert( map )
 

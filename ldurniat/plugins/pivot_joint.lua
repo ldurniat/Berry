@@ -8,8 +8,8 @@ function M.new( display_object, map )
 
 		local bodyA_name 	 = display_object.bodyA_name
 		local bodyB_name 	 = display_object.bodyB_name
-		local anchor_x   	 = display_object.anchor_x
-		local anchor_y   	 = display_object.anchor_y	
+		local anchor_x   	 = display_object.anchor_x or display_object.x
+		local anchor_y   	 = display_object.anchor_y or display_object.y	
 
 		if bodyA_name and bodyB_name and anchor_x and anchor_y then
 
